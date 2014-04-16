@@ -34,7 +34,7 @@
 #               patent rights that may be infringed by your derivative works or
 #               by other works in which the Apple Software may be incorporated.
 #
-#               The Apple Software is provided by Apple on an "AS IS" basis. 
+#               The Apple Software is provided by Apple on an "AS IS" basis.
 #               APPLE MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
 #               WITHOUT LIMITATION THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
 #               MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, REGARDING
@@ -62,11 +62,11 @@ gDebug = 0
 
 gNativeArch = None
 
-# The subprocess module is part of Python 2.5, which isn't installed by default 
-# on 10.4.  So if I can't import subprocess I implement runTool using popen2. 
-# This is less than ideal because popen2 is just not as nice as subprocess. 
-# Specifically, there's no easy way to read both stdout and stderr simultaneously, 
-# which is necessary to avoid pipe deadlocks.
+# The subprocess module is part of Python 2.5, which is NOT installed by default
+# on 10.4. So if I cannot import subprocess, then I implement runTool using
+# popen2. This is less than ideal because popen2 is just not as nice as
+# subprocess. Specifically, there is no easy way to read both stdout and stderr
+# simultaneously, which is necessary to avoid pipe deadlocks.
 
 try:
     import subprocess
@@ -83,17 +83,17 @@ try:
 
 except:
     import popen2
-    
+
     def runTool(args):
         if gDebug >= 1:
             print >> sys.stderr, args
         child = popen2.Popen3(args, capturestderr=True)
-        
-        # This is /so/ bodgy.  We really need to read both stdout and stderr 
-        # until both of them hit EOF, but that's hard to do.  This code works 
-        # well enough for my specific needs, but don't even /think/ about 
+
+        # This is /so/ bodgy.  We really need to read both stdout and stderr
+        # until both of them hit EOF, but that is hard to do. This code works
+        # well enough for my specific needs, but do NOT even /think/ about
         # reordering the next two lines!
-        
+
         resultOut = child.fromchild.read()
         resultErr = child.childerr.read()
         result = (child.wait(), resultOut, resultErr)
@@ -120,15 +120,15 @@ def fixFTSPointers(results, arch):
     tmp = re.sub("(fts_statp +|fts_accpath +|fts_path +)= 0x[0-9a-f]+", "\\1= 0xxxx", results[1])
 
     tmp = re.sub("fts_cycle   = 0x[0-9a-f]+", "fts_cycle   = 0xxxx", tmp)
-    
+
     return (results[0], tmp, results[2])
 
 def fixVolumeDates(results, arch):
-    # FSGetVolumeInfo returns bogus results for the createDate and checkedDate 
-    # in 64-bit code <rdar://problem/5740217>, so we just ignore those fields 
+    # FSGetVolumeInfo returns bogus results for the createDate and checkedDate
+    # in 64-bit code <rdar://problem/5740217>, so we just ignore those fields
     # in our test.
     #
-    # I also nix the modifyDate because, when you have an AFP server mounted, 
+    # I also nix the modifyDate because, when you have an AFP server mounted,
     # things can differ slightly in 64-bit vs 32-bit.
 
     tmp = re.sub("(createDate +|checkedDate +|modifyDate +)= [0-9]+\\.[0-9]+\\.[0-9]+ \\([a-zA-Z0-9 :,\\+]+\\)", "\\1= xxx", results[1])
@@ -137,16 +137,16 @@ def fixVolumeDates(results, arch):
 
 def fixVolParmsPointers(results, arch):
     return (results[0], re.sub("vMDeviceID           = 0x[0-9a-f]+", "vMDeviceID           = 0xxxx", results[1]), results[2])
-    
+
 def fixCatInfoPermissions(results, arch):
-    # The last 4 bytes (8 bytes in the 64-bit case) of the permissions are a pointer, 
-    # which we want to remove.
+    # The last 4 bytes (8 bytes in the 64-bit case) of the permissions are a
+    # pointer, which we want to remove.
     return (results[0], re.sub("permissions      = (?P<first>([0-9a-f][0-9a-f] ){12})([0-9a-f][0-9a-f] ){4}(\\n +(?P<third>([0-9a-f][0-9a-f] ){4}))?", "permissions      = \\g<first>", results[1]), results[2])
-    
+
 def fixFileSecOwner(results, arch):
-    # For some reason the fsec_owner and fsec_group fields are coming back 
-    # different on i386 and x86_64.  Neither of them looks particularly 
-    # valid.  I'm going to ignore this for the moment because I'm out of time.
+    # For some reason the fsec_owner and fsec_group fields are coming back
+    # different on i386 and x86_64. Neither of them looks particularly
+    # valid. I am going to ignore this for the moment because I am out of time.
     return (results[0], re.sub("(fsec_owner|fsec_group) = .*", "\\1 = xxx", results[1]), results[2])
 
 def fixAliasVolumeCreateDate(results, arch):
@@ -157,7 +157,7 @@ def byteSwapValue(text, fieldName, fmt):
         swappedValue = struct.unpack(">" + fmt, struct.pack("<" + fmt, long(m.group('value'))))[0]
         return m.group('prefix') + str(swappedValue)
     return re.sub("(?P<prefix>" + fieldName + " += )(?P<value>[0-9]+)", swapper, text)
-    
+
 def byteSwapValueHex(text, fieldName, fmt):
     def swapper(m):
         swappedValue = struct.unpack(">" + fmt, struct.pack("<" + fmt, long(m.group('value'), 16)))[0]
@@ -167,7 +167,7 @@ def byteSwapValueHex(text, fieldName, fmt):
             outFmt = "%08x"
         return ("%s0x" + outFmt) % (m.group('prefix'), swappedValue)
     return re.sub("(?P<prefix>" + fieldName + " += )(?P<value>0x[0-9]+)", swapper, text)
-    
+
 def fixRosettaIDs(results, arch):
     # Necessary to work around <rdar://problem/5745429>.
     if arch == "ppc" and gNativeArch == "i386":
@@ -178,9 +178,9 @@ def fixRosettaIDs(results, arch):
         output = byteSwapValue(output, "ATTR_DIR_LINKCOUNT", "I")
         output = byteSwapValue(output, "ATTR_DIR_ENTRYCOUNT", "I")
         output = byteSwapValueHex(output, "ATTR_DIR_MOUNTSTATUS", "I")
-        
+
         output = re.sub("DIR_MNTSTATUS_MNTPOINT = NO\n        ... and others \\(0x1000000\\)", "DIR_MNTSTATUS_MNTPOINT = YES", output)
-        
+
         results = (results[0], output, results[2])
     return results
 
@@ -202,11 +202,11 @@ def printResultsSideBySide(columnWidth, left, right):
             else:
                 mark = "!"
             print >> sys.stderr, "%-*s %s %s" % (columnWidth, l1[:columnWidth], mark, l2[:columnWidth])
-    
+
 def compareResultsForArchitectures(archList):
-    # stty will fail when running on 10.4 because my subprocess compatibility 
-    # code, which Popen3, sets stdin to be a pipe, not be the tty device.  
-    # This isn't a big deal so I'm just going to ignore the erorr here.
+    # stty will fail when running on 10.4 because my subprocess compatibility
+    # code, which Popen3, sets stdin to be a pipe, not be the tty device.
+    # This is NOT a big deal so I am just going to ignore the error here.
     try:
         numberOfColumns = int(runTool(['stty', 'size'])[1].split()[1])
     except:
@@ -215,7 +215,7 @@ def compareResultsForArchitectures(archList):
     columnWidth = (numberOfColumns - 5) / 2
 
     regressionTest = True
-    
+
     commands = []
     if regressionTest:
         commands += [
@@ -223,28 +223,28 @@ def compareResultsForArchitectures(archList):
             (('lstat', '/'), ()),
             (('stat', '/mach_kernel'), ()),
             (('lstat', '/mach_kernel'), ()),
-    
+
             (('-v', 'stat', '/'), ()),
             (('-v', 'lstat', '/'), ()),
             (('-v', 'stat', '/mach_kernel'), ()),
             (('-v', 'lstat', '/mach_kernel'), ()),
-    
+
             (('statfs', '/'), (fixStatFS,)),
             (('lstatfs', '/'), (fixStatFS,)),
             (('statfs', '/mach_kernel'), (fixStatFS,)),
             (('lstatfs', '/mach_kernel'), (fixStatFS,)),
-    
+
             (('-v', 'statfs', '/'), (fixStatFS,)),
             (('-v', 'lstatfs', '/'), (fixStatFS,)),
             (('-v', 'statfs', '/mach_kernel'), (fixStatFS,)),
             (('-v', 'lstatfs', '/mach_kernel'), (fixStatFS,)),
-    
+
             (('getfsstat',), (fixStatFS,)),
             (('getfsstat', '-r'), (fixStatFS,)),
-    
+
             (('-v', 'getfsstat',), (fixStatFS,)),
             (('-v', 'getfsstat', '-r'), (fixStatFS,)),
-    
+
             (('-vv', 'getfsstat',), (fixStatFS,)),
             (('-vv', 'getfsstat', '-r'), (fixStatFS,)),
         ]
@@ -254,40 +254,41 @@ def compareResultsForArchitectures(archList):
             (('getdirentries', '/System/Library/CoreServices/'), ()),
             (('getdirentries', '-bufSize', '10240', '/System/Library/CoreServices/'), ()),
             (('getdirentries', '-r', '/System/Library/CoreServices/'), ()),
-    
+
             (('-v', 'getdirentries', '/System/Library/CoreServices/'), ()),
             (('-v', 'getdirentries', '-bufSize', '10240', '/System/Library/CoreServices/'), ()),
             (('-v', 'getdirentries', '-r', '/System/Library/CoreServices/'), ()),
-    
+
             (('readdir', '/System/Library/CoreServices/'), ()),
             (('readdir', '-r', '/System/Library/CoreServices/'), ()),
-    
+
             (('-v', 'readdir', '/System/Library/CoreServices/'), (fixTellDir,)),
             (('-v', 'readdir', '-r', '/System/Library/CoreServices/'), (fixTellDir,)),
-    
+
             (('fts', '/System/Library/CoreServices/Finder.app'), (fixFTSPointers,)),
-            # fts has a bunch of options arguments but I can't be bothered exercising those cases.
+            # fts has a bunch of options arguments but I cannot be bothered
+            # exercising those cases.
         ]
 
     if regressionTest:
         commands += [
             (('listxattr', '/System/Library/CoreServices/Finder'), ()),
             (('listxattr', '-bufSize', '10240', '/System/Library/CoreServices/Finder'), ()),
-    
+
             (('getxattr', '/System/Library/CoreServices/Finder', 'com.apple.FinderInfo'), ()),
             (('getxattr', '/System/Library/CoreServices/Finder', 'com.apple.ResourceFork'), ()),
-    
+
             (('-v', 'getxattr', '/System/Library/CoreServices/Finder', 'com.apple.FinderInfo'), ()),
             (('-v', 'getxattr', '/System/Library/CoreServices/Finder', 'com.apple.ResourceFork'), ()),
-    
+
             (('-vv', 'getxattr', '/System/Library/CoreServices/Finder', 'com.apple.FinderInfo'), ()),
             (('-vv', 'getxattr', '/System/Library/CoreServices/Finder', 'com.apple.ResourceFork'), ()),
         ]
 
-    # In the commented out cases below it seems to be that getattrlist is misbehaving. 
-    # I seem to remember seeing this problem because but I don't have time to investigate 
-    # right now.
-    
+    # In the commented out cases below it seems to be that getattrlist is
+    # misbehaving. I seem to remember seeing this problem because... of
+    # something, but I do NOT have time to investigate right now.
+
     if regressionTest:
         commands += [
             (('getattrlist', '/'), ()),
@@ -377,18 +378,18 @@ def compareResultsForArchitectures(archList):
         ]
 
     # These tests require that you have an AFP server mounted.
-    
+
     if regressionTest:
         if os.path.exists('/Volumes/Fluffy'):
             commands += [
                 (('FSGetVolumeMountInfo', '/Volumes/Fluffy'), ()),
                 (('-v', 'FSGetVolumeMountInfo', '/Volumes/Fluffy'), ()),
-    
+
                 (('FSCopyURLForVolume', '/Volumes/Fluffy'), ()),
             ]
         else:
             print >> sys.stderr, '*** Skipped network volume tests'
-    
+
     if regressionTest:
         commands += [
             (('FSGetCatalogInfo', '/'), ()),
@@ -522,12 +523,12 @@ def compareResultsForArchitectures(archList):
             (('pathconf', '_PC_SYMLINK_MAX', '/'), ()),
             (('pathconf', '_PC_SYNC_IO', '/'), ()),
         ]
-        
+
     for command in commands:
         canonicalResults = runFSMegaInfo(command[0], archList[0])
         for fix in command[1]:
             canonicalResults = fix(canonicalResults, archList[0])
-            
+
         for arch in archList[1:]:
             results = runFSMegaInfo(command[0], arch)
             for fix in command[1]:
@@ -537,7 +538,7 @@ def compareResultsForArchitectures(archList):
                     print >> sys.stderr, "*** Test failure"
                 else:
                     print >> sys.stderr, "*** Debug output"
-            
+
                 print >> sys.stderr, "compareResultsForArchitectures"
                 print >> sys.stderr, "args: %s" % str(command[0])
                 print >> sys.stderr, "%-*s   %s" % (columnWidth, "canonical", "returned")
@@ -547,13 +548,13 @@ def compareResultsForArchitectures(archList):
                 else:
                     mark = "!"
                 print >> sys.stderr, "%-*d %s %d" % (columnWidth, canonicalResults[0], mark, results[0])
-            
+
                 print >> sys.stderr, "---"
                 printResultsSideBySide(columnWidth, canonicalResults[1], results[1])        # stdout
                 print >> sys.stderr, "---"
                 printResultsSideBySide(columnWidth, canonicalResults[2], results[2])        # stderr
                 print >> sys.stderr, "---"
-            
+
                 if results != canonicalResults:
                     sys.exit(1)
 
@@ -589,7 +590,7 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('lstat', '/dir/dir2'), ()),
             (('stat', '/dir/nested'), ()),
             (('lstat', '/dir/nested'), ()),
-    
+
             (('-v', 'stat', '/'), ()),
             (('-v', 'lstat', '/'), ()),
             (('-v', 'stat', '/meg1'), ()),
@@ -606,12 +607,12 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('-v', 'lstat', '/dir/dir2'), ()),
             (('-v', 'stat', '/dir/nested'), ()),
             (('-v', 'lstat', '/dir/nested'), ()),
-    
+
             (('statfs', '/'), (fixStatFS,)),
             (('lstatfs', '/'), (fixStatFS,)),
             (('statfs', '/meg1'), (fixStatFS,)),
             (('lstatfs', '/meg1'), (fixStatFS,)),
-    
+
             (('-v', 'statfs', '/'), (fixStatFS,)),
             (('-v', 'lstatfs', '/'), (fixStatFS,)),
             (('-v', 'statfs', '/meg1'), (fixStatFS,)),
@@ -625,25 +626,26 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('getdirentries', '/dir/dir2'), ()),
             (('getdirentries', '-bufSize', '10240', '/'), ()),
             (('getdirentries', '-r', '/'), ()),
-    
+
             (('-v', 'getdirentries', '/'), ()),
             (('-v', 'getdirentries', '/dir'), ()),
             (('-v', 'getdirentries', '/dir/dir2'), ()),
             (('-v', 'getdirentries', '-bufSize', '10240', '/'), ()),
             (('-v', 'getdirentries', '-r', '/'), ()),
-    
+
             (('readdir', '/'), ()),
             (('readdir', '/dir'), ()),
             (('readdir', '/dir/dir2'), ()),
             (('readdir', '-r', '/'), ()),
-    
+
             (('-v', 'readdir', '/'), (fixTellDir,)),
             (('-v', 'readdir', '/dir'), (fixTellDir,)),
             (('-v', 'readdir', '/dir/dir2'), (fixTellDir,)),
             (('-v', 'readdir', '-r', '/'), (fixTellDir,)),
-    
+
             (('fts', '/'), (fixFTSPointers,)),
-            # fts has a bunch of options arguments but I can't be bothered exercising those cases.
+            # fts has a bunch of options arguments but I cannot be bothered
+            # exercising those cases.
         ]
 
     if fullDump:
@@ -652,10 +654,10 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('listxattr', '/xattr'), ()),
             (('listxattr', '/rsrc'), ()),
             (('listxattr', '-bufSize', '10240', '/xattr'), ()),
-    
+
             (('getxattr', '/xattr', 'com.apple.FinderInfo'), ()),
             (('getxattr', '/rsrc', 'com.apple.ResourceFork'), ()),
-    
+
             (('-v', 'getxattr', '/xattr', 'com.apple.FinderInfo'), ()),
             (('-v', 'getxattr', '/rsrc', 'com.apple.ResourceFork'), ()),
 
@@ -663,10 +665,10 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('-vv', 'getxattr', '/rsrc', 'com.apple.ResourceFork'), ()),
         ]
 
-    # In the commented out cases below it seems to be that getattrlist is misbehaving. 
-    # I seem to remember seeing this problem because but I don't have time to investigate 
-    # right now.
-    
+    # In the commented out cases below it seems to be that getattrlist is
+    # misbehaving. I seem to remember seeing this problem because... of
+    # something, but I do NOT have time to investigate right now.
+
     if fullDump:
         commands += [
             (('getattrlist', '/'), ()),
@@ -871,9 +873,9 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('FSCopyAliasInfo', '/xattr'), (fixAliasVolumeCreateDate,)),
         ]
 
-    # There is no /dev/tty on the test volume.  Maybe I could put a symlink there? 
-    # Right now that's too much work for the benefit that I'll get.
-    
+    # There is no /dev/tty on the test volume. Maybe it could be linked there?
+    # Right now that is too much work for the benefit that I will get.
+
     if fullDump:
         commands += [
             (('pathconf', '_PC_LINK_MAX', '/'), ()),
@@ -902,11 +904,11 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('pathconf', '_PC_SYMLINK_MAX', '/'), ()),
             (('pathconf', '_PC_SYNC_IO', '/'), ()),
         ]
-    
+
     print >> sys.stdout, "arch: %s" % arch
     print >> sys.stdout, "version: %s" % runTool(["sw_vers", "-productVersion"])[1].strip()
     print >> sys.stdout
-    
+
     for command in commands:
         args = []
         for arg in command[0]:
@@ -948,7 +950,7 @@ try:
 except getopt.GetoptError, e:
     printUsage()
     sys.exit(1)
-    
+
 for opt in opts:
     if opt[0] == "-d":
         gDebug += 1
@@ -956,11 +958,16 @@ for opt in opts:
 gNativeArch = runTool(["arch"])[1].strip()
 
 if len(args) == 0:
+    print >> sys.stdout, "Test.py: len(args) is 0, so we are running the CrossArchitectureTest"
     runCrossArchitectureTest()
 elif len(args) == 1:
+    print >> sys.stdout, "Test.py: len(args) is 1, so we are generating a FingerPrint"
     generateFingerPrint(args[0], "")
 elif len(args) == 2:
+    print >> sys.stdout, "Test.py: len(args) is 2, so we are generating an arch-specific FingerPrint"
     generateFingerPrint(args[0], arch)
 else:
     printUsage()
     sys.exit(1)
+
+# EOF

@@ -3,3 +3,4 @@ build/*
 *.dSYM
 *.pbxuser
 *.perspectivev3
+*DS_Store*

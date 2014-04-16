@@ -3,10 +3,28 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		A58E4D1918FEF7DC009DDC50 /* Test */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = A58E4D1C18FEF7FA009DDC50 /* Build configuration list for PBXAggregateTarget "Test" */;
+			buildPhases = (
+				A58E4D1818FEF7DC009DDC50 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Test;
+			productName = Test;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
+		A52314D318FE0B7500A22E25 /* Command.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F3531F0A6506B0003476CC /* Command.h */; };
+		A52314D418FE0B7500A22E25 /* FieldPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F352C10A650427003476CC /* FieldPrinter.h */; };
+		A52314D518FE0B7500A22E25 /* BSD.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F353180A6506AA003476CC /* BSD.h */; };
+		A52315ED18FEAC1100A22E25 /* Read Me About FSMegaInfo.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = A52315EB18FEAC0800A22E25 /* Read Me About FSMegaInfo.txt */; };
 		E420E24D0B3957FB0053963E /* DiskArb.c in Sources */ = {isa = PBXBuildFile; fileRef = E420E24C0B3957FB0053963E /* DiskArb.c */; };
 		E420E2510B3958280053963E /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E420E2500B3958280053963E /* DiskArbitration.framework */; };
 		E434215B0AFBA28E007C4AD3 /* FolderManager.c in Sources */ = {isa = PBXBuildFile; fileRef = E43421590AFBA28E007C4AD3 /* FolderManager.c */; };
@@ -20,8 +38,29 @@
 		E4F353BF0A651CD2003476CC /* BSDAttrList.c in Sources */ = {isa = PBXBuildFile; fileRef = E4F353BD0A651CD2003476CC /* BSDAttrList.c */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A52315EC18FEAC0900A22E25 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				A52315ED18FEAC1100A22E25 /* Read Me About FSMegaInfo.txt in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		8DD76FB20486AB0100D96B5E /* FSMegaInfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FSMegaInfo; sourceTree = BUILT_PRODUCTS_DIR; };
+		A52315EB18FEAC0800A22E25 /* Read Me About FSMegaInfo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Read Me About FSMegaInfo.txt"; sourceTree = "<group>"; };
+		A523160C18FEAC4700A22E25 /* FSMegaInfoTestRO.dmg */ = {isa = PBXFileReference; lastKnownFileType = file; path = FSMegaInfoTestRO.dmg; sourceTree = "<group>"; };
+		A523160D18FEAC4700A22E25 /* ten-five-intel.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-five-intel.txt"; sourceTree = "<group>"; };
+		A523160E18FEAC4700A22E25 /* ten-five-one-ppc64.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-five-one-ppc64.txt"; sourceTree = "<group>"; };
+		A523160F18FEAC4700A22E25 /* ten-five-ppc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-five-ppc.txt"; sourceTree = "<group>"; };
+		A523161018FEAC4700A22E25 /* ten-four-eleven-intel.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-four-eleven-intel.txt"; sourceTree = "<group>"; };
+		A523161118FEAC4700A22E25 /* ten-four-eleven-ppc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-four-eleven-ppc.txt"; sourceTree = "<group>"; };
+		A523161218FEAC4700A22E25 /* Test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Test.py; sourceTree = "<group>"; };
 		E420E24C0B3957FB0053963E /* DiskArb.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = DiskArb.c; sourceTree = "<group>"; };
 		E420E2500B3958280053963E /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		E43421590AFBA28E007C4AD3 /* FolderManager.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = FolderManager.c; sourceTree = "<group>"; };
@@ -54,17 +93,41 @@
 		08FB7794FE84155DC02AAC07 /* QStandard */ = {
 			isa = PBXGroup;
 			children = (
-				E4F352C20A650427003476CC /* FSMegaInfo.c */,
 				E4F3531F0A6506B0003476CC /* Command.h */,
 				E4F3531E0A6506B0003476CC /* Command.c */,
 				E4F352C10A650427003476CC /* FieldPrinter.h */,
 				E4F352C30A650427003476CC /* FieldPrinter.c */,
+				E4F352C20A650427003476CC /* FSMegaInfo.c */,
+				A52315EB18FEAC0800A22E25 /* Read Me About FSMegaInfo.txt */,
 				E4B5EC410D60F75700395F9E /* Commands */,
-				E4F352F20A650507003476CC /* CoreServices.framework */,
-				E420E2500B3958280053963E /* DiskArbitration.framework */,
+				A523160B18FEAC4700A22E25 /* Tests */,
+				A523161318FEAC5700A22E25 /* Linked Frameworks */,
 				E44371B809B87B6F009066D0 /* Products */,
 			);
 			name = QStandard;
+			sourceTree = "<group>";
+		};
+		A523160B18FEAC4700A22E25 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				A523160C18FEAC4700A22E25 /* FSMegaInfoTestRO.dmg */,
+				A523160D18FEAC4700A22E25 /* ten-five-intel.txt */,
+				A523160E18FEAC4700A22E25 /* ten-five-one-ppc64.txt */,
+				A523160F18FEAC4700A22E25 /* ten-five-ppc.txt */,
+				A523161018FEAC4700A22E25 /* ten-four-eleven-intel.txt */,
+				A523161118FEAC4700A22E25 /* ten-four-eleven-ppc.txt */,
+				A523161218FEAC4700A22E25 /* Test.py */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		A523161318FEAC5700A22E25 /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4F352F20A650507003476CC /* CoreServices.framework */,
+				E420E2500B3958280053963E /* DiskArbitration.framework */,
+			);
+			name = "Linked Frameworks";
 			sourceTree = "<group>";
 		};
 		E44371B809B87B6F009066D0 /* Products */ = {
@@ -78,24 +141,39 @@
 		E4B5EC410D60F75700395F9E /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				E4F353130A6506A5003476CC /* AliasManager.c */,
 				E4F353180A6506AA003476CC /* BSD.h */,
 				E4F353190A6506AA003476CC /* BSD.c */,
 				E4F353BD0A651CD2003476CC /* BSDAttrList.c */,
 				E420E24C0B3957FB0053963E /* DiskArb.c */,
 				E4F353250A6506B5003476CC /* FileManager.c */,
 				E43421590AFBA28E007C4AD3 /* FolderManager.c */,
-				E4F353130A6506A5003476CC /* AliasManager.c */,
 			);
 			name = Commands;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		A52314D618FE0B9300A22E25 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A52314D318FE0B7500A22E25 /* Command.h in Headers */,
+				A52314D418FE0B7500A22E25 /* FieldPrinter.h in Headers */,
+				A52314D518FE0B7500A22E25 /* BSD.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		8DD76FA90486AB0100D96B5E /* FSMegaInfo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "FSMegaInfo" */;
 			buildPhases = (
+				A52315EC18FEAC0900A22E25 /* CopyFiles */,
+				A52314D618FE0B9300A22E25 /* Headers */,
 				8DD76FAB0486AB0100D96B5E /* Sources */,
 				8DD76FAD0486AB0100D96B5E /* Frameworks */,
 			);
@@ -115,7 +193,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "FSMegaInfo" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -130,24 +208,45 @@
 			projectRoot = "";
 			targets = (
 				8DD76FA90486AB0100D96B5E /* FSMegaInfo */,
+				A58E4D1918FEF7DC009DDC50 /* Test */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A58E4D1818FEF7DC009DDC50 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			comments = "
+
+";
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Tests/Test.py",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n# shell script goes here:\nif test -z \"$1\"; then\n    echo \"this script would like to warn you that an argument seems to be missing\" >&2\n    echo \"assuming that it was supposed to be ${SRCROOT}/Tests/Test.py\"\n    export TEST=${SRCROOT}/Tests/Test.py\nelse\n    export TEST=$1\nfi\n\necho \"running $0 ${TEST}\"\n\nset -ex\n\n/usr/bin/env python ${TEST}\n\nhdiutil attach ${SRCROOT}/Tests/FSMegaInfoTestRO.dmg\nsleep 1\n\n#FIXME: convert from numerical value used here to a string like the existing titles have:\nif test -n \"${MAC_OS_X_VERSION_ACTUAL}\"; then\n    /usr/bin/env python ${TEST} /Volumes/FSMegaInfoTest/ | tee ${SRCROOT}/Tests/${MAC_OS_X_VERSION_ACTUAL}.txt\nelse\n    echo \"error: MAC_OS_X_VERSION_ACTUAL is not set\" >&2\n    exit 1\nfi\n\nset +x\n# arch-specific tests are not strictly necessary, so no \"else\" condition is needed:\nif test -n \"${ARCHS_STANDARD_32_BIT}\"; then\n    echo \"FIXME: arch-specific tests (32-bit here) are broken\"\nfi\nif test -n \"${ARCHS_STANDARD_64_BIT}\"; then\n    echo \"FIXME: arch-specific tests (64-bit here) are broken\"\nfi\n\nexit 0\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DD76FAB0486AB0100D96B5E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4F352C80A650427003476CC /* FSMegaInfo.c in Sources */,
-				E4F352C90A650427003476CC /* FieldPrinter.c in Sources */,
 				E4F353170A6506A5003476CC /* AliasManager.c in Sources */,
 				E4F3531D0A6506AA003476CC /* BSD.c in Sources */,
-				E4F353220A6506B0003476CC /* Command.c in Sources */,
-				E4F353290A6506B5003476CC /* FileManager.c in Sources */,
 				E4F353BF0A651CD2003476CC /* BSDAttrList.c in Sources */,
-				E434215B0AFBA28E007C4AD3 /* FolderManager.c in Sources */,
+				E4F353220A6506B0003476CC /* Command.c in Sources */,
 				E420E24D0B3957FB0053963E /* DiskArb.c in Sources */,
+				E4F352C90A650427003476CC /* FieldPrinter.c in Sources */,
+				E4F353290A6506B5003476CC /* FileManager.c in Sources */,
+				E434215B0AFBA28E007C4AD3 /* FolderManager.c in Sources */,
+				E4F352C80A650427003476CC /* FSMegaInfo.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +256,7 @@
 		1DEB928608733DD80010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_MODEL_TUNING = G5;
 				PRODUCT_NAME = FSMegaInfo;
 			};
 			name = Debug;
@@ -177,25 +277,59 @@
 					ppc64,
 					ppc,
 				);
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_EXCEPTIONS = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				"GCC_VERSION[arch=ppc64]" = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_GLOBAL_CONSTRUCTORS = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
+				GCC_WARN_PEDANTIC = NO;
+				"GCC_WARN_PEDANTIC[arch=ppc64]" = YES;
+				"GCC_WARN_PEDANTIC[arch=ppc]" = YES;
+				GCC_WARN_PROTOTYPE_CONVERSION = NO;
+				"GCC_WARN_PROTOTYPE_CONVERSION[arch=i386]" = YES;
+				"GCC_WARN_PROTOTYPE_CONVERSION[arch=x86_64]" = YES;
 				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PKGINFO_FILE = YES;
+				LD_GENERATE_MAP_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				STRIP_INSTALLED_PRODUCT = NO;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -219,22 +353,32 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_EXCEPTIONS = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				"GCC_VERSION[arch=ppc64]" = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PKGINFO_FILE = YES;
+				LD_GENERATE_MAP_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SEPARATE_STRIP = YES;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -243,6 +387,27 @@
 					"-Wstrict-prototypes",
 					"-Wold-style-definition",
 				);
+			};
+			name = Release;
+		};
+		A58E4D1A18FEF7DC009DDC50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Test;
+			};
+			name = Debug;
+		};
+		A58E4D1B18FEF7DC009DDC50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Test;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -263,6 +428,15 @@
 			buildConfigurations = (
 				1DEB928A08733DD80010E9CD /* Debug */,
 				1DEB928B08733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A58E4D1C18FEF7FA009DDC50 /* Build configuration list for PBXAggregateTarget "Test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A58E4D1A18FEF7DC009DDC50 /* Debug */,
+				A58E4D1B18FEF7DC009DDC50 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

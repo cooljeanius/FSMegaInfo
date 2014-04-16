@@ -1,55 +1,54 @@
 /*
-    File:       FileManager.c
-
-    Contains:   File Manager command processing.
-
-    Written by: DTS
-
-    Copyright:  Copyright (c) 2008 Apple Inc. All Rights Reserved.
-
-    Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
-                ("Apple") in consideration of your agreement to the following
-                terms, and your use, installation, modification or
-                redistribution of this Apple software constitutes acceptance of
-                these terms.  If you do not agree with these terms, please do
-                not use, install, modify or redistribute this Apple software.
-
-                In consideration of your agreement to abide by the following
-                terms, and subject to these terms, Apple grants you a personal,
-                non-exclusive license, under Apple's copyrights in this
-                original Apple software (the "Apple Software"), to use,
-                reproduce, modify and redistribute the Apple Software, with or
-                without modifications, in source and/or binary forms; provided
-                that if you redistribute the Apple Software in its entirety and
-                without modifications, you must retain this notice and the
-                following text and disclaimers in all such redistributions of
-                the Apple Software. Neither the name, trademarks, service marks
-                or logos of Apple Inc. may be used to endorse or promote
-                products derived from the Apple Software without specific prior
-                written permission from Apple.  Except as expressly stated in
-                this notice, no other rights or licenses, express or implied,
-                are granted by Apple herein, including but not limited to any
-                patent rights that may be infringed by your derivative works or
-                by other works in which the Apple Software may be incorporated.
-
-                The Apple Software is provided by Apple on an "AS IS" basis. 
-                APPLE MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
-                WITHOUT LIMITATION THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
-                MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, REGARDING
-                THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
-                COMBINATION WITH YOUR PRODUCTS.
-
-                IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT,
-                INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-                TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-                DATA, OR PROFITS; OR BUSINESS INTERRUPTION) ARISING IN ANY WAY
-                OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR DISTRIBUTION
-                OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY
-                OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR
-                OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF
-                SUCH DAMAGE.
-
-*/
+ *  File:       FileManager.c
+ *
+ *  Contains:   File Manager command processing.
+ *
+ *  Written by: DTS
+ *
+ *  Copyright:  Copyright (c) 2008 Apple Inc. All Rights Reserved.
+ *
+ *  Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
+ *              ("Apple") in consideration of your agreement to the following
+ *              terms, and your use, installation, modification or
+ *              redistribution of this Apple software constitutes acceptance of
+ *              these terms.  If you do not agree with these terms, please do
+ *              not use, install, modify or redistribute this Apple software.
+ *
+ *              In consideration of your agreement to abide by the following
+ *              terms, and subject to these terms, Apple grants you a personal,
+ *              non-exclusive license, under Apple's copyrights in this
+ *              original Apple software (the "Apple Software"), to use,
+ *              reproduce, modify and redistribute the Apple Software, with or
+ *              without modifications, in source and/or binary forms; provided
+ *              that if you redistribute the Apple Software in its entirety and
+ *              without modifications, you must retain this notice and the
+ *              following text and disclaimers in all such redistributions of
+ *              the Apple Software. Neither the name, trademarks, service marks
+ *              or logos of Apple Inc. may be used to endorse or promote
+ *              products derived from the Apple Software without specific prior
+ *              written permission from Apple.  Except as expressly stated in
+ *              this notice, no other rights or licenses, express or implied,
+ *              are granted by Apple herein, including but not limited to any
+ *              patent rights that may be infringed by your derivative works or
+ *              by other works in which the Apple Software may be incorporated.
+ *
+ *              The Apple Software is provided by Apple on an "AS IS" basis.
+ *              APPLE MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+ *              WITHOUT LIMITATION THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+ *              MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, REGARDING
+ *              THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
+ *              COMBINATION WITH YOUR PRODUCTS.
+ *
+ *              IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT,
+ *              INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ *              TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *              DATA, OR PROFITS; OR BUSINESS INTERRUPTION) ARISING IN ANY WAY
+ *              OUT OF THE USE, REPRODUCTION, MODIFICATION AND/OR DISTRIBUTION
+ *              OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY
+ *              OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR
+ *              OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF
+ *              SUCH DAMAGE.
+ */
 
 #include <netinet/in.h>
 #include <netdb.h>
@@ -60,121 +59,118 @@
 #include "FieldPrinter.h"
 #include "Command.h"
 
-#include "BSD.h"                // for kTextEncodingEnums
+#include "BSD.h" /* for kTextEncodingEnums */
 
-/////////////////////////////////////////////////////////////////
+/***************************************************************/
 #pragma mark ***** Utilities Routines
 
-static void FPAFPString(
-    const char *    fieldName, 
-    size_t          fieldSize, 
-    const void *    fieldPtr, 
-    uint32_t        indent, 
-    size_t          nameWidth, 
-    uint32_t        verbose, 
-    const void *    info
-)
-    // Prints an AFP-style Pascal string field, where the field holds 
-    // the offset from the start of the record to the Pascal string data. 
-    // info supplies the offset from fieldPtr to the base of the record.
-    // The string is assumed to be MacRoman (not my favourite design 
-    // decision, but offset is already being used and it was too painful 
-    // to add an extra parameter, or break it out into a record).
-    //
-    // See definition of FPPrinter for a parameter description.
+static void FPAFPString(const char *fieldName, size_t fieldSize,
+						const void *fieldPtr, uint32_t indent, size_t nameWidth,
+						uint32_t verbose, const void *info)
+    /* Prints an AFP-style Pascal string field, where the field holds
+     * the offset from the start of the record to the Pascal string data.
+     * info supplies the offset from fieldPtr to the base of the record.
+     * The string is assumed to be MacRoman (not my favourite design
+     * decision, but offset is already being used and it was too painful
+     * to add an extra parameter, or break it out into a record).
+     *
+     * See definition of FPPrinter for a parameter description. */
 {
-    short           fieldValue;
-    const UInt8 *   pstrPtr;
-    char *          strBuf;
-    
+    short        fieldValue;
+    const UInt8 *pstrPtr;
+    char *       strBuf;
+
     #pragma unused(fieldSize)
     #pragma unused(verbose)
-    assert( FPStandardPreCondition() );
+    assert(FPStandardPreCondition());
 
-    fieldValue = *((const short *) fieldPtr);
-    pstrPtr = ((const UInt8 *) fieldPtr) - ((size_t) info) + fieldValue;
+    fieldValue = *((const short *)fieldPtr);
+    pstrPtr = (((const UInt8 *)fieldPtr) - ((size_t) info) + fieldValue);
 
     strBuf = FPPStringToUTFCString(pstrPtr, kCFStringEncodingMacRoman);
     assert(strBuf != NULL);
 
     if (strBuf != NULL) {
-        fprintf(stdout, "%*s%-*s = %hd ('%s')\n", (int) indent, "", (int) nameWidth, fieldName, fieldValue, strBuf);
+        fprintf(stdout, "%*s%-*s = %hd ('%s')\n", (int)indent, "",
+				(int)nameWidth, fieldName, fieldValue, strBuf);
     }
-    
+
     free(strBuf);
 }
 
-static void FPFSFileSecurityRef(
-    const char *    fieldName, 
-    size_t          fieldSize, 
-    const void *    fieldPtr, 
-    uint32_t        indent, 
-    size_t          nameWidth, 
-    uint32_t        verbose, 
-    const void *    info
-)
+static void FPFSFileSecurityRef(const char *fieldName, size_t fieldSize,
+								const void *fieldPtr, uint32_t indent,
+								size_t nameWidth, uint32_t verbose,
+								const void *info)
 {
     #pragma unused(fieldSize)
     #pragma unused(info)
-    OSStatus            err;
-    int                 junk;
-    FSFileSecurityRef   fileSec;
-    CFUUIDBytes         uuid;
-    UInt32              id;
-    UInt16              mode;
+    OSStatus          err;
+    int               junk;
+    FSFileSecurityRef fileSec;
+    CFUUIDBytes       uuid;
+    UInt32            id;
+    UInt16            mode;
 
-    assert( FPStandardPreCondition() );
+    assert(FPStandardPreCondition());
     assert(fieldSize == sizeof(FSFileSecurityRef));
-    
-    fileSec = *((FSFileSecurityRef *) fieldPtr);
+
+    fileSec = *((FSFileSecurityRef *)fieldPtr);
     if (fileSec == NULL) {
-        fprintf(stdout, "%*s%-*s = NULL\n", (int) indent, "", (int) nameWidth, fieldName);
+        fprintf(stdout, "%*s%-*s = NULL\n", (int)indent, "",
+				(int)nameWidth, fieldName);
     } else {
         acl_t   acl;
         void *  aclBuf;
         size_t  aclBufSize;
         ssize_t aclActualSize;
-        
-        aclBufSize = 0;         // quieten warning
-        aclActualSize = 0;      // quieten warning
-        
+
+        aclBufSize = 0;         /* quieten warning */
+        aclActualSize = 0;      /* quieten warning */
+
         acl = NULL;
         aclBuf = NULL;
-        
+
         fprintf(stdout, "%*s%s:\n", (int) indent, "", fieldName);
 
         err = FSFileSecurityGetOwnerUUID(fileSec, &uuid);
         if (err == noErr) {
-            FPGUID("owner UUID", sizeof(uuid), &uuid, indent + kStdIndent, strlen("owner UUID"), verbose, NULL);
+            FPGUID("owner UUID", sizeof(uuid), &uuid, (indent + kStdIndent),
+				   strlen("owner UUID"), verbose, NULL);
         }
         err = FSFileSecurityGetOwner(fileSec, &id);
         if (err == noErr) {
-            FPUID("owner UID",  sizeof(id), &id, indent + kStdIndent, strlen("owner UUID"), verbose, NULL);
+            FPUID("owner UID",  sizeof(id), &id, (indent + kStdIndent),
+				  strlen("owner UUID"), verbose, NULL);
         }
         err = FSFileSecurityGetGroupUUID(fileSec, &uuid);
         if (err == noErr) {
-            FPGUID("group UUID", sizeof(uuid), &uuid, indent + kStdIndent, strlen("owner UUID"), verbose, NULL);
+            FPGUID("group UUID", sizeof(uuid), &uuid, (indent + kStdIndent),
+				   strlen("owner UUID"), verbose, NULL);
         }
         err = FSFileSecurityGetGroup(fileSec, &id);
         if (err == noErr) {
-            FPGID("owning GID", sizeof(id), &id, indent + kStdIndent, strlen("owner UUID"), verbose, NULL);
+            FPGID("owning GID", sizeof(id), &id, (indent + kStdIndent),
+				  strlen("owner UUID"), verbose, NULL);
         }
         err = FSFileSecurityGetMode(fileSec, &mode);
         if (err == noErr) {
-            FPModeT("mode",      sizeof(mode), &mode, indent + kStdIndent, strlen("owner UUID"), verbose, NULL);
+            FPModeT("mode", sizeof(mode), &mode, (indent + kStdIndent),
+					strlen("owner UUID"), verbose, NULL);
         }
-        
+
         err = FSFileSecurityCopyAccessControlList(fileSec, &acl);
         if (err == noErr) {
-            aclBufSize = acl_size(acl);
-            
+            aclBufSize = (size_t)acl_size(acl);
+
             aclBuf = malloc(aclBufSize);
             if (aclBuf == NULL) {
                 err = memFullErr;
             }
         }
         if (err == noErr) {
-            aclActualSize = acl_copy_ext_native(aclBuf, acl, aclBufSize);
+            aclActualSize = acl_copy_ext_native(aclBuf, acl,
+												(ssize_t)aclBufSize);
             if (aclActualSize < 0) {
                 err = errno;
             } else {
@@ -182,12 +178,21 @@ static void FPFSFileSecurityRef(
             }
         }
         if (err == noErr) {
-            FPKauthFileSec("acl", aclActualSize, aclBuf, indent + kStdIndent, strlen("owner UUID"), verbose, NULL);
+            FPKauthFileSec("acl", (size_t)aclActualSize, aclBuf,
+						   (indent + kStdIndent), strlen("owner UUID"),
+						   verbose, NULL);
         }
-        
+
         free(aclBuf);
         if (acl != NULL) {
             junk = acl_free(acl);
+#ifdef NDEBUG
+			/* dummy condition to use value stored to 'junk' when building for
+			 * Release: */
+			if (junk == 0) {
+				;
+			}
+#endif /* NDEBUG */
             assert(junk == 0);
         }
     }
@@ -195,7 +200,7 @@ static void FPFSFileSecurityRef(
 
 #pragma mark *     FSGetVolumeInfo
 
-// FSVolumeInfoBitmap
+/* FSVolumeInfoBitmap */
 
 static const FPFlagDesc kFSGetVolumeInfoOptions[] = {
     {kFSVolInfoCreateDate,  "kFSVolInfoCreateDate"},
@@ -217,19 +222,19 @@ static const FPFlagDesc kFSGetVolumeInfoOptions[] = {
     {0, NULL}
 };
 
-// Flags in the flags field of FSVolumeInfo.
+/* Flags in the flags field of FSVolumeInfo. */
 
-static const FPFlagDesc kVolAttrFlags[] = { 
-    {kFSVolFlagDefaultVolumeMask,       "kFSVolFlagDefaultVolumeMask"   },
-    {kFSVolFlagFilesOpenMask,           "kFSVolFlagFilesOpenMask"       },
-    {kFSVolFlagHardwareLockedMask,      "kFSVolFlagHardwareLockedMask"  },
-    {kFSVolFlagJournalingActiveMask,    "kFSVolFlagJournalingActiveMask"},
-    {kFSVolFlagSoftwareLockedMask,      "kFSVolFlagSoftwareLockedMask"  },
-    {0, NULL} 
+static const FPFlagDesc kVolAttrFlags[] = {
+    {kFSVolFlagDefaultVolumeMask,    "kFSVolFlagDefaultVolumeMask"   },
+    {kFSVolFlagFilesOpenMask,        "kFSVolFlagFilesOpenMask"       },
+    {kFSVolFlagHardwareLockedMask,   "kFSVolFlagHardwareLockedMask"  },
+    {kFSVolFlagJournalingActiveMask, "kFSVolFlagJournalingActiveMask"},
+    {kFSVolFlagSoftwareLockedMask,   "kFSVolFlagSoftwareLockedMask"  },
+    {0, NULL}
 };
 
-// Size multipliers for fields in the FSVolumeInfo structure.  See 
-// FPSize for a description of what this is about.
+/* Size multipliers for fields in the FSVolumeInfo structure. See
+ * FPSize for a description of what this is about. */
 
 static const FPSizeMultiplier kFSGetVolumeInfoTotalBlocksMultiplier = {
     offsetof(FSVolumeInfo, blockSize) - offsetof(FSVolumeInfo, totalBlocks),
@@ -241,42 +246,46 @@ static const FPSizeMultiplier kFSGetVolumeInfoFreeBlocksMultiplier = {
     sizeof(UInt32)
 };
 
-static void PrintVolumeInfo(
-    const HFSUniStr255 *    volName, 
-    FSVolumeInfoBitmap      options,
-    const FSVolumeInfo *    volInfo,
-    uint32_t                indent,
-    uint32_t                verbose
-)
-    // The core of the FSGetVolumeInfo command.
+static void PrintVolumeInfo(const HFSUniStr255 *volName,
+							FSVolumeInfoBitmap options,
+							const FSVolumeInfo *volInfo,
+							uint32_t indent, uint32_t verbose)
+    /* The core of the FSGetVolumeInfo command. */
 {
     const size_t kNameSpacer = strlen("nextAllocation");
-    
+
     assert(volName != NULL);
     assert(volInfo != NULL);
 
-    HFSUniStr255FieldPrinter("volumeName", sizeof(*volName), volName, indent, kNameSpacer, verbose, NULL);
-
+    HFSUniStr255FieldPrinter("volumeName", sizeof(*volName), volName, indent,
+							 kNameSpacer, verbose, NULL);
     if (options & kFSVolInfoCreateDate) {
-        FPUTCDateTime("createDate",  sizeof(volInfo->createDate),  &volInfo->createDate,  indent, kNameSpacer, verbose, NULL);
+        FPUTCDateTime("createDate", sizeof(volInfo->createDate),
+					  &volInfo->createDate, indent, kNameSpacer, verbose, NULL);
     }
     if (options & kFSVolInfoModDate) {
-        FPUTCDateTime("modifyDate",  sizeof(volInfo->modifyDate),  &volInfo->modifyDate,  indent, kNameSpacer, verbose, NULL);
+        FPUTCDateTime("modifyDate", sizeof(volInfo->modifyDate),
+					  &volInfo->modifyDate, indent, kNameSpacer, verbose, NULL);
     }
     if (options & kFSVolInfoBackupDate) {
-        FPUTCDateTime("backupDate",  sizeof(volInfo->backupDate),  &volInfo->backupDate,  indent, kNameSpacer, verbose, NULL);
+        FPUTCDateTime("backupDate", sizeof(volInfo->backupDate),
+					  &volInfo->backupDate, indent, kNameSpacer, verbose, NULL);
     }
     if (options & kFSVolInfoCheckedDate) {
-        FPUTCDateTime("checkedDate", sizeof(volInfo->checkedDate), &volInfo->checkedDate, indent, kNameSpacer, verbose, NULL);
+        FPUTCDateTime("checkedDate", sizeof(volInfo->checkedDate),
+					  &volInfo->checkedDate, indent, kNameSpacer, verbose,
+					  NULL);
     }
 
     if (options & kFSVolInfoFileCount) {
-        FPUDec("fileCount", sizeof(volInfo->fileCount), &volInfo->fileCount, indent, kNameSpacer, verbose, NULL);
+        FPUDec("fileCount", sizeof(volInfo->fileCount), &volInfo->fileCount,
+			   indent, kNameSpacer, verbose, NULL);
     }
     if (options & kFSVolInfoDirCount) {
-        FPUDec("folderCount", sizeof(volInfo->folderCount), &volInfo->folderCount, indent, kNameSpacer, verbose, NULL);
+        FPUDec("folderCount", sizeof(volInfo->folderCount),
+			   &volInfo->folderCount, indent, kNameSpacer, verbose, NULL);
     }
-    
+
     if (options & kFSVolInfoSizes) {
         FPSize("totalBytes", sizeof(volInfo->totalBytes), &volInfo->totalBytes, indent, kNameSpacer, verbose, NULL);
         FPSize("freeBytes",  sizeof(volInfo->freeBytes),  &volInfo->freeBytes,  indent, kNameSpacer, verbose, NULL);
@@ -317,32 +326,34 @@ static void PrintVolumeInfo(
     }
 }
 
-static CommandError PrintFSGetVolumeInfo(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses FSGetVolumeInfo to get information about the specified volume and 
-    // prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSGetVolumeInfo(CommandArgsRef args, uint32_t indent,
+										 uint32_t verbose)
+    /* Uses FSGetVolumeInfo to get information about the specified volume and
+     * prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus        err;
-    int             options;
-    ItemCount       volIndex;
-    FSVolumeRefNum  volRefNum;
-    FSVolumeInfo    volInfo;
-    HFSUniStr255    volName;
+    OSStatus       err;
+    int            options;
+    ItemCount      volIndex;
+    FSVolumeRefNum volRefNum;
+    FSVolumeInfo   volInfo;
+    HFSUniStr255   volName;
 
-    assert( CommandArgsValid(args) );
-    
-    volIndex = 0;               // quieten warning
+    assert(CommandArgsValid(args));
+
+    volIndex = 0;              /* quieten warning */
 
     if (CommandArgsIsOption(args)) {
-        err = CommandArgsGetFlagListInt(args, kFSGetVolumeInfoOptions, &options);
+        err = CommandArgsGetFlagListInt(args, kFSGetVolumeInfoOptions,
+										&options);
     } else {
         options = kFSVolInfoGettableInfo;
         err = noErr;
     }
 
     if (err == noErr) {
-        if ( CommandArgsGetOptionalConstantString(args, "all") ) {
+        if (CommandArgsGetOptionalConstantString(args, "all")) {
             volIndex  = 1;
             volRefNum = 0;
         } else {
@@ -353,33 +364,38 @@ static CommandError PrintFSGetVolumeInfo(CommandArgsRef args, uint32_t indent, u
 
     if (err == noErr) {
         do {
-            FSVolumeRefNum      realVolRefNum;
-            
-            err = FSGetVolumeInfo(volRefNum, volIndex, &realVolRefNum, options, &volInfo, &volName, NULL);
+            FSVolumeRefNum realVolRefNum;
+
+            err = FSGetVolumeInfo((FSVolumeRefNum)volRefNum, volIndex,
+								  &realVolRefNum, (FSVolumeInfoBitmap)options,
+								  &volInfo, &volName, NULL);
             if (err == noErr) {
                 if (volIndex > 0) {
-                    // We're printing all volumes
-                    
-                    if ( (volIndex > 1) && (options != 0) ) {
+                    /* We are printing all volumes */
+
+                    if ((volIndex > 1) && (options != 0)) {
                         fprintf(stdout, "\n");
                     }
-                    fprintf(stdout, "%*svRefNum = %d\n", (int) indent, "", (int) realVolRefNum);
-            
-                    PrintVolumeInfo(&volName, options, &volInfo, indent + kStdIndent, verbose);
+                    fprintf(stdout, "%*svRefNum = %d\n", (int)indent, "",
+							(int)realVolRefNum);
+
+                    PrintVolumeInfo(&volName, (FSVolumeInfoBitmap)options,
+									&volInfo, (indent + kStdIndent), verbose);
                 } else {
-                    // We're printing just one volume
-                    PrintVolumeInfo(&volName, options, &volInfo, indent, verbose);
+                    /* We are printing just one volume */
+                    PrintVolumeInfo(&volName, (FSVolumeInfoBitmap)options,
+									&volInfo, indent, verbose);
                 }
             }
 
             volIndex += 1;
-        } while ( (err == noErr) && (volIndex > 1) );
-        
-        if ( (volIndex > 1) && (err == nsvErr) ) {
+        } while ((err == noErr) && (volIndex > 1));
+
+        if ((volIndex > 1) && (err == nsvErr)) {
             err = noErr;
         }
     }
-    
+
     return CommandErrorMakeWithOSStatus(err);
 }
 
@@ -400,73 +416,73 @@ const CommandInfo kFSGetVolumeInfoCommand = {
 
 #pragma mark *     PBHGetVolParmsSync
 
-// Flags for the vMAttrib field of the GetVolParmsInfoBuffer structure.
+/* Flags for the vMAttrib field of the GetVolParmsInfoBuffer structure. */
 
 static const FPFlagDesc kVolParmsFlags[] = {
-    {1L << bLimitFCBs, "bLimitFCBs"},
-    {1L << bLocalWList, "bLocalWList"},
-    {1L << bNoMiniFndr, "bNoMiniFndr"},
-    {1L << bNoVNEdit, "bNoVNEdit"},
-    {1L << bNoLclSync, "bNoLclSync"},
-    {1L << bTrshOffLine, "bTrshOffLine"},
-    {1L << bNoSwitchTo, "bNoSwitchTo"},
-    {1L << bNoDeskItems, "bNoDeskItems"},
-    {1L << bNoBootBlks, "bNoBootBlks"},
-    {1L << bAccessCntl, "bAccessCntl"},
-    {1L << bNoSysDir, "bNoSysDir"},
-    {1L << bHasExtFSVol, "bHasExtFSVol"},
-    {1L << bHasOpenDeny, "bHasOpenDeny"},
-    {1L << bHasCopyFile, "bHasCopyFile"},
-    {1L << bHasMoveRename, "bHasMoveRename"},
-    {1L << bHasDesktopMgr, "bHasDesktopMgr"},
-    {1L << bHasShortName, "bHasShortName"},
-    {1L << bHasFolderLock, "bHasFolderLock"},
-    {1L << bHasPersonalAccessPrivileges, "bHasPersonalAccessPrivileges"},
-    {1L << bHasUserGroupList, "bHasUserGroupList"},
-    {1L << bHasCatSearch, "bHasCatSearch"},
-    {1L << bHasFileIDs, "bHasFileIDs"},
-    {1L << bHasBTreeMgr, "bHasBTreeMgr"},
-    {1L << bHasBlankAccessPrivileges, "bHasBlankAccessPrivileges"},
-    {1L << bSupportsAsyncRequests, "bSupportsAsyncRequests"},
-    {1L << bSupportsTrashVolumeCache, "bSupportsTrashVolumeCache"},
-    {1L << bHasDirectIO, "bHasDirectIO"},
-    {0, NULL} 
+    {(uintmax_t)(1L << bLimitFCBs), "bLimitFCBs"},
+    {(1L << bLocalWList), "bLocalWList"},
+    {(1L << bNoMiniFndr), "bNoMiniFndr"},
+    {(1L << bNoVNEdit), "bNoVNEdit"},
+    {(1L << bNoLclSync), "bNoLclSync"},
+    {(1L << bTrshOffLine), "bTrshOffLine"},
+    {(1L << bNoSwitchTo), "bNoSwitchTo"},
+    {(1L << bNoDeskItems), "bNoDeskItems"},
+    {(1L << bNoBootBlks), "bNoBootBlks"},
+    {(1L << bAccessCntl), "bAccessCntl"},
+    {(1L << bNoSysDir), "bNoSysDir"},
+    {(1L << bHasExtFSVol), "bHasExtFSVol"},
+    {(1L << bHasOpenDeny), "bHasOpenDeny"},
+    {(1L << bHasCopyFile), "bHasCopyFile"},
+    {(1L << bHasMoveRename), "bHasMoveRename"},
+    {(1L << bHasDesktopMgr), "bHasDesktopMgr"},
+    {(1L << bHasShortName), "bHasShortName"},
+    {(1L << bHasFolderLock), "bHasFolderLock"},
+    {(1L << bHasPersonalAccessPrivileges), "bHasPersonalAccessPrivileges"},
+    {(1L << bHasUserGroupList), "bHasUserGroupList"},
+    {(1L << bHasCatSearch), "bHasCatSearch"},
+    {(1L << bHasFileIDs), "bHasFileIDs"},
+    {(1L << bHasBTreeMgr), "bHasBTreeMgr"},
+    {(1L << bHasBlankAccessPrivileges), "bHasBlankAccessPrivileges"},
+    {(1L << bSupportsAsyncRequests), "bSupportsAsyncRequests"},
+    {(1L << bSupportsTrashVolumeCache), "bSupportsTrashVolumeCache"},
+    {(1L << bHasDirectIO), "bHasDirectIO"},
+    {0, NULL}
 };
 
-// Flags for the vMExtendedAttributes field of the GetVolParmsInfoBuffer structure.
-
+/* Flags for the vMExtendedAttributes field of the GetVolParmsInfoBuffer
+ * structure. */
 static const FPFlagDesc kVolParmsExtendedFlags[] = {
-    {1L << bSupportsExtendedFileSecurity, "bSupportsExtendedFileSecurity"},
-    {1L << bIsOnExternalBus, "bIsOnExternalBus"},
-    {1L << bNoRootTimes, "bNoRootTimes"},
-    {1L << bIsRemovable, "bIsRemovable"},
-    {1L << bDoNotDisplay, "bDoNotDisplay"},
-    {1L << bIsCasePreserving, "bIsCasePreserving"},
-    {1L << bIsCaseSensitive, "bIsCaseSensitive"},
-    {1L << bIsOnInternalBus, "bIsOnInternalBus"},
-    {1L << bNoVolumeSizes, "bNoVolumeSizes"},
-    {1L << bSupportsJournaling, "bSupportsJournaling"},
-    {1L << bSupportsExclusiveLocks, "bSupportsExclusiveLocks"},
-    {1L << bAllowCDiDataHandler, "bAllowCDiDataHandler"},
-    {1L << bIsAutoMounted, "bIsAutoMounted"},
-    {1L << bSupportsSymbolicLinks, "bSupportsSymbolicLinks"},
-    {1L << bAncestorModDateChanges, "bAncestorModDateChanges"},
-    {1L << bParentModDateChanges, "bParentModDateChanges"},
-    {1L << bL2PCanMapFileBlocks, "bL2PCanMapFileBlocks"},
-    {1L << bSupportsSubtreeIterators, "bSupportsSubtreeIterators"},
-    {1L << bSupportsNamedForks, "bSupportsNamedForks"},
-    {1L << bSupportsMultiScriptNames, "bSupportsMultiScriptNames"},
-    {1L << bSupportsLongNames, "bSupportsLongNames"},
-    {1L << bSupports2TBFiles, "bSupports2TBFiles"},
-    {1L << bSupportsFSExchangeObjects, "bSupportsFSExchangeObjects"},
-    {1L << bSupportsFSCatalogSearch, "bSupportsFSCatalogSearch"},
-    {1L << bSupportsHFSPlusAPIs, "bSupportsHFSPlusAPIs"},
-    {1L << bIsEjectable, "bIsEjectable"},
-    {0, NULL} 
+    {(1L << bSupportsExtendedFileSecurity), "bSupportsExtendedFileSecurity"},
+    {(1L << bIsOnExternalBus), "bIsOnExternalBus"},
+    {(1L << bNoRootTimes), "bNoRootTimes"},
+    {(1L << bIsRemovable), "bIsRemovable"},
+    {(1L << bDoNotDisplay), "bDoNotDisplay"},
+    {(1L << bIsCasePreserving), "bIsCasePreserving"},
+    {(1L << bIsCaseSensitive), "bIsCaseSensitive"},
+    {(1L << bIsOnInternalBus), "bIsOnInternalBus"},
+    {(1L << bNoVolumeSizes), "bNoVolumeSizes"},
+    {(1L << bSupportsJournaling), "bSupportsJournaling"},
+    {(1L << bSupportsExclusiveLocks), "bSupportsExclusiveLocks"},
+    {(1L << bAllowCDiDataHandler), "bAllowCDiDataHandler"},
+    {(1L << bIsAutoMounted), "bIsAutoMounted"},
+    {(1L << bSupportsSymbolicLinks), "bSupportsSymbolicLinks"},
+    {(1L << bAncestorModDateChanges), "bAncestorModDateChanges"},
+    {(1L << bParentModDateChanges), "bParentModDateChanges"},
+    {(1L << bL2PCanMapFileBlocks), "bL2PCanMapFileBlocks"},
+    {(1L << bSupportsSubtreeIterators), "bSupportsSubtreeIterators"},
+    {(1L << bSupportsNamedForks), "bSupportsNamedForks"},
+    {(1L << bSupportsMultiScriptNames), "bSupportsMultiScriptNames"},
+    {(1L << bSupportsLongNames), "bSupportsLongNames"},
+    {(1L << bSupports2TBFiles), "bSupports2TBFiles"},
+    {(1L << bSupportsFSExchangeObjects), "bSupportsFSExchangeObjects"},
+    {(1L << bSupportsFSCatalogSearch), "bSupportsFSCatalogSearch"},
+    {(1L << bSupportsHFSPlusAPIs), "bSupportsHFSPlusAPIs"},
+    {(1L << bIsEjectable), "bIsEjectable"},
+    {0, NULL}
 };
 
-// Constants for the vMForeignPrivID field of the GetVolParmsInfoBuffer structure
-
+/* Constants for the vMForeignPrivID field of the GetVolParmsInfoBuffer
+ * structure */
 static const FPEnumDesc kForeignPrivEnums[] = {
     {0,             "HFS"},
     {fsUnixPriv,    "fsUnixPriv"},
@@ -475,50 +491,51 @@ static const FPEnumDesc kForeignPrivEnums[] = {
 
 static const char kGetVolParmsInfoBufferFieldSpacer[32] = "vMExtendedAttributes";
 
-// The fields of the GetVolParmsInfoBuffer structure.  These are broken up into five 
-// groups to account for the various versions of the structure, which are in turn 
-// assembled into the kGetVolParmsInfoBufferFieldDescByVersion array for easy 
-// processing by the code.
+/* The fields of the GetVolParmsInfoBuffer structure. These are broken up into 5
+ * groups to account for the various versions of the structure, which are in
+ * turn assembled into the kGetVolParmsInfoBufferFieldDescByVersion array for
+ * easy processing by the code. */
 
-// The only useful meaning of vMServerAdr in the modern world is a zero/non-zero test 
-// to see whether the volume is local or remote.  I didn't feel that justified a custom 
-// printer routine.
+/* The only useful meaning of vMServerAdr in the modern world is a zero/non-zero
+ * test to see whether the volume is local or remote.  I did NOT feel that that
+ * justified a custom printer routine. */
 
-static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV1[] = { 
-    {"vMVersion",               offsetof(GetVolParmsInfoBuffer, vMVersion),             sizeof(SInt16),         FPSDec, NULL},
-    {"vMAttrib",                offsetof(GetVolParmsInfoBuffer, vMAttrib),              sizeof(SInt32),         FPFlags, kVolParmsFlags},
-    {"vMLocalHand",             offsetof(GetVolParmsInfoBuffer, vMLocalHand),           sizeof(Handle),         FPPtr, NULL},
-    {"vMServerAdr",             offsetof(GetVolParmsInfoBuffer, vMServerAdr),           sizeof(SInt32),         FPHex, NULL},
-    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
+static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV1[] = {
+    {"vMVersion",   offsetof(GetVolParmsInfoBuffer, vMVersion),   sizeof(SInt16), FPSDec, NULL},
+    {"vMAttrib",    offsetof(GetVolParmsInfoBuffer, vMAttrib),    sizeof(SInt32), FPFlags, kVolParmsFlags},
+    {"vMLocalHand", offsetof(GetVolParmsInfoBuffer, vMLocalHand), sizeof(Handle), FPPtr, NULL},
+    {"vMServerAdr", offsetof(GetVolParmsInfoBuffer, vMServerAdr), sizeof(SInt32), FPHex, NULL},
+    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
     {NULL, 0, 0, NULL, NULL}
 };
 
-// While there is a definition for vMVolumeGrade (see DTS Technote 1121 "Mac OS 8.1" 
-// <http://developer.apple.com/technotes/tn/tn1121.html>), Core Services File Manager 
-// provides no way for a file system to return a value (it always returns 0), so there's 
-// no point providing a sophisticated interpretation.
+/* While there is a definition for vMVolumeGrade (see DTS Technote 1121
+ * "Mac OS 8.1" <http://developer.apple.com/technotes/tn/tn1121.html>),
+ * Core Services File Manager provides no way for a file system to return a
+ * value (it always returns 0), so there is no point providing a sophisticated
+ * interpretation. */
 
-static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV2[] = { 
-    {"vMVolumeGrade",           offsetof(GetVolParmsInfoBuffer, vMVolumeGrade),         sizeof(SInt32),         FPSDec, NULL},
-    {"vMForeignPrivID",         offsetof(GetVolParmsInfoBuffer, vMForeignPrivID),       sizeof(SInt16),         FPEnum, kForeignPrivEnums},
-    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
+static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV2[] = {
+    {"vMVolumeGrade",   offsetof(GetVolParmsInfoBuffer, vMVolumeGrade),   sizeof(SInt32), FPSDec, NULL},
+    {"vMForeignPrivID", offsetof(GetVolParmsInfoBuffer, vMForeignPrivID), sizeof(SInt16), FPEnum, kForeignPrivEnums},
+    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
     {NULL, 0, 0, NULL, NULL}
 };
 
-static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV3[] = { 
-    {"vMExtendedAttributes",    offsetof(GetVolParmsInfoBuffer, vMExtendedAttributes),  sizeof(SInt32),         FPFlags, kVolParmsExtendedFlags},
+static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV3[] = {
+    {"vMExtendedAttributes", offsetof(GetVolParmsInfoBuffer, vMExtendedAttributes), sizeof(SInt32), FPFlags, kVolParmsExtendedFlags},
     {NULL, 0, 0, NULL, NULL}
 };
 
-static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV4[] = { 
-    {"vMDeviceID",              offsetof(GetVolParmsInfoBuffer, vMDeviceID),            sizeof(void *),         FPCStringPtr, NULL},
-    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
+static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV4[] = {
+    {"vMDeviceID", offsetof(GetVolParmsInfoBuffer, vMDeviceID), sizeof(void *), FPCStringPtr, NULL},
+    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
     {NULL, 0, 0, NULL, NULL}
 };
 
-static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV5[] = { 
-    {"vMMaxNameLength",         offsetof(GetVolParmsInfoBuffer, vMMaxNameLength),       sizeof(UniCharCount),   FPUDec, NULL},
-    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
+static const FPFieldDesc kGetVolParmsInfoBufferFieldDescV5[] = {
+    {"vMMaxNameLength", offsetof(GetVolParmsInfoBuffer, vMMaxNameLength), sizeof(UniCharCount), FPUDec, NULL},
+    {kGetVolParmsInfoBufferFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
     {NULL, 0, 0, NULL, NULL}
 };
 
@@ -530,12 +547,13 @@ static const FPFieldDesc * kGetVolParmsInfoBufferFieldDescByVersion[] = {
     kGetVolParmsInfoBufferFieldDescV5
 };
 
-static void PrintVolumeParms(const GetVolParmsInfoBuffer *volParms, uint32_t indent, uint32_t verbose)
-    // Code to print a volume parms buffer, common to both the PBHGetVolParms 
-    // and FSGetVolumeParms commands.
+static void PrintVolumeParms(const GetVolParmsInfoBuffer *volParms,
+							 uint32_t indent, uint32_t verbose)
+    /* Code to print a volume parms buffer, common to both the PBHGetVolParms
+     * and FSGetVolumeParms commands. */
 {
-    size_t  versionIndex;
-    size_t  versionLimit;
+    size_t versionIndex;
+    size_t versionLimit;
 
     assert(volParms != NULL);
 
@@ -543,13 +561,14 @@ static void PrintVolumeParms(const GetVolParmsInfoBuffer *volParms, uint32_t ind
         fprintf(stdout, "    vMVersion = %hd\n", volParms->vMVersion);
     } else {
         versionIndex = 0;
-        
+
         versionLimit = (sizeof(kGetVolParmsInfoBufferFieldDescByVersion) / sizeof(FPFieldDesc *));
-        if (versionLimit > (size_t) volParms->vMVersion) {
-            versionLimit = volParms->vMVersion;
+        if (versionLimit > (size_t)volParms->vMVersion) {
+            versionLimit = (size_t)volParms->vMVersion;
         }
         while (versionIndex < versionLimit) {
-            FPPrintFields(kGetVolParmsInfoBufferFieldDescByVersion[versionIndex], volParms, sizeof(*volParms), indent, verbose);
+            FPPrintFields(kGetVolParmsInfoBufferFieldDescByVersion[versionIndex],
+						  volParms, sizeof(*volParms), indent, verbose);
             versionIndex += 1;
         }
     }
@@ -557,31 +576,32 @@ static void PrintVolumeParms(const GetVolParmsInfoBuffer *volParms, uint32_t ind
 
 #if ! TARGET_RT_64_BIT
 
-static CommandError PrintPBHGetVolParms(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses PBHGetVolParmsSync to get information about the specified volume and 
-    // prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintPBHGetVolParms(CommandArgsRef args, uint32_t indent,
+										uint32_t verbose)
+    /* Uses PBHGetVolParmsSync to get information about the specified volume and
+     * prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus                err;
-    FSVolumeRefNum          volRefNum;
-    HParamBlockRec          hpb;
-    GetVolParmsInfoBuffer   volParms;
+    OSStatus              err;
+    FSVolumeRefNum        volRefNum;
+    HParamBlockRec        hpb;
+    GetVolParmsInfoBuffer volParms;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
     err = CommandArgsGetVRefNum(args, &volRefNum);
     if (err == noErr) {
         hpb.ioParam.ioNamePtr = NULL;
         hpb.ioParam.ioVRefNum = volRefNum;
-        hpb.ioParam.ioBuffer   = (Ptr) &volParms;
+        hpb.ioParam.ioBuffer   = (Ptr)&volParms;
         hpb.ioParam.ioReqCount = sizeof(volParms);
         err = PBHGetVolParmsSync(&hpb);
     }
     if (err == noErr) {
         PrintVolumeParms(&volParms, indent, verbose);
     }
-    
+
     return CommandErrorMakeWithOSStatus(err);
 }
 
@@ -593,32 +613,34 @@ const CommandInfo kPBHGetVolParmsCommand = {
     NULL
 };
 
-#endif
+#endif /*  !TARGET_RT_64_BIT */
 
-static CommandError PrintFSGetVolumeParms(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses FSGetVolumeParms to get information about the specified volume and 
-    // prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSGetVolumeParms(CommandArgsRef args, uint32_t indent,
+										  uint32_t verbose)
+    /* Uses FSGetVolumeParms to get information about the specified volume and
+     * prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus                err;
-    FSVolumeRefNum          volRefNum;
-    GetVolParmsInfoBuffer   volParms;
+    OSStatus              err;
+    FSVolumeRefNum        volRefNum;
+    GetVolParmsInfoBuffer volParms;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
-    if ( FSGetVolumeParms == NULL ) {
+    if (FSGetVolumeParms == NULL) {
         return CommandErrorMakeWithCustom(kUnavailableCustomError);
     }
 
     err = CommandArgsGetVRefNum(args, &volRefNum);
     if (err == noErr) {
-        err = FSGetVolumeParms(volRefNum, &volParms, sizeof(volParms));
+        err = FSGetVolumeParms((FSVolumeRefNum)volRefNum, &volParms,
+							   sizeof(volParms));
     }
     if (err == noErr) {
         PrintVolumeParms(&volParms, indent, verbose);
     }
-    
+
     return CommandErrorMakeWithOSStatus(err);
 }
 
@@ -632,7 +654,7 @@ const CommandInfo kFSGetVolumeParmsCommand = {
 
 #pragma mark *     PBGetVolMountInfo
 
-// Values for the uamType field of the AFPVolMountInfo.
+/* Values for the uamType field of the AFPVolMountInfo. */
 
 static const FPEnumDesc kVolMountInfoUAMType[] = {
     { 1, "No User Authent" },
@@ -647,7 +669,8 @@ static const FPEnumDesc kVolMountInfoUAMType[] = {
     { 0, NULL }
 };
 
-// The following two enums document extra constants that should be in "Files.h" <rdar://problem/5439845>.
+/* The following two enums document extra constants that should have been in
+ * "Files.h" <rdar://problem/5439845>. */
 
 enum {
     kAFPTagTypeIPv6         = 0x06,
@@ -657,102 +680,159 @@ enum {
     kAFPTagLengthIPv6       = 0x12,
     kAFPTagLengthIPv6Port   = 0x14
 };
-  
-static void PrintAlternateAddresses(AFPXVolMountInfoPtr afpXVolInfoBuffer, short offset, uint32_t indent)
-    // Prints any alternative addresses embedded within the AFPXVolMountInfo structure.
-    // 
-    // indent is per the comments for FPPrinter.
+
+static void PrintAlternateAddresses(AFPXVolMountInfoPtr afpXVolInfoBuffer,
+									short offset, uint32_t indent)
+    /* Prints any alternative addresses embedded within the AFPXVolMountInfo
+     * structure.
+     *
+     * indent is per the comments for FPPrinter. */
 {
-    int                     junk;
-    AFPAlternateAddress *   addrList;
-    AFPTagData *            thisAddr;
-    int                     i;
-    UInt8                   thisAddrType;
-    size_t                  addrIndex;
-    struct sockaddr_in      addr;
-    struct sockaddr_in6     addr6;
-    Str255                  dns;
-    char                    hostStr[NI_MAXHOST];
-    char                    servStr[NI_MAXSERV];
-    static const char *kAddrTypeNames[] = { 
-        "unknown",        "kAFPTagTypeIP", "kAFPTagTypeIPPort", "kAFPTagTypeDDP", 
+    int                  junk;
+    AFPAlternateAddress *addrList;
+    AFPTagData *         thisAddr;
+    int                  i;
+    UInt8                thisAddrType;
+    size_t               addrIndex;
+    struct sockaddr_in   addr;
+    struct sockaddr_in6  addr6;
+    Str255               dns;
+    char                 hostStr[NI_MAXHOST];
+    char                 servStr[NI_MAXSERV];
+    static const char *kAddrTypeNames[] = {
+        "unknown",        "kAFPTagTypeIP", "kAFPTagTypeIPPort", "kAFPTagTypeDDP",
         "kAFPTagTypeDNS", "unknown",       "kAFPTagTypeIPv6",   "kAFPTagTypeIPv6Port"
     };
-    
+
     assert(offset >= 0);
 
-    addrList = (AFPAlternateAddress *) (((char *) afpXVolInfoBuffer) + offset);
+    addrList = (AFPAlternateAddress *)(((char *)afpXVolInfoBuffer) + offset);
     assert(addrList->fVersion == 0);
-    thisAddr = (AFPTagData *) &addrList->fAddressList[0];
-    for (i = 0; i < addrList->fAddressCount; i++) {
-        Boolean         understood;
-        
+    thisAddr = (AFPTagData *)&addrList->fAddressList[0];
+    for ((i = 0); (i < addrList->fAddressCount); i++) {
+        Boolean understood;
+
         thisAddrType = thisAddr->fType;
         if (thisAddrType >= (sizeof(kAddrTypeNames) / sizeof(*kAddrTypeNames))) {
             thisAddrType = 0;
         }
-        fprintf(stdout, "%*saddr[%d].fType = %s (%" PRIu8 ")\n", (int) indent, "", i, kAddrTypeNames[thisAddrType], (uint8_t) thisAddr->fType);
-        
+        fprintf(stdout, "%*saddr[%d].fType = %s (%" PRIu8 ")\n", (int)indent,
+				"", i, kAddrTypeNames[thisAddrType], (uint8_t)thisAddr->fType);
+
         memset(&addr, 0, sizeof(addr));
         addr.sin_len = sizeof(addr);
         addr.sin_family = AF_INET;
-        
+
         memset(&addr6, 0, sizeof(addr6));
         addr6.sin6_len = sizeof(addr6);
         addr6.sin6_family = AF_INET6;
-        
-        // Print the address data based on its type.
-        //
-        // IMPORTANT: This data is always big endian (because of the PowerPC 
-        // heritage of this structure) but that's OK because the data in the 
-        // struct sockaddr_in[6] is also big endian (because it is in network 
-        // byte order).
-        
+
+        /* Print the address data based on its type.
+         *
+         * IMPORTANT: This data is always big endian (because of the PowerPC
+         * heritage of this structure), but that is OK because the data in the
+         * struct sockaddr_in[6] is also big endian (because it is in network
+         * byte order). */
+
         understood = false;
         switch (thisAddr->fType) {
             case kAFPTagTypeIP:
                 if (thisAddr->fLength == kAFPTagLengthIP) {
-                    memcpy(&addr.sin_addr, &thisAddr->fData[0], sizeof(addr.sin_addr));
-                    junk = getnameinfo( (struct sockaddr *) &addr, (socklen_t) sizeof(addr), hostStr, (socklen_t) sizeof(hostStr), NULL, 0, NI_NUMERICHOST);
+                    memcpy(&addr.sin_addr, &thisAddr->fData[0],
+						   sizeof(addr.sin_addr));
+                    junk = getnameinfo((struct sockaddr *)&addr,
+									   (socklen_t)sizeof(addr), hostStr,
+									   (socklen_t)sizeof(hostStr), NULL, 0,
+									   NI_NUMERICHOST);
+#ifdef NDEBUG
+					/* dummy condition to use value stored to 'junk' when
+					 * building for Release: */
+					if (junk == 0) {
+						;
+					}
+#endif /* NDEBUG */
                     assert(junk == 0);
-                    fprintf(stdout, "%*saddr[%d].fData = %s\n", (int) indent, "", i, hostStr);
+                    fprintf(stdout, "%*saddr[%d].fData = %s\n", (int)indent,
+							"", i, hostStr);
                     understood = true;
                 }
                 break;
             case kAFPTagTypeIPPort:
                 if (thisAddr->fLength == kAFPTagLengthIPPort) {
-                    memcpy(&addr.sin_addr, &thisAddr->fData[0], sizeof(addr.sin_addr));
-                    memcpy(&addr.sin_port, &thisAddr->fData[sizeof(addr.sin_addr)], sizeof(addr.sin_port));
-                    junk = getnameinfo( (struct sockaddr *) &addr, (socklen_t) sizeof(addr), hostStr, (socklen_t) sizeof(hostStr), servStr, (socklen_t) sizeof(servStr), NI_NUMERICHOST | NI_NUMERICSERV);
+                    memcpy(&addr.sin_addr, &thisAddr->fData[0],
+						   sizeof(addr.sin_addr));
+                    memcpy(&addr.sin_port,
+						   &thisAddr->fData[sizeof(addr.sin_addr)],
+						   sizeof(addr.sin_port));
+                    junk = getnameinfo((struct sockaddr *)&addr,
+									   (socklen_t)sizeof(addr), hostStr,
+									   (socklen_t)sizeof(hostStr), servStr,
+									   (socklen_t)sizeof(servStr),
+									   (NI_NUMERICHOST | NI_NUMERICSERV));
+#ifdef NDEBUG
+					/* dummy condition to use value stored to 'junk' when
+					 * building for Release: */
+					if (junk == 0) {
+						;
+					}
+#endif /* NDEBUG */
                     assert(junk == 0);
-                    fprintf(stdout, "%*saddr[%d].fData = %s:%s\n", (int) indent, "", i, hostStr, servStr);
+                    fprintf(stdout, "%*saddr[%d].fData = %s:%s\n", (int)indent,
+							"", i, hostStr, servStr);
                     understood = true;
                 }
                 break;
             case kAFPTagTypeDNS:
                 if (thisAddr->fLength > offsetof(AFPTagData, fLength)) {
-                    dns[0] = thisAddr->fLength - offsetof(AFPTagData, fData);
-                    memcpy(&dns[1], &thisAddr->fData[0], dns[0]);
-                    fprintf(stdout, "%*saddr[%d].fData = %.*s\n", (int) indent, "", i, (int) dns[0], (char *) &dns[1]);
+                    dns[0] = (thisAddr->fLength - offsetof(AFPTagData, fData));
+                    memcpy(&dns[1], &thisAddr->fData[0], (size_t)dns[0]);
+                    fprintf(stdout, "%*saddr[%d].fData = %.*s\n", (int)indent,
+							"", i, (int)dns[0], (char *)&dns[1]);
                     understood = true;
                 }
                 break;
             case kAFPTagTypeIPv6:
                 if (thisAddr->fLength == kAFPTagLengthIPv6) {
-                    memcpy(&addr6.sin6_addr, &thisAddr->fData[0], sizeof(addr6.sin6_addr));
-                    junk = getnameinfo( (struct sockaddr *) &addr6, (socklen_t) sizeof(addr6), hostStr, (socklen_t) sizeof(hostStr), NULL, 0, NI_NUMERICHOST);
+                    memcpy(&addr6.sin6_addr, &thisAddr->fData[0],
+						   sizeof(addr6.sin6_addr));
+                    junk = getnameinfo((struct sockaddr *)&addr6,
+									   (socklen_t)sizeof(addr6), hostStr,
+									   (socklen_t)sizeof(hostStr), NULL, 0,
+									   NI_NUMERICHOST);
+#ifdef NDEBUG
+					/* dummy condition to use value stored to 'junk' when
+					 * building for Release: */
+					if (junk == 0) {
+						;
+					}
+#endif /* NDEBUG */
                     assert(junk == 0);
-                    fprintf(stdout, "%*saddr[%d].fData = %s\n", (int) indent, "", i, hostStr);
+                    fprintf(stdout, "%*saddr[%d].fData = %s\n", (int)indent,
+							"", i, hostStr);
                     understood = true;
                 }
                 break;
             case kAFPTagTypeIPv6Port:
                 if (thisAddr->fLength == kAFPTagLengthIPv6Port) {
-                    memcpy(&addr6.sin6_addr, &thisAddr->fData[0], sizeof(addr6.sin6_addr));
-                    memcpy(&addr6.sin6_port, &thisAddr->fData[sizeof(addr6.sin6_addr)], sizeof(addr6.sin6_port));
-                    junk = getnameinfo( (struct sockaddr *) &addr6, (socklen_t) sizeof(addr6), hostStr, (socklen_t) sizeof(hostStr), NULL, 0, NI_NUMERICHOST);
+                    memcpy(&addr6.sin6_addr, &thisAddr->fData[0],
+						   sizeof(addr6.sin6_addr));
+                    memcpy(&addr6.sin6_port,
+						   &thisAddr->fData[sizeof(addr6.sin6_addr)],
+						   sizeof(addr6.sin6_port));
+                    junk = getnameinfo((struct sockaddr *)&addr6,
+									   (socklen_t)sizeof(addr6), hostStr,
+									   (socklen_t)sizeof(hostStr), NULL, 0,
+									   NI_NUMERICHOST);
+#ifdef NDEBUG
+					/* dummy condition to use value stored to 'junk' when
+					 * building for Release: */
+					if (junk == 0) {
+						;
+					}
+#endif /* NDEBUG */
                     assert(junk == 0);
-                    fprintf(stdout, "%*saddr[%d].fData = %s\n", (int) indent, "", i, hostStr);
+                    fprintf(stdout, "%*saddr[%d].fData = %s\n", (int)indent,
+							"", i, hostStr);
                     understood = true;
                 }
                 break;
@@ -760,110 +840,116 @@ static void PrintAlternateAddresses(AFPXVolMountInfoPtr afpXVolInfoBuffer, short
                 break;
         }
 
-        // If we don't recognise the address type, just dump the hex.
+        /* If we do NOT recognise the address type, then just dump the hex. */
 
-        if ( ! understood ) {
-            fprintf(stdout, "%*saddr[%d].fData =", (int) indent, "", i);
-            for (addrIndex = 0; addrIndex < ((size_t) thisAddr->fLength); addrIndex++) {
+        if (! understood) {
+            fprintf(stdout, "%*saddr[%d].fData =", (int)indent, "", i);
+            for ((addrIndex = 0); (addrIndex < ((size_t)thisAddr->fLength));
+				 addrIndex++) {
                 fprintf(stdout, " 0x%02x", thisAddr->fData[addrIndex]);
             }
             fprintf(stdout, "\n");
         }
-        
-        thisAddr = (AFPTagData *) ( ((char *) thisAddr) + thisAddr->fLength );
+
+        thisAddr = (AFPTagData *)(((char *)thisAddr) + thisAddr->fLength);
     }
 }
 
-// Flags for the flags field of the VolumeMountInfoHeader.
-
+/* Flags for the flags field of the VolumeMountInfoHeader. */
 static const FPFlagDesc kAFPFlags[] = {
     {volMountExtendedFlagsMask, "volMountExtendedFlagsMask"},
-    {0, NULL} 
+    {0, NULL}
 };
 
-// The fields of the VolumeMountInfoHeader structure.
-
+/* The fields of the VolumeMountInfoHeader structure. */
 static const char kVolMountInfoFieldSpacer[32] = "volInfoBuffer";
 
-static const FPFieldDesc kVolMountInfoFieldDesc[] = { 
-    {kVolMountInfoFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
-    {"length",          offsetof(VolumeMountInfoHeader, length),            sizeof(short),          FPSDec, NULL},
-    {"media",           offsetof(VolumeMountInfoHeader, media),             sizeof(VolumeType),     FPSignature, (const void *) (uintptr_t) kFPValueHostEndian},
-    {"flags",           offsetof(VolumeMountInfoHeader, flags),             sizeof(short),          FPFlags, kAFPFlags},
+static const FPFieldDesc kVolMountInfoFieldDesc[] = {
+    {kVolMountInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
+    {"length", offsetof(VolumeMountInfoHeader, length), sizeof(short),      FPSDec, NULL},
+    {"media",  offsetof(VolumeMountInfoHeader, media),  sizeof(VolumeType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"flags",  offsetof(VolumeMountInfoHeader, flags),  sizeof(short),      FPFlags, kAFPFlags},
     {NULL, 0, 0, NULL, NULL}
 };
 
-// The fields of the AFPVolMountInfo structure.
-
+/* The fields of the AFPVolMountInfo structure. */
 static const char kAFPVolMountInfoFieldSpacer[32] = "alternateAddressOffset";
 
-static const FPFieldDesc kAFPVolMountInfoFieldDesc[] = { 
-    {kAFPVolMountInfoFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
-    {"nbpInterval",         offsetof(AFPVolMountInfo, nbpInterval),             sizeof(SInt8),      FPSDec,      NULL},
-    {"nbpCount",            offsetof(AFPVolMountInfo, nbpCount),                sizeof(SInt8),      FPSDec,      NULL},
-    {"uamType",             offsetof(AFPVolMountInfo, uamType),                 sizeof(short),      FPEnum,      kVolMountInfoUAMType},
-    {"zoneNameOffset",      offsetof(AFPVolMountInfo, zoneNameOffset),          sizeof(short),      FPAFPString, (void *) offsetof(AFPVolMountInfo, zoneNameOffset)},
-    {"serverNameOffset",    offsetof(AFPVolMountInfo, serverNameOffset),        sizeof(short),      FPAFPString, (void *) offsetof(AFPVolMountInfo, serverNameOffset)},
-    {"volNameOffset",       offsetof(AFPVolMountInfo, volNameOffset),           sizeof(short),      FPAFPString, (void *) offsetof(AFPVolMountInfo, volNameOffset)},
-    {"userNameOffset",      offsetof(AFPVolMountInfo, userNameOffset),          sizeof(short),      FPAFPString, (void *) offsetof(AFPVolMountInfo, userNameOffset)},
-    {"userPasswordOffset",  offsetof(AFPVolMountInfo, userPasswordOffset),      sizeof(short),      FPAFPString, (void *) offsetof(AFPVolMountInfo, userPasswordOffset)},
-    {"volPasswordOffset",   offsetof(AFPVolMountInfo, volPasswordOffset),       sizeof(short),      FPAFPString, (void *) offsetof(AFPVolMountInfo, volPasswordOffset)},
+static const FPFieldDesc kAFPVolMountInfoFieldDesc[] = {
+    {kAFPVolMountInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
+    {"nbpInterval",        offsetof(AFPVolMountInfo, nbpInterval),        sizeof(SInt8), FPSDec,      NULL},
+    {"nbpCount",           offsetof(AFPVolMountInfo, nbpCount),           sizeof(SInt8), FPSDec,      NULL},
+    {"uamType",            offsetof(AFPVolMountInfo, uamType),            sizeof(short), FPEnum,      kVolMountInfoUAMType},
+    {"zoneNameOffset",     offsetof(AFPVolMountInfo, zoneNameOffset),     sizeof(short), FPAFPString, (void *)offsetof(AFPVolMountInfo, zoneNameOffset)},
+    {"serverNameOffset",   offsetof(AFPVolMountInfo, serverNameOffset),   sizeof(short), FPAFPString, (void *)offsetof(AFPVolMountInfo, serverNameOffset)},
+    {"volNameOffset",      offsetof(AFPVolMountInfo, volNameOffset),      sizeof(short), FPAFPString, (void *)offsetof(AFPVolMountInfo, volNameOffset)},
+    {"userNameOffset",     offsetof(AFPVolMountInfo, userNameOffset),     sizeof(short), FPAFPString, (void *)offsetof(AFPVolMountInfo, userNameOffset)},
+    {"userPasswordOffset", offsetof(AFPVolMountInfo, userPasswordOffset), sizeof(short), FPAFPString, (void *)offsetof(AFPVolMountInfo, userPasswordOffset)},
+    {"volPasswordOffset",  offsetof(AFPVolMountInfo, volPasswordOffset),  sizeof(short), FPAFPString, (void *)offsetof(AFPVolMountInfo, volPasswordOffset)},
     {NULL, 0, 0, NULL, NULL}
 };
 
-// Flags for the extendedFlags field of the AFPXVolMountInfo.
-
+/* Flags for the extendedFlags field of the AFPXVolMountInfo. */
 static const FPFlagDesc kAFPExtendedFlags[] = {
     {kAFPExtendedFlagsAlternateAddressMask, "kAFPExtendedFlagsAlternateAddressMask"},
-    {0, NULL} 
+    {0, NULL}
 };
 
-// The fields of the AFPXVolMountInfo structure.  These are broken up into 
-// two groups because the second group of fields is only present if 
-// kAFPExtendedFlagsAlternateAddressMask is set in extendedFlags.
-
-static const FPFieldDesc kAFPXVolMountInfoFieldDesc[] = { 
-    {kAFPVolMountInfoFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
-    {"extendedFlags",   offsetof(AFPXVolMountInfo, extendedFlags),  sizeof(short),  FPFlags, kAFPExtendedFlags},
-    {"uamNameOffset",   offsetof(AFPXVolMountInfo, uamNameOffset),  sizeof(short),  FPAFPString, (void *) offsetof(AFPXVolMountInfo, uamNameOffset)},
+/* The fields of the AFPXVolMountInfo structure.  These are broken up into
+ * two groups because the second group of fields is only present if
+ * kAFPExtendedFlagsAlternateAddressMask is set in extendedFlags. */
+static const FPFieldDesc kAFPXVolMountInfoFieldDesc[] = {
+    {kAFPVolMountInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
+    {"extendedFlags", offsetof(AFPXVolMountInfo, extendedFlags), sizeof(short), FPFlags, kAFPExtendedFlags},
+    {"uamNameOffset", offsetof(AFPXVolMountInfo, uamNameOffset), sizeof(short), FPAFPString, (void *)offsetof(AFPXVolMountInfo, uamNameOffset)},
     {NULL, 0, 0, NULL, NULL}
 };
 
-static const FPFieldDesc kAFPXVolMountInfoFieldDesc2[] = { 
-    {kAFPVolMountInfoFieldSpacer, 0,  0, FPNull, NULL},      // present to pad out field widths
-    {"alternateAddressOffset",  offsetof(AFPXVolMountInfo, alternateAddressOffset),     sizeof(short),      FPSDec, NULL},
+static const FPFieldDesc kAFPXVolMountInfoFieldDesc2[] = {
+    {kAFPVolMountInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
+    {"alternateAddressOffset", offsetof(AFPXVolMountInfo, alternateAddressOffset), sizeof(short), FPSDec, NULL},
     {NULL, 0, 0, NULL, NULL}
 };
 
-static void PrintVolumeMountInfo(size_t volInfoSize, VolumeMountInfoHeaderPtr volInfoBuffer, uint32_t indent, uint32_t verbose)
-    // Common code used to print a volume mount info buffer.  Called by both 
-    // the FSGetVolumeMountInfo and the PBGetVolMountInfo commands.
+static void PrintVolumeMountInfo(size_t volInfoSize,
+								 VolumeMountInfoHeaderPtr volInfoBuffer,
+								 uint32_t indent, uint32_t verbose)
+    /* Common code used to print a volume mount info buffer.  Called by both
+     * the FSGetVolumeMountInfo and the PBGetVolMountInfo commands. */
 {
     assert(volInfoBuffer != NULL);
     assert(volInfoSize >= sizeof(*volInfoBuffer));
-    
-    fprintf(stdout, "%*svolInfoSize   = %zd\n", (int) indent, "", volInfoSize);
-    FPPrintFields(kVolMountInfoFieldDesc, volInfoBuffer, sizeof(*volInfoBuffer), indent, verbose);
 
-    // If this is an AFP volume, we know the structure of the mount info 
-    // data, and thus we print it.  Otherwise we just dump the data as hex.
+    fprintf(stdout, "%*svolInfoSize   = %zd\n", (int)indent, "", volInfoSize);
+    FPPrintFields(kVolMountInfoFieldDesc, volInfoBuffer, sizeof(*volInfoBuffer),
+				  indent, verbose);
 
+    /* If this is an AFP volume, then we know the structure of the mount info
+     * data, and thus we print it.  Otherwise we just dump the data as hex. */
     if (volInfoBuffer->media == AppleShareMediaType) {
         AFPVolMountInfoPtr afpVolInfoBuffer;
 
-        afpVolInfoBuffer = (AFPVolMountInfoPtr) volInfoBuffer;
-        fprintf(stdout, "%*sAppleShareMediaType\n", (int) indent, "");
-        FPPrintFields(kAFPVolMountInfoFieldDesc, afpVolInfoBuffer, sizeof(*afpVolInfoBuffer), indent + kStdIndent, verbose);
+        afpVolInfoBuffer = (AFPVolMountInfoPtr)volInfoBuffer;
+        fprintf(stdout, "%*sAppleShareMediaType\n", (int)indent, "");
+        FPPrintFields(kAFPVolMountInfoFieldDesc, afpVolInfoBuffer,
+					  sizeof(*afpVolInfoBuffer), (indent + kStdIndent),
+					  verbose);
 
         if (afpVolInfoBuffer->flags & volMountExtendedFlagsMask) {
             AFPXVolMountInfoPtr afpXVolInfoBuffer;
-            
+
             afpXVolInfoBuffer = (AFPXVolMountInfoPtr) afpVolInfoBuffer;
-            FPPrintFields(kAFPXVolMountInfoFieldDesc, afpVolInfoBuffer, sizeof(*afpVolInfoBuffer), indent + kStdIndent, verbose);
+            FPPrintFields(kAFPXVolMountInfoFieldDesc, afpVolInfoBuffer,
+						  sizeof(*afpVolInfoBuffer), (indent + kStdIndent),
+						  verbose);
 
             if (afpXVolInfoBuffer->extendedFlags & kAFPExtendedFlagsAlternateAddressMask) {
-                FPPrintFields(kAFPXVolMountInfoFieldDesc2, afpVolInfoBuffer, sizeof(*afpVolInfoBuffer), indent + kStdIndent, verbose);
-                PrintAlternateAddresses(afpXVolInfoBuffer, afpXVolInfoBuffer->alternateAddressOffset, indent + 2 * kStdIndent);
+                FPPrintFields(kAFPXVolMountInfoFieldDesc2, afpVolInfoBuffer,
+							  sizeof(*afpVolInfoBuffer), (indent + kStdIndent),
+							  verbose);
+                PrintAlternateAddresses(afpXVolInfoBuffer,
+										(short)afpXVolInfoBuffer->alternateAddressOffset,
+										(indent + (2 * kStdIndent)));
             }
         }
     } else {
@@ -872,27 +958,26 @@ static void PrintVolumeMountInfo(size_t volInfoSize, VolumeMountInfoHeaderPtr vo
         }
     }
 }
-    
+
 #if ! TARGET_RT_64_BIT
-
-static CommandError PrintPBGetVolMountInfo(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses PBGetVolMountInfo to get information about the specified volume and 
-    // prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintPBGetVolMountInfo(CommandArgsRef args, uint32_t indent,
+										   uint32_t verbose)
+    /* Uses PBGetVolMountInfo to get information about the specified volume and
+     * prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus                    err;
-    FSVolumeRefNum              volRefNum;
-    ParamBlockRec               pb;
-    short                       volInfoSize;
-    VolumeMountInfoHeaderPtr    volInfoBuffer;
+    OSStatus                 err;
+    FSVolumeRefNum           volRefNum;
+    ParamBlockRec            pb;
+    short                    volInfoSize;
+    VolumeMountInfoHeaderPtr volInfoBuffer;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
     volInfoBuffer = NULL;
-    
-    // Get the mount info from the file system.
-    
+
+    /* Get the mount info from the file system: */
     err = CommandArgsGetVRefNum(args, &volRefNum);
     if (err == noErr) {
         pb.ioParam.ioNamePtr = NULL;
@@ -902,8 +987,8 @@ static CommandError PrintPBGetVolMountInfo(CommandArgsRef args, uint32_t indent,
     }
     if (err == noErr) {
         assert(volInfoSize >= 0);
-        
-        volInfoBuffer = malloc(volInfoSize);
+
+        volInfoBuffer = malloc((size_t)volInfoSize);
         if (volInfoBuffer == NULL) {
             err = memFullErr;
         }
@@ -912,15 +997,14 @@ static CommandError PrintPBGetVolMountInfo(CommandArgsRef args, uint32_t indent,
         pb.ioParam.ioBuffer = (Ptr) volInfoBuffer;
         err = PBGetVolMountInfo(&pb);
     }
-    
-    // Print the info.
-    
+
+    /* Print the info: */
     if (err == noErr) {
-        PrintVolumeMountInfo(volInfoSize, volInfoBuffer, indent, verbose);
+        PrintVolumeMountInfo((size_t)volInfoSize, volInfoBuffer, indent, verbose);
     }
-    
+
     free(volInfoBuffer);
-    
+
     return CommandErrorMakeWithOSStatus(err);
 }
 
@@ -931,34 +1015,33 @@ const CommandInfo kPBGetVolMountInfoCommand = {
     "Print information from PBGetVolMountInfo.",
     NULL
 };
+#endif /* !TARGET_RT_64_BIT */
 
-#endif
-
-static CommandError PrintFSGetVolumeMountInfo(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses PBGetVolMountInfo to get information about the specified volume and 
-    // prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSGetVolumeMountInfo(CommandArgsRef args,
+											  uint32_t indent, uint32_t verbose)
+    /* Uses PBGetVolMountInfo to get information about the specified volume and
+     * prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus                    err;
-    FSVolumeRefNum              volRefNum;
-    size_t                      volInfoSize;
-    VolumeMountInfoHeaderPtr    volInfoBuffer;
-    size_t                      junkSize;
+    OSStatus                 err;
+    FSVolumeRefNum           volRefNum;
+    size_t                   volInfoSize;
+    VolumeMountInfoHeaderPtr volInfoBuffer;
+    size_t                   junkSize;
 
-    assert( CommandArgsValid(args) );
-    
-    if ( FSGetVolumeMountInfoSize == NULL ) {
+    assert(CommandArgsValid(args));
+
+    if (FSGetVolumeMountInfoSize == NULL) {
         return CommandErrorMakeWithCustom(kUnavailableCustomError);
     }
 
     volInfoBuffer = NULL;
-    
-    // Get the mount info from the file system.
-    
+
+    /* Get the mount info from the file system: */
     err = CommandArgsGetVRefNum(args, &volRefNum);
     if (err == noErr) {
-        err = FSGetVolumeMountInfoSize(volRefNum, &volInfoSize);
+        err = FSGetVolumeMountInfoSize((FSVolumeRefNum)volRefNum, &volInfoSize);
     }
     if (err == noErr) {
         volInfoBuffer = malloc(volInfoSize);
@@ -967,17 +1050,18 @@ static CommandError PrintFSGetVolumeMountInfo(CommandArgsRef args, uint32_t inde
         }
     }
     if (err == noErr) {
-        err = FSGetVolumeMountInfo(volRefNum, (BytePtr) volInfoBuffer, volInfoSize, &junkSize);
+        err = FSGetVolumeMountInfo((FSVolumeRefNum)volRefNum,
+								   (BytePtr)volInfoBuffer, volInfoSize,
+								   &junkSize);
     }
-    
-    // Print the info.
-    
+
+    /* Print the info: */
     if (err == noErr) {
         PrintVolumeMountInfo(volInfoSize, volInfoBuffer, indent, verbose);
     }
-    
+
     free(volInfoBuffer);
-    
+
     return CommandErrorMakeWithOSStatus(err);
 }
 
@@ -991,29 +1075,33 @@ const CommandInfo kFSGetVolumeMountInfoCommand = {
 
 #pragma mark *     FSCopyDiskIDForVolume
 
-static CommandError PrintFSCopyDiskIDForVolume(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses FSCopyDiskIDForVolume to get information about the specified volume 
-    // and prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSCopyDiskIDForVolume(CommandArgsRef args,
+											   uint32_t indent,
+											   uint32_t verbose)
+    /* Uses FSCopyDiskIDForVolume to get information about the specified volume
+     * and prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus        err;
-    FSVolumeRefNum  volRefNum;
-    CFStringRef     idStr;
+    OSStatus       err;
+    FSVolumeRefNum volRefNum;
+    CFStringRef    idStr;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
     idStr = NULL;
-    
+
     err = CommandArgsGetVRefNum(args, &volRefNum);
     if (err == noErr) {
-        err = FSCopyDiskIDForVolume(volRefNum, &idStr);
+        err = FSCopyDiskIDForVolume((FSVolumeRefNum)volRefNum, &idStr);
     }
     if (err == noErr) {
-        fprintf(stdout, "%*sFSCopyDiskIDForVolume(%d)\n", (int) indent, "", (int) volRefNum);
-        FPCFString("id", sizeof(idStr), &idStr, indent + kStdIndent, strlen("id"), verbose, NULL);
+        fprintf(stdout, "%*sFSCopyDiskIDForVolume(%d)\n", (int)indent, "",
+				(int)volRefNum);
+        FPCFString("id", sizeof(idStr), &idStr, (indent + kStdIndent),
+				   strlen("id"), verbose, NULL);
     }
-    
+
     if (idStr != NULL) {
         CFRelease(idStr);
     }
@@ -1031,32 +1119,33 @@ const CommandInfo kFSCopyDiskIDForVolumeCommand = {
 
 #pragma mark *     FSCopyURLForVolume
 
-static CommandError PrintFSCopyURLForVolume(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // Uses FSCopyURLForVolume to get information about the specified volume 
-    // and prints the result.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSCopyURLForVolume(CommandArgsRef args,
+											uint32_t indent, uint32_t verbose)
+    /* Uses FSCopyURLForVolume to get information about the specified volume
+     * and prints the result.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus        err;
-    FSVolumeRefNum  volRefNum;
-    CFURLRef        url;
-    CFStringRef     urlStr;
+    OSStatus       err;
+    FSVolumeRefNum volRefNum;
+    CFURLRef       url;
+    CFStringRef    urlStr;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
     url = NULL;
-    
+
     err = CommandArgsGetVRefNum(args, &volRefNum);
     if (err == noErr) {
-        err = FSCopyURLForVolume(volRefNum, &url);
+        err = FSCopyURLForVolume((FSVolumeRefNum)volRefNum, &url);
     }
     if (err == noErr) {
         urlStr = CFURLGetString(url);
-        
+
         fprintf(stdout, "%*sFSCopyURLForVolume(%d)\n", (int) indent, "", (int) volRefNum);
         FPCFString("url", sizeof(urlStr), &urlStr, indent + kStdIndent, strlen("url"), verbose, NULL);
     }
-    
+
     if (url != NULL) {
         CFRelease(url);
     }
@@ -1109,14 +1198,13 @@ static const FPFlagDesc kNodeFlags[] = {
     { 0, NULL }
 };
 
-// These are the fields you get by asking for kFSCatInfoPermissions.
-
+/* These are the fields you get by asking for kFSCatInfoPermissions: */
 static const FPFieldDesc kFSPermissionInfoFieldDesc[] = {
-    {"userID",      offsetof(FSPermissionInfo, userID),     sizeof(UInt32),             FPUID, NULL},
-    {"groupID",     offsetof(FSPermissionInfo, groupID),    sizeof(UInt32),             FPGID, NULL},
-    {"reserved1",   offsetof(FSPermissionInfo, reserved1),  sizeof(UInt8),              FPUDec, NULL},
-    {"userAccess",  0, 0, FPNull, NULL},                                                                  // pads out nameWidth
-    {"mode",        offsetof(FSPermissionInfo, mode),       sizeof(UInt16),             FPModeT, NULL},
+    {"userID",     offsetof(FSPermissionInfo, userID),    sizeof(UInt32), FPUID, NULL},
+    {"groupID",    offsetof(FSPermissionInfo, groupID),   sizeof(UInt32), FPGID, NULL},
+    {"reserved1",  offsetof(FSPermissionInfo, reserved1), sizeof(UInt8), FPUDec, NULL},
+    {"userAccess", 0, 0, FPNull, NULL}, /* pads out nameWidth */
+    {"mode",       offsetof(FSPermissionInfo, mode), sizeof(UInt16), FPModeT, NULL},
     {NULL, 0, 0, NULL, NULL}
 };
 
@@ -1134,230 +1222,275 @@ static const FPFlagDesc kAccessFlags[] = {
 };
 
 #if ! TARGET_RT_64_BIT
-
 static const FPFieldDesc kFSSpecFieldDesc[] = {
-    {"vRefNum",         offsetof(FSSpec, vRefNum),      sizeof(SInt16),    FPSDec, NULL},
-    {"parID",           offsetof(FSSpec, parID),        sizeof(UInt32),    FPUDec, NULL},
-    {"name",            offsetof(FSSpec, name),         sizeof(Str63),     FPPString, NULL},
+    {"vRefNum", offsetof(FSSpec, vRefNum), sizeof(SInt16), FPSDec, NULL},
+    {"parID",   offsetof(FSSpec, parID),   sizeof(UInt32), FPUDec, NULL},
+    {"name",    offsetof(FSSpec, name),    sizeof(Str63),  FPPString, NULL},
     {NULL, 0, 0, NULL, NULL}
 };
+#endif /* !TARGET_RT_64_BIT */
 
-#endif
-
-static void PrintCatalogInfo(const HFSUniStr255 *name, FSCatalogInfoBitmap options, bool didForceNodeFlags, const FSCatalogInfo *catInfo, const FSRef *ref, const FSSpec *spec, const FSRef *parent, uint32_t indent, uint32_t verbose)
-    // The core of the FSGetCatalogInfo and FSGetCatalogInfoBulk commands.
+static void PrintCatalogInfo(const HFSUniStr255 *name,
+							 FSCatalogInfoBitmap options,
+							 bool didForceNodeFlags,
+							 const FSCatalogInfo *catInfo,
+							 const FSRef *ref, const FSSpec *spec,
+							 const FSRef *parent, uint32_t indent,
+							 uint32_t verbose)
+    /* The core of the FSGetCatalogInfo and FSGetCatalogInfoBulk commands. */
 {
     assert(name != NULL);
-    
-    HFSUniStr255FieldPrinter("name", sizeof(HFSUniStr255), name, indent, 7, verbose, NULL);
-    
+
+    HFSUniStr255FieldPrinter("name", sizeof(HFSUniStr255), name, indent,
+							 (size_t)7, verbose, NULL);
+
     if (catInfo != NULL) {
         const size_t kNameSpacer = strlen("attributeModDate");
-        
+
         fprintf(stdout, "%*scatalogInfo:\n", (int) indent, "");
-        
+
         indent += kStdIndent;
         if ( (options & kFSCatInfoNodeFlags) && ! didForceNodeFlags) {
-            FPFlags("nodeFlags", sizeof(catInfo->nodeFlags), &catInfo->nodeFlags, indent, kNameSpacer, verbose, kNodeFlags);
+            FPFlags("nodeFlags", sizeof(catInfo->nodeFlags),
+					&catInfo->nodeFlags, indent, kNameSpacer, verbose,
+					kNodeFlags);
         }
         if (options & kFSCatInfoVolume) {
-            FPSDec("volume", sizeof(catInfo->volume), &catInfo->volume, indent, kNameSpacer, verbose, NULL);
+            FPSDec("volume", sizeof(catInfo->volume), &catInfo->volume, indent,
+				   kNameSpacer, verbose, NULL);
         }
         if (options & kFSCatInfoParentDirID) {
-            FPUDec("parentDirID", sizeof(catInfo->parentDirID), &catInfo->parentDirID, indent, kNameSpacer, verbose, NULL);
+            FPUDec("parentDirID", sizeof(catInfo->parentDirID),
+				   &catInfo->parentDirID, indent, kNameSpacer, verbose, NULL);
         }
         if (options & kFSCatInfoNodeID) {
-            FPUDec("nodeID", sizeof(catInfo->nodeID), &catInfo->nodeID, indent, kNameSpacer, verbose, NULL);
+            FPUDec("nodeID", sizeof(catInfo->nodeID), &catInfo->nodeID, indent,
+				   kNameSpacer, verbose, NULL);
         }
         if (options & kFSCatInfoSharingFlags) {
-            FPFlags("sharingFlags", sizeof(catInfo->sharingFlags), &catInfo->sharingFlags, indent, kNameSpacer, verbose, kSharingFlags);
+            FPFlags("sharingFlags", sizeof(catInfo->sharingFlags),
+					&catInfo->sharingFlags, indent, kNameSpacer, verbose,
+					kSharingFlags);
         }
         if (options & kFSCatInfoUserPrivs) {
-            FPHex("userPrivileges", sizeof(catInfo->userPrivileges), &catInfo->userPrivileges, indent, kNameSpacer, verbose, NULL);
+            FPHex("userPrivileges", sizeof(catInfo->userPrivileges),
+				  &catInfo->userPrivileges, indent, kNameSpacer, verbose, NULL);
         }
         if (options & kFSCatInfoCreateDate) {
-            FPUTCDateTime("createDate", sizeof(catInfo->createDate), &catInfo->createDate, indent, kNameSpacer, verbose, NULL);
+            FPUTCDateTime("createDate", sizeof(catInfo->createDate),
+						  &catInfo->createDate, indent, kNameSpacer, verbose,
+						  NULL);
         }
         if (options & kFSCatInfoContentMod) {
-            FPUTCDateTime("contentModDate", sizeof(catInfo->contentModDate), &catInfo->contentModDate, indent, kNameSpacer, verbose, NULL);
+            FPUTCDateTime("contentModDate", sizeof(catInfo->contentModDate),
+						  &catInfo->contentModDate, indent, kNameSpacer,
+						  verbose, NULL);
         }
         if (options & kFSCatInfoAttrMod) {
-            FPUTCDateTime("attributeModDate", sizeof(catInfo->attributeModDate), &catInfo->attributeModDate, indent, kNameSpacer, verbose, NULL);
+            FPUTCDateTime("attributeModDate", sizeof(catInfo->attributeModDate),
+						  &catInfo->attributeModDate, indent, kNameSpacer,
+						  verbose, NULL);
         }
         if (options & kFSCatInfoAccessDate) {
-            FPUTCDateTime("accessDate", sizeof(catInfo->accessDate), &catInfo->accessDate, indent, kNameSpacer, verbose, NULL);
+            FPUTCDateTime("accessDate", sizeof(catInfo->accessDate),
+						  &catInfo->accessDate, indent, kNameSpacer, verbose,
+						  NULL);
         }
         if (options & kFSCatInfoBackupDate) {
-            FPUTCDateTime("backupDate", sizeof(catInfo->backupDate), &catInfo->backupDate, indent, kNameSpacer, verbose, NULL);
+            FPUTCDateTime("backupDate", sizeof(catInfo->backupDate),
+						  &catInfo->backupDate, indent, kNameSpacer, verbose,
+						  NULL);
         }
         if (options & (kFSCatInfoPermissions | kFSCatInfoUserAccess | kFSCatInfoFSFileSecurityRef)) {
-            const FSPermissionInfo *    fsPerms;
-            
+            const FSPermissionInfo *fsPerms;
+
             #if TARGET_RT_64_BIT
                 fsPerms = &catInfo->permissions;
-            #else
-                fsPerms = (const FSPermissionInfo *) catInfo->permissions;
-            #endif
-            
+            #else /* not: */
+                fsPerms = (const FSPermissionInfo *)catInfo->permissions;
+            #endif /* TARGET_RT_64_BIT */
+
             if (verbose == 0) {
-                FPHex("permissions", sizeof(*fsPerms), fsPerms, indent, kNameSpacer, verbose, NULL);
+                FPHex("permissions", sizeof(*fsPerms), fsPerms, indent,
+					  kNameSpacer, verbose, NULL);
             } else {
-                fprintf(stdout, "%*spermissions:\n", (int) indent, "");
+                fprintf(stdout, "%*spermissions:\n", (int)indent, "");
 
                 if (options & kFSCatInfoPermissions) {
-                    FPPrintFields(kFSPermissionInfoFieldDesc, fsPerms, sizeof(*fsPerms), indent + kStdIndent, verbose);
+                    FPPrintFields(kFSPermissionInfoFieldDesc, fsPerms,
+								  sizeof(*fsPerms), (indent + kStdIndent),
+								  verbose);
                 }
                 if (options & kFSCatInfoUserAccess) {
-                    FPFlags("userAccess", sizeof(fsPerms->userAccess), &fsPerms->userAccess, indent + kStdIndent, strlen("userAccess"), verbose - 1, kAccessFlags);
+                    FPFlags("userAccess", sizeof(fsPerms->userAccess),
+							&fsPerms->userAccess, (indent + kStdIndent),
+							strlen("userAccess"), (verbose - 1), kAccessFlags);
                 }
                 if (options & kFSCatInfoFSFileSecurityRef) {
-                    FPFSFileSecurityRef("fileSec", sizeof(fsPerms->fileSec), &fsPerms->fileSec, indent + kStdIndent, strlen("userAccess"), verbose - 1, NULL);
+                    FPFSFileSecurityRef("fileSec", sizeof(fsPerms->fileSec),
+										&fsPerms->fileSec,
+										(indent + kStdIndent),
+										strlen("userAccess"), (verbose - 1),
+										NULL);
                 }
             }
-            
-            if ( (options & kFSCatInfoFSFileSecurityRef) && (fsPerms->fileSec != NULL) ) {
+
+            if ((options & kFSCatInfoFSFileSecurityRef) &&
+				(fsPerms->fileSec != NULL)) {
                 CFRelease(fsPerms->fileSec);
             }
         }
         if (options & kFSCatInfoFinderInfo) {
             assert(options & kFSCatInfoNodeFlags);
             if (catInfo->nodeFlags & kFSNodeIsDirectoryMask) {
-                FPFinderInfo("finderInfo", sizeof(catInfo->finderInfo), &catInfo->finderInfo, indent, kNameSpacer, verbose, (void *) (uintptr_t) kFolderInfo);
+                FPFinderInfo("finderInfo", sizeof(catInfo->finderInfo),
+							 &catInfo->finderInfo, indent, kNameSpacer,
+							 verbose, (void *)(uintptr_t)kFolderInfo);
             } else {
-                FPFinderInfo("finderInfo", sizeof(catInfo->finderInfo), &catInfo->finderInfo, indent, kNameSpacer, verbose, (void *) (uintptr_t) kFileInfo);
+                FPFinderInfo("finderInfo", sizeof(catInfo->finderInfo),
+							 &catInfo->finderInfo, indent, kNameSpacer,
+							 verbose, (void *)(uintptr_t)kFileInfo);
             }
         }
         if (options & kFSCatInfoFinderXInfo) {
             assert(options & kFSCatInfoNodeFlags);
             if (catInfo->nodeFlags & kFSNodeIsDirectoryMask) {
-                FPFinderInfo("extFinderInfo", sizeof(catInfo->extFinderInfo), &catInfo->extFinderInfo, indent, kNameSpacer, verbose, (void *) (uintptr_t) kFolderInfoExtended);
+                FPFinderInfo("extFinderInfo", sizeof(catInfo->extFinderInfo),
+							 &catInfo->extFinderInfo, indent, kNameSpacer,
+							 verbose, (void *)(uintptr_t)kFolderInfoExtended);
             } else {
-                FPFinderInfo("extFinderInfo", sizeof(catInfo->extFinderInfo), &catInfo->extFinderInfo, indent, kNameSpacer, verbose, (void *) (uintptr_t) kFileInfoExtended);
+                FPFinderInfo("extFinderInfo", sizeof(catInfo->extFinderInfo),
+							 &catInfo->extFinderInfo, indent, kNameSpacer,
+							 verbose, (void *)(uintptr_t)kFileInfoExtended);
             }
         }
         if (options & kFSCatInfoDataSizes) {
-            FPSize("dataLogicalSize", sizeof(catInfo->dataPhysicalSize), &catInfo->dataLogicalSize, indent, kNameSpacer, verbose, NULL);
-            FPSize("dataPhysicalSize", sizeof(catInfo->dataPhysicalSize), &catInfo->dataPhysicalSize, indent, kNameSpacer, verbose, NULL);
+            FPSize("dataLogicalSize", sizeof(catInfo->dataPhysicalSize),
+				   &catInfo->dataLogicalSize, indent, kNameSpacer, verbose,
+				   NULL);
+            FPSize("dataPhysicalSize", sizeof(catInfo->dataPhysicalSize),
+				   &catInfo->dataPhysicalSize, indent, kNameSpacer, verbose,
+				   NULL);
         }
         if (options & kFSCatInfoDataSizes) {
-            FPSize("rsrcLogicalSize", sizeof(catInfo->rsrcPhysicalSize), &catInfo->rsrcLogicalSize, indent, kNameSpacer, verbose, NULL);
-            FPSize("rsrcPhysicalSize", sizeof(catInfo->rsrcPhysicalSize), &catInfo->rsrcPhysicalSize, indent, kNameSpacer, verbose, NULL);
+            FPSize("rsrcLogicalSize", sizeof(catInfo->rsrcPhysicalSize),
+				   &catInfo->rsrcLogicalSize, indent, kNameSpacer, verbose,
+				   NULL);
+            FPSize("rsrcPhysicalSize", sizeof(catInfo->rsrcPhysicalSize),
+				   &catInfo->rsrcPhysicalSize, indent, kNameSpacer, verbose,
+				   NULL);
         }
         if (options & kFSCatInfoValence) {
-            FPUDec("valence", sizeof(catInfo->valence), &catInfo->valence, indent, kNameSpacer, verbose, NULL);
+            FPUDec("valence", sizeof(catInfo->valence), &catInfo->valence,
+				   indent, kNameSpacer, verbose, NULL);
         }
         if (options & kFSCatInfoTextEncoding) {
-            FPEnum("textEncodingHint", sizeof(catInfo->textEncodingHint), &catInfo->textEncodingHint, indent, kNameSpacer, verbose, kTextEncodingEnums);
+            FPEnum("textEncodingHint", sizeof(catInfo->textEncodingHint),
+				   &catInfo->textEncodingHint, indent, kNameSpacer, verbose,
+				   kTextEncodingEnums);
         }
         indent -= kStdIndent;
     }
     if (ref != NULL) {
-        FPUDec("FSRef", sizeof(*ref), ref, indent, 7, verbose, NULL);
+        FPUDec("FSRef", sizeof(*ref), ref, indent, (size_t)7, verbose, NULL);
     }
     if (spec != NULL) {
         #if ! TARGET_RT_64_BIT
             fprintf(stdout, "%*sFSSpec:\n", (int) indent, "");
-            FPPrintFields(kFSSpecFieldDesc, spec, sizeof(*spec), indent + kStdIndent, verbose);
-        #endif
+            FPPrintFields(kFSSpecFieldDesc, spec, sizeof(*spec),
+						  (indent + kStdIndent), verbose);
+        #endif /* !TARGET_RT_64_BIT */
     }
     if (parent != NULL) {
-        FPUDec("parent", sizeof(*parent), parent, indent, 7, verbose, NULL);
+        FPUDec("parent", sizeof(*parent), parent, indent, (size_t)7, verbose,
+			   NULL);
     }
 }
 
-static CommandError PrintFSGetCatalogInfo(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // The implementation of the FSGetCatalogInfo command.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSGetCatalogInfo(CommandArgsRef args, uint32_t indent,
+										  uint32_t verbose)
+    /* The implementation of the FSGetCatalogInfo command.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus        err;
-    int             options;
-    FSRef           ref;
-    FSCatalogInfo * catalogInfo;
-    FSCatalogInfo   catalogInfoBuf;
-    FSRef *         parent;
-    FSRef           parentBuf;
-    FSSpec *        spec; 
+    OSStatus       err;
+    int            options;
+    FSRef          ref;
+    FSCatalogInfo *catalogInfo;
+    FSCatalogInfo  catalogInfoBuf;
+    FSRef *        parent;
+    FSRef          parentBuf;
+    FSSpec *       spec;
     #if ! TARGET_RT_64_BIT
         FSSpec          specBuf;
-    #endif
-    HFSUniStr255 *  name;
-    HFSUniStr255    nameBuf;
-    Boolean         didForceNodeFlags;
+    #endif /* !TARGET_RT_64_BIT */
+    HFSUniStr255 *name;
+    HFSUniStr255  nameBuf;
+    Boolean       didForceNodeFlags;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
     name = NULL;
     catalogInfo = NULL;
     spec = NULL;
     parent = NULL;
     didForceNodeFlags = false;
-    
-    // Get options from arguments.
-    
+
+    /* Get options from arguments: */
     #if ! TARGET_RT_64_BIT
-        if ( CommandArgsGetOptionalConstantString(args, "-spec") ) {
+        if (CommandArgsGetOptionalConstantString(args, "-spec")) {
             spec = &specBuf;
         }
-    #endif
+    #endif /* !TARGET_RT_64_BIT */
 
-    if ( CommandArgsGetOptionalConstantString(args, "-parent") ) {
+    if (CommandArgsGetOptionalConstantString(args, "-parent")) {
         parent = &parentBuf;
     }
 
     err = noErr;
     if (CommandArgsIsOption(args)) {
-        if (CommandArgsGetOptionalConstantString(args, "-kFSCatInfoGettableInfo")) {
+        if (CommandArgsGetOptionalConstantString(args,
+												 "-kFSCatInfoGettableInfo")) {
             options = kFSCatInfoGettableInfo;
         } else {
-            err = CommandArgsGetFlagListInt(args, kFSGetCatalogInfoOptions, &options);
+            err = CommandArgsGetFlagListInt(args, kFSGetCatalogInfoOptions,
+											&options);
         }
     } else {
         options = kFSCatInfoNone;
     }
-    
-    // To print Finder info correctly, we need to know what type of item we're looking at.  So, 
-    // if we're getting Finder info but not getting the node flags, force kFSCatInfoNodeFlags 
-    // and set didForceNodeFlags so that we know not to print it.
-    
-    if ( (err == 0) && (options & (kFSCatInfoFinderInfo | kFSCatInfoFinderXInfo)) && !(options & kFSCatInfoNodeFlags) ) {
+
+    /* To print Finder info correctly, we need to know the type of item at which
+     * we are looking at. So, if we are getting Finder info but not getting the
+     * node flags, force kFSCatInfoNodeFlags and set didForceNodeFlags so that
+     * we know not to print it. */
+
+    if ((err == 0) &&
+		(options & (kFSCatInfoFinderInfo | kFSCatInfoFinderXInfo)) &&
+		!(options & kFSCatInfoNodeFlags)) {
         didForceNodeFlags = true;
         options |= kFSCatInfoNodeFlags;
     }
-    
-    if ( (err == noErr) && (options != kFSCatInfoNone) ) {
+
+    if ((err == noErr) && (options != kFSCatInfoNone)) {
         catalogInfo = &catalogInfoBuf;
     }
 
     if (err == noErr) {
         name = &nameBuf;
     }
-    
+
     if (err == noErr) {
         err = CommandArgsGetFSRef(args, &ref);
     }
     if (err == noErr) {
-        err = FSGetCatalogInfo(
-            &ref,
-            options,
-            catalogInfo,
-            name,
-            spec, 
-            parent
-        );
+        err = FSGetCatalogInfo(&ref, (FSVolumeInfoBitmap)options, catalogInfo,
+							   name, spec, parent);
     }
     if (err == noErr) {
-        PrintCatalogInfo(
-            name,
-            options, 
-            didForceNodeFlags, 
-            catalogInfo,
-            NULL,
-            spec,
-            parent,
-            indent,
-            verbose
-        );
+        PrintCatalogInfo(name, (FSVolumeInfoBitmap)options,
+						 (bool)didForceNodeFlags, catalogInfo, NULL, spec,
+						 parent, indent, verbose);
     }
 
     return CommandErrorMakeWithOSStatus(err);
@@ -1366,7 +1499,7 @@ static CommandError PrintFSGetCatalogInfo(CommandArgsRef args, uint32_t indent, 
 static const CommandHelpEntry kFSGetCatalogInfoHelp[] = {
     #if ! TARGET_RT_64_BIT
         {CommandHelpString, "-spec      Ask for FSSpec"},
-    #endif
+    #endif /* !TARGET_RT_64_BIT */
     {CommandHelpString, "-parent    Ask for parent FSRef"},
     {CommandHelpString, "-options   Catalog info to request; default is none"},
     {CommandHelpString, "    kFSCatInfoGettableInfo"},
@@ -1388,24 +1521,25 @@ const CommandInfo kFSGetCatalogInfoCommand = {
 
 #pragma mark *     FSGetCatalogInfoBulk
 
-static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // The implementation of the FSGetCatalogInfoBulk command.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args,
+											  uint32_t indent, uint32_t verbose)
+    /* The implementation of the FSGetCatalogInfoBulk command.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus        err;
-    OSStatus        junk;
-    int             options;
-    size_t          itemCount;
-    FSRef           ref;
-    FSIterator      iter;
-    FSCatalogInfo * catalogInfos;
-    FSRef *         refs;
-    FSSpec *        specs; 
-    HFSUniStr255 *  names;
-    Boolean         didForceNodeFlags;
+    OSStatus       err;
+    OSStatus       junk;
+    int            options;
+    size_t         itemCount;
+    FSRef          ref;
+    FSIterator     iter;
+    FSCatalogInfo *catalogInfos;
+    FSRef *        refs;
+    FSSpec *       specs;
+    HFSUniStr255 * names;
+    Boolean        didForceNodeFlags;
 
-    assert( CommandArgsValid(args) );
+    assert(CommandArgsValid(args));
 
     iter = NULL;
     catalogInfos = NULL;
@@ -1413,9 +1547,9 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
     specs = NULL;
     names = NULL;
     didForceNodeFlags = false;
-    
-    // Get options from arguments.
-    
+
+    /* Get options from arguments. */
+
     err = noErr;
     itemCount = 64;
     if (CommandArgsGetOptionalConstantString(args, "-count")) {
@@ -1424,8 +1558,9 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
             err = kCommandUsageErr;
         }
     }
-    
-    if ( (err == noErr) && CommandArgsGetOptionalConstantString(args, "-refs") ) {
+
+    if ((err == noErr) &&
+		(CommandArgsGetOptionalConstantString(args, "-refs"))) {
         refs = malloc(sizeof(*refs) * itemCount);
         if (refs == NULL) {
             err = memFullErr;
@@ -1433,36 +1568,42 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
     }
 
     #if ! TARGET_RT_64_BIT
-        if ( (err == noErr) && CommandArgsGetOptionalConstantString(args, "-specs") ) {
+        if ((err == noErr) &&
+			(CommandArgsGetOptionalConstantString(args, "-specs"))) {
             specs = malloc(sizeof(*specs) * itemCount);
             if (specs == NULL) {
                 err = memFullErr;
             }
         }
-    #endif
+    #endif /* !TARGET_RT_64_BIT */
 
     if (err == noErr) {
         if (CommandArgsIsOption(args)) {
-            if (CommandArgsGetOptionalConstantString(args, "-kFSCatInfoGettableInfo")) {
+            if (CommandArgsGetOptionalConstantString(args,
+													 "-kFSCatInfoGettableInfo")) {
                 options = kFSCatInfoGettableInfo;
             } else {
-                err = CommandArgsGetFlagListInt(args, kFSGetCatalogInfoOptions, &options);
+                err = CommandArgsGetFlagListInt(args, kFSGetCatalogInfoOptions,
+												&options);
             }
         } else {
             options = kFSCatInfoNone;
         }
     }
-    
-    // To print Finder info correctly, we need to know what type of item we're looking at.  So, 
-    // if we're getting Finder info but not getting the node flags, force kFSCatInfoNodeFlags 
-    // and set didForceNodeFlags so that we know not to print it.
-    
-    if ( (err == 0) && (options & (kFSCatInfoFinderInfo | kFSCatInfoFinderXInfo)) && !(options & kFSCatInfoNodeFlags) ) {
+
+    /* To print Finder info correctly, we need to know the type of item at which
+     * we are looking. So, if we are getting Finder info but not getting the
+     * node flags, force kFSCatInfoNodeFlags and set didForceNodeFlags so that
+     * we know not to print it. */
+
+    if ((err == 0) &&
+		(options & (kFSCatInfoFinderInfo | kFSCatInfoFinderXInfo)) &&
+		!(options & kFSCatInfoNodeFlags)) {
         didForceNodeFlags = true;
         options |= kFSCatInfoNodeFlags;
     }
-    
-    if ( (err == noErr) && (options != kFSCatInfoNone) ) {
+
+    if ((err == noErr) && (options != kFSCatInfoNone)) {
         catalogInfos = malloc(itemCount * sizeof(*catalogInfos));
         if (catalogInfos == NULL) {
             err = memFullErr;
@@ -1475,7 +1616,7 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
             err = memFullErr;
         }
     }
-    
+
     if (err == noErr) {
         err = CommandArgsGetFSRef(args, &ref);
     }
@@ -1483,26 +1624,19 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
         err = FSOpenIterator(&ref, kFSIterateFlat, &iter);
     }
     if (err == noErr) {
-        Boolean         firstItem;
-        Boolean         done;
-        ItemCount       foundItemCount;
-        ItemCount       foundItemIndex;
-        Boolean         containerChanged;
-        
+        Boolean   firstItem;
+        Boolean   done;
+        ItemCount foundItemCount;
+        ItemCount foundItemIndex;
+        Boolean   containerChanged;
+
         firstItem = true;
         done = false;
         do {
-            err = FSGetCatalogInfoBulk(
-                iter,
-                itemCount,
-                &foundItemCount,
-                &containerChanged, 
-                options,
-                catalogInfos,
-                refs, 
-                specs, 
-                names
-            );
+            err = FSGetCatalogInfoBulk(iter, itemCount, &foundItemCount,
+									   &containerChanged,
+									   (FSVolumeInfoBitmap)options,
+									   catalogInfos, refs, specs, names);
             if (err == errFSNoMoreItems) {
                 err = noErr;
                 done = true;
@@ -1512,28 +1646,25 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
                     fprintf(stdout, "*** Container Changed ***\n");
                     firstItem = false;
                 }
-                for (foundItemIndex = 0; foundItemIndex < foundItemCount; foundItemIndex++) {
-                    if ( ! firstItem ) {
-                        if ( (catalogInfos != NULL) || (refs != NULL) || (specs != NULL) ) {
+                for ((foundItemIndex = 0); (foundItemIndex < foundItemCount);
+					 foundItemIndex++) {
+                    if (! firstItem) {
+                        if ((catalogInfos != NULL) ||
+							(refs != NULL) || (specs != NULL)) {
                             fprintf(stdout, "\n");
                         }
                     }
                     firstItem = false;
-                    
-                    PrintCatalogInfo(
-                        (names != NULL) ? &names[foundItemIndex] : NULL,
-                        options, 
-                        didForceNodeFlags, 
-                        (catalogInfos != NULL) ? &catalogInfos[foundItemIndex] : NULL,
-                        (refs != NULL) ? &refs[foundItemIndex] : NULL,
-                        (specs != NULL) ? &specs[foundItemIndex] : NULL,
-                        NULL,
-                        indent,
-                        verbose
-                    );
+
+                    PrintCatalogInfo(((names != NULL) ? &names[foundItemIndex] : NULL),
+                        (FSVolumeInfoBitmap)options, (bool)didForceNodeFlags,
+                        ((catalogInfos != NULL) ? &catalogInfos[foundItemIndex] : NULL),
+                        ((refs != NULL) ? &refs[foundItemIndex] : NULL),
+                        ((specs != NULL) ? &specs[foundItemIndex] : NULL), NULL,
+                        indent, verbose);
                 }
             }
-        } while ( (err == noErr) && ! done );
+        } while ((err == noErr) && ! done);
     }
 
     free(catalogInfos);
@@ -1542,6 +1673,13 @@ static CommandError PrintFSGetCatalogInfoBulk(CommandArgsRef args, uint32_t inde
     free(names);
     if (iter != NULL) {
         junk = FSCloseIterator(iter);
+#ifdef NDEBUG
+		/* dummy condition to use value stored to 'junk' when building for
+		 * Release: */
+		if (junk == noErr) {
+			;
+		}
+#endif /* NDEBUG */
         assert(junk == noErr);
     }
 
@@ -1553,7 +1691,7 @@ static const CommandHelpEntry kFSGetCatalogInfoBulkHelp[] = {
     {CommandHelpString, "-refs  Ask for FSRefs"},
 #if ! TARGET_RT_64_BIT
     {CommandHelpString, "-specs Ask for FSSpecs"},
-#endif
+#endif /* !TARGET_RT_64_BIT */
     {CommandHelpString, "-opts  Catalog info to request; default is none"},
     {CommandHelpString, "    kFSCatInfoGettableInfo"},
     {CommandHelpFlags,  kFSGetCatalogInfoOptions},
@@ -1566,7 +1704,7 @@ const CommandInfo kFSGetCatalogInfoBulkCommand = {
     "[ -count N ] [ -refs ]"
     #if ! TARGET_RT_64_BIT
         " [ -specs ]"
-    #endif
+    #endif /* !TARGET_RT_64_BIT */
     " [ -opts ] itemPath",
     "Iterates a directory using FSGetCatalogInfoBulk.",
     kFSGetCatalogInfoBulkHelp
@@ -1575,42 +1713,52 @@ const CommandInfo kFSGetCatalogInfoBulkCommand = {
 #pragma mark *     PBDTGetComment
 
 #if ! TARGET_RT_64_BIT
-
-static CommandError PrintPBDTGetComment(CommandArgsRef args, uint32_t indent, uint32_t verbose)
-    // The implementation of the PBDTGetComment command.
-    //
-    // indent and verbose are as per the comments for FPPrinter.
+static CommandError PrintPBDTGetComment(CommandArgsRef args, uint32_t indent,
+										uint32_t verbose)
+    /* The implementation of the PBDTGetComment command.
+     *
+     * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus        err;
-    FSRef           itemRef;
-    FSSpec          itemSpec;
-    DTPBRec         pb;
-    SInt16          dtRef;
-    Str255          comment;
+    OSStatus err;
+    FSRef    itemRef;
+    FSSpec   itemSpec;
+    DTPBRec  pb;
+    SInt16   dtRef;
+    Str255   comment;
 
-    assert( CommandArgsValid(args) );
-    
+    assert(CommandArgsValid(args));
+
     dtRef = 0;
-    
+
     err = CommandArgsGetFSRef(args, &itemRef);
     if (err == noErr) {
-        err = FSGetCatalogInfo(&itemRef, kFSCatInfoNone, NULL, NULL, &itemSpec, NULL);
+        err = FSGetCatalogInfo(&itemRef, kFSCatInfoNone, NULL, NULL, &itemSpec,
+							   NULL);
     }
     if (err == noErr) {
         pb.ioNamePtr = NULL;
         pb.ioVRefNum = itemSpec.vRefNum;
         err = PBDTGetPath(&pb);
-        
+
         if (err == noErr) {
             dtRef = pb.ioDTRefNum;
         }
     }
     if (err == noErr) {
-        pb.ioDTRefNum   = dtRef;
+#if !defined(__clang_analyzer__) || !defined(__i386__)
+		if ((pb.ioDTRefNum - 0) != (dtRef + 0)) {
+			pb.ioDTRefNum = dtRef;
+		}
+#else
+		/* dummy condition to use value stored to 'dtRef': */
+		if (dtRef == 0) {
+			;
+		}
+#endif /* !__clang_analyzer__ || !__i386__ */
         pb.ioDirID      = itemSpec.parID;
         pb.ioNamePtr    = itemSpec.name;
-        pb.ioDTBuffer   = (char *) &comment[1];
-        pb.ioDTReqCount = sizeof(comment) - 1;
+        pb.ioDTBuffer   = (char *)&comment[1];
+        pb.ioDTReqCount = (sizeof(comment) - 1);
 
         err = PBDTGetCommentSync(&pb);
         if (err == noErr) {
@@ -1618,7 +1766,8 @@ static CommandError PrintPBDTGetComment(CommandArgsRef args, uint32_t indent, ui
         }
     }
     if (err == noErr) {
-        FPPString("comment", sizeof(comment), comment, indent + kStdIndent, strlen("comment"), verbose, NULL);
+        FPPString("comment", sizeof(comment), comment, (indent + kStdIndent),
+				  strlen("comment"), verbose, NULL);
     }
 
     return CommandErrorMakeWithOSStatus(err);
@@ -1631,5 +1780,6 @@ const CommandInfo kPBDTGetCommentCommand = {
     "Return desktop comment for item.",
     NULL
 };
+#endif /* !TARGET_RT_64_BIT */
 
-#endif
+/* EOF */
