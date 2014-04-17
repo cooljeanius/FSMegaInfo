@@ -4,3 +4,16 @@ build/*
 *.pbxuser
 *.perspectivev3
 *DS_Store*
+*(Autosaved)*
+*.cache
+*.log
+stamp-h*
+*~
+config.h
+*deps/*.*o
+*.status
+*.o
+Makefile
+Tests/Makefile
+FSMegaInfo
+*.tar.gz
