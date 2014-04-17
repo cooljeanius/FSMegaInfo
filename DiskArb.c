@@ -55,6 +55,7 @@
 #include "FieldPrinter.h"
 #include "Command.h"
 
+/***************************************************************/
 #pragma mark *     DADiskCopyDescription
 
 static CommandError PrintDADiskCopyDescription(CommandArgsRef args,
@@ -64,16 +65,16 @@ static CommandError PrintDADiskCopyDescription(CommandArgsRef args,
      *
      * indent and verbose are as per the comments for FPPrinter. */
 {
-    int             err;
-    const char *    bsdName;
-    DASessionRef    session;
-    DADiskRef       disk;
+    int err;
+    const char *bsdName;
+    DASessionRef session;
+    DADiskRef disk;
     CFDictionaryRef descDict;
 
     assert(CommandArgsValid(args));
 
-    session  = NULL;
-    disk     = NULL;
+    session = NULL;
+    disk = NULL;
     descDict = NULL;
 
     err = CommandArgsGetString(args, &bsdName);
@@ -100,8 +101,7 @@ static CommandError PrintDADiskCopyDescription(CommandArgsRef args,
 					   strlen("description"), verbose, NULL);
     }
 
-    /* Clean up. */
-
+    /* Clean up: */
     if (descDict != NULL) {
         CFRelease(descDict);
     }

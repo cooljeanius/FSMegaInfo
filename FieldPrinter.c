@@ -77,12 +77,12 @@
 
 extern char *FPPStringToUTFCString(ConstStr255Param pstr,
 								   CFStringEncoding pstrEncoding)
-    /* See comment in header. */
+    /* See comment for corresponding prototype in corresponding header. */
 {
     CFStringRef str;
-    CFIndex     strBufLen;
-    char *      strBuf;
-    Boolean     success;
+    CFIndex strBufLen;
+    char *strBuf;
+    Boolean success;
 
     assert(pstr != NULL);
 
@@ -115,16 +115,15 @@ extern char *FPPStringToUTFCString(ConstStr255Param pstr,
 
 extern void FPPrintFlags(uintmax_t flags, const FPFlagDesc *flagList,
 						 size_t nameWidth, uint32_t indent)
-    /* See comment in header. */
+    /* See comment for corresponding prototype in corresponding header. */
 {
-    int    flagIndex;
+    int flagIndex;
     size_t thisLen;
 
     assert(flagList != NULL);
 
     /* Calculate the length of the longest flag name (unless the caller
-     * specified one). */
-
+     * specified one): */
     if (nameWidth == 0) {
         flagIndex = 0;
         while (flagList[flagIndex].flagName != NULL) {
@@ -136,8 +135,7 @@ extern void FPPrintFlags(uintmax_t flags, const FPFlagDesc *flagList,
         }
     }
 
-    /* Print each matching flag, clearing each flag that we recognise. */
-
+    /* Print each matching flag, clearing each flag that we recognise: */
     flagIndex = 0;
     while (flagList[flagIndex].flagName != NULL) {
         fprintf(stdout, "%*s%-*s = %s\n", (int) indent, "", (int) nameWidth,
@@ -147,8 +145,7 @@ extern void FPPrintFlags(uintmax_t flags, const FPFlagDesc *flagList,
         flagIndex += 1;
     }
 
-    /* If any flags remain unrecognised, tell the user. */
-
+    /* If any flags remain unrecognised, tell the user: */
     if (flags != 0) {
         fprintf(stdout, "%*s... and others (0x%llx)\n", (int)indent, "",
 				(long long unsigned int)flags);
@@ -156,10 +153,10 @@ extern void FPPrintFlags(uintmax_t flags, const FPFlagDesc *flagList,
 }
 
 extern size_t FPFindFlagByName(const FPFlagDesc *flagList, const char *flagName)
-    /* See comment in header. */
+    /* See comment for corresponding prototype in corresponding header. */
 {
-    bool    found;
-    size_t  flagIndex;
+    bool found;
+    size_t flagIndex;
 
     found = false;
     flagIndex = 0;
@@ -177,10 +174,10 @@ extern size_t FPFindFlagByName(const FPFlagDesc *flagList, const char *flagName)
 }
 
 extern size_t FPFindEnumByValue(const FPEnumDesc enumList[], int enumValue)
-    /* See comment in header. */
+    /* See comment for corresponding prototype in corresponding header. */
 {
-    bool        found;
-    size_t      enumIndex;
+    bool found;
+    size_t enumIndex;
 
     found = false;
     enumIndex = 0;
@@ -199,21 +196,21 @@ extern size_t FPFindEnumByValue(const FPEnumDesc enumList[], int enumValue)
 
 extern size_t FPFindEnumByName(const FPEnumDesc enumList[],
 							   const char *enumName)
-    /* See comment in header. */
+    /* See comment for corresponding prototype in corresponding header. */
 {
-    bool        found;
-    size_t      enumIndex;
+    bool   found;
+    size_t enumIndex;
 
     found = false;
     enumIndex = 0;
-    while ( ! found && (enumList[enumIndex].enumName != NULL) ) {
+    while (! found && (enumList[enumIndex].enumName != NULL)) {
         found = (strcasecmp(enumList[enumIndex].enumName, enumName) == 0);
-        if ( ! found ) {
+        if (! found) {
             enumIndex += 1;
         }
     }
 
-    if ( ! found ) {
+    if (! found) {
         enumIndex = (size_t)kFPNotFound;
     }
     return enumIndex;
@@ -224,17 +221,16 @@ static void FPPrintFieldsCore(const FPFieldDesc fields[], const void *fieldBuf,
 							  uint32_t verbose, FPEndian endian)
 {
     #pragma unused(fieldBufSize)
-    size_t      nameWidth;
-    size_t      nameLen;
-    size_t      fieldIndex;
-    FPPrinter   printer;
+    size_t nameWidth;
+    size_t nameLen;
+    size_t fieldIndex;
+    FPPrinter printer;
     const void *info;
 
     assert(fields != NULL);
     assert(fieldBuf != NULL);
 
-    /* Calculate the maximum field of the field names. */
-
+    /* Calculate the maximum field of the field names: */
     nameWidth  = 0;
     fieldIndex = 0;
     while (fields[fieldIndex].fieldName != NULL) {
@@ -245,25 +241,23 @@ static void FPPrintFieldsCore(const FPFieldDesc fields[], const void *fieldBuf,
         fieldIndex += 1;
     }
 
-    /* Print each field. */
-
+    /* Print each field: */
     fieldIndex = 0;
     while (fields[fieldIndex].fieldName != NULL) {
-        /* Make sure the field is within the structure. */
-
+        /* Make sure the field is within the structure: */
         assert(fields[fieldIndex].fieldOffset < fieldBufSize );
         assert((fields[fieldIndex].fieldOffset + fields[fieldIndex].fieldSize) <= fieldBufSize);
 
-        /* Process any endian override requested by the caller. */
-
+        /* Process any endian override requested by the caller: */
         printer = fields[fieldIndex].fieldPrinter;
-        info    = fields[fieldIndex].fieldInfo;
+        info = fields[fieldIndex].fieldInfo;
         switch (endian) {
             case kFPValueHostEndian:
                 /* (do nothing) */
                 break;
             case kFPValueBigEndian:
-                if ((printer == FPHex) || (printer == FPSDec) || (printer == FPUDec) || (printer == FPSignature)) {
+                if ((printer == FPHex) || (printer == FPSDec) ||
+					(printer == FPUDec) || (printer == FPSignature)) {
                     info = (const void *)(uintptr_t)endian;
                 } else if (printer == FPFlags) {
                     printer = FPFlagsBE;
@@ -279,17 +273,10 @@ static void FPPrintFieldsCore(const FPFieldDesc fields[], const void *fieldBuf,
                 break;
         }
 
-        /* Call the printer routine. */
-
-        printer(
-            fields[fieldIndex].fieldName,
-            fields[fieldIndex].fieldSize,
-            (((char *) fieldBuf) + fields[fieldIndex].fieldOffset),
-            indent,
-            nameWidth,
-            verbose,
-            info
-        );
+        /* Call the printer routine: */
+        printer(fields[fieldIndex].fieldName, fields[fieldIndex].fieldSize,
+				(((char *)fieldBuf) + fields[fieldIndex].fieldOffset), indent,
+				nameWidth, verbose, info);
         fieldIndex += 1;
     }
 }
@@ -297,7 +284,7 @@ static void FPPrintFieldsCore(const FPFieldDesc fields[], const void *fieldBuf,
 extern void FPPrintFields(const FPFieldDesc fields[], const void *fieldBuf,
 						  size_t fieldBufSize, uint32_t indent,
 						  uint32_t verbose)
-    /* See comments in header. */
+    /* See comments for corresponding prototype in corresponding header. */
 {
     FPPrintFieldsCore(fields, fieldBuf, fieldBufSize, indent, verbose,
 					  kFPValueHostEndian);
@@ -375,7 +362,7 @@ extern void FPCStringPtr(const char *fieldName, size_t fieldSize,
 extern void FPPString(const char *fieldName, size_t fieldSize,
 					  const void *fieldPtr, uint32_t indent, size_t nameWidth,
 					  uint32_t verbose, const void *info)
-    /* Prints a Pascal string field.  info supplies the text encoding.
+    /* Prints a Pascal string field. 'info' supplies the text encoding.
      *
      * See definition of FPPrinter for a parameter description. */
 {
@@ -389,7 +376,8 @@ extern void FPPString(const char *fieldName, size_t fieldSize,
     assert(strBuf != NULL);
 
     if (strBuf != NULL) {
-        fprintf(stdout, "%*s%-*s = '%s'\n", (int) indent, "", (int) nameWidth, fieldName, strBuf);
+        fprintf(stdout, "%*s%-*s = '%s'\n", (int) indent, "", (int) nameWidth,
+				fieldName, strBuf);
     }
 
     free(strBuf);
@@ -436,8 +424,7 @@ extern void FPCFType(const char *fieldName, size_t fieldSize,
     value = *((CFTypeRef *)fieldPtr);
     assert(value != NULL);
 
-    /* First handle the compound types, CFDictionary and CFArray. */
-
+    /* First handle the compound types, CFDictionary and CFArray: */
     if (CFGetTypeID(value) == CFDictionaryGetTypeID()) {
         FPCFDictionary(fieldName, sizeof(value), &value, indent, nameWidth,
 					   verbose, NULL);
@@ -450,13 +437,12 @@ extern void FPCFType(const char *fieldName, size_t fieldSize,
     } else {
         const char *quoteStr;
         CFStringRef str;
-        CFIndex     strBufLen;
-        char *      strBuf;
-        Boolean     success;
+        CFIndex strBufLen;
+        char *strBuf;
+        Boolean success;
 
         /* Handle everything else, which hopefully can be converted to a string
-         * using CFStringCreateWithFormat. */
-
+         * using CFStringCreateWithFormat: */
         quoteStr = "";
         if (CFGetTypeID(value) == CFStringGetTypeID()) {
             quoteStr = "'";
@@ -514,28 +500,29 @@ extern void FPCFDictionary(const char *fieldName, size_t fieldSize,
      * See definition of FPPrinter for a parameter description. */
 {
     CFDictionaryRef dict;
-    CFIndex         dictCount;
-    CFIndex         dictIndex;
-    Boolean         success;
+    CFIndex dictCount;
+    CFIndex dictIndex;
+    Boolean success;
 
     #pragma unused(fieldSize)
     #pragma unused(verbose)
     #pragma unused(info)
-    assert( FPStandardPreCondition() );
+    assert(FPStandardPreCondition());
     assert(fieldSize == sizeof(CFDictionaryRef));
 
-    dict = *( (CFDictionaryRef *) fieldPtr );
+    dict = *((CFDictionaryRef *)fieldPtr);
     assert(dict != NULL);
-    assert( CFGetTypeID(dict) == CFDictionaryGetTypeID() );
+    assert(CFGetTypeID(dict) == CFDictionaryGetTypeID());
 
-    fprintf(stdout, "%*s%-*s = {\n", (int) indent, "", (int) nameWidth, fieldName);
+    fprintf(stdout, "%*s%-*s = {\n", (int)indent, "", (int)nameWidth,
+			fieldName);
 
     dictCount = CFDictionaryGetCount(dict);
     if (dictCount > 0) {
         CFTypeRef *keys;
-        CFIndex    keyWidth;
-        char *     keyBuf;
-        CFIndex    keyBufSize;
+        CFIndex keyWidth;
+        char *keyBuf;
+        CFIndex keyBufSize;
 
         keys = malloc((size_t)((unsigned long)dictCount * sizeof(CFTypeRef)));
         assert(keys != NULL);
@@ -543,31 +530,29 @@ extern void FPCFDictionary(const char *fieldName, size_t fieldSize,
         CFDictionaryGetKeysAndValues(dict, (const void **)keys, NULL);
 
         /* Sort the keys so that we get consistent results for the benefit of
-         * the test script. */
-
+         * the test script: */
         qsort(keys, (size_t)dictCount, sizeof(*keys), KeyCompare);
 
         /* Calculate the maximum length of the keys. This is somewhat bogus
          * because we are counting in Unicode characters, not UTF-8, but it will
          * work for the common case where the keys are all ASCII. */
-
         keyWidth = 0;
-        for (dictIndex = 0; dictIndex < dictCount; dictIndex++) {
-            assert( CFGetTypeID(keys[dictIndex]) == CFStringGetTypeID() );
-            if ( CFStringGetLength(keys[dictIndex]) > keyWidth ) {
+        for ((dictIndex = 0); (dictIndex < dictCount); dictIndex++) {
+            assert(CFGetTypeID(keys[dictIndex]) == CFStringGetTypeID());
+            if (CFStringGetLength(keys[dictIndex]) > keyWidth) {
                 keyWidth = CFStringGetLength(keys[dictIndex]);
             }
         }
 
         /* Once we know the maximum key width, we can use it to allocate a
          * buffer that is big enough to hold the UTF-8 representation of that
-         * width. */
+         * width: */
         keyBufSize = (CFStringGetMaximumSizeForEncoding(keyWidth,
 														kCFStringEncodingUTF8) + 1);
         keyBuf = malloc((size_t)keyBufSize);
         assert(keyBuf != NULL);
 
-        /* Now go through and print each field. */
+        /* Now go through and print each field: */
         for ((dictIndex = 0); (dictIndex < dictCount); dictIndex++) {
             CFTypeRef thisValue;
 
@@ -604,7 +589,7 @@ extern void HFSUniStr255FieldPrinter(const char *fieldName, size_t fieldSize,
      * See definition of FPPrinter for a parameter description. */
 {
     const HFSUniStr255 *hfsStr;
-    CFStringRef         str;
+    CFStringRef str;
 
     #pragma unused(fieldSize)
     assert(FPStandardPreCondition());
@@ -675,7 +660,7 @@ extern void FPBoolean(const char *fieldName, size_t fieldSize,
 static bool SwapIt(const void *info)
 {
     FPEndian endian;
-    bool     swap;
+    bool swap;
 
     endian = (FPEndian)(uintptr_t)info;
     swap = false;
@@ -685,7 +670,7 @@ static bool SwapIt(const void *info)
         case kFPValueBigEndian:
             #if TARGET_RT_LITTLE_ENDIAN
                 swap = true;
-            #endif
+            #endif /* TARGET_RT_LITTLE_ENDIAN */
             break;
         case kFPValueLittleEndian:
             #if TARGET_RT_BIG_ENDIAN
@@ -712,10 +697,10 @@ static uint16_t Swap16(const void *fieldPtr, const void *info)
 
 static uint32_t Swap32(const void *fieldPtr, const void *info)
 {
-    uint32_t    x;
+    uint32_t x;
 
-    x = * (uint32_t *) fieldPtr;
-    if ( SwapIt(info) ) {
+    x = *(uint32_t *)fieldPtr;
+    if (SwapIt(info)) {
         x = OSSwapInt32(x);
     }
     return x;
@@ -838,19 +823,24 @@ extern void FPUDec(const char *fieldName, size_t fieldSize,
 
     switch (fieldSize) {
         case sizeof(uint8_t):
-            fprintf(stdout, "%*s%-*s = %" PRIu8  "\n", (int) indent, "", (int) nameWidth, fieldName, *((uint8_t *)  fieldPtr)   );
+            fprintf(stdout, "%*s%-*s = %" PRIu8  "\n", (int)indent, "",
+					(int)nameWidth, fieldName, *((uint8_t *)fieldPtr));
             break;
         case sizeof(uint16_t):
-            fprintf(stdout, "%*s%-*s = %" PRIu16 "\n", (int) indent, "", (int) nameWidth, fieldName, Swap16(fieldPtr, info) );
+            fprintf(stdout, "%*s%-*s = %" PRIu16 "\n", (int)indent, "",
+					(int)nameWidth, fieldName, Swap16(fieldPtr, info));
             break;
         case sizeof(uint32_t):
-            fprintf(stdout, "%*s%-*s = %" PRIu32 "\n", (int) indent, "", (int) nameWidth, fieldName, Swap32(fieldPtr, info) );
+            fprintf(stdout, "%*s%-*s = %" PRIu32 "\n", (int)indent, "",
+					(int)nameWidth, fieldName, Swap32(fieldPtr, info));
             break;
         case sizeof(uint64_t):
-            fprintf(stdout, "%*s%-*s = %" PRIu64 "\n", (int) indent, "", (int) nameWidth, fieldName, Swap64(fieldPtr, info) );
+            fprintf(stdout, "%*s%-*s = %" PRIu64 "\n", (int)indent, "",
+					(int)nameWidth, fieldName, Swap64(fieldPtr, info));
             break;
         default:
-            FPHex(fieldName, fieldSize, fieldPtr, indent, nameWidth, verbose, info);
+            FPHex(fieldName, fieldSize, fieldPtr, indent, nameWidth, verbose,
+				  info);
             break;
     }
 }
@@ -867,12 +857,12 @@ extern void FPSize(const char *fieldName, size_t fieldSize,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    uint64_t                fieldValue;
-    uint64_t                fieldValueInBytes;
+    uint64_t fieldValue;
+    uint64_t fieldValueInBytes;
     const FPSizeMultiplier *multiplier;
-    const void *            multiplierPtr;
-    uint64_t                unitDivisor;
-    const char *            unitStr;
+    const void *multiplierPtr;
+    uint64_t unitDivisor;
+    const char *unitStr;
 
     #pragma unused(verbose)
     assert(FPStandardPreCondition());
@@ -952,12 +942,12 @@ extern void FPSignature(const char *fieldName, size_t fieldSize,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    uint16_t    sig16;
-    uint32_t    sig32;
-    char        tmp[5] = { 0 };
-    char        strBuf[64];
-    size_t      i;
-    Boolean     success;
+    uint16_t sig16;
+    uint32_t sig32;
+    char tmp[5] = { 0 };
+    char strBuf[64];
+    size_t i;
+    Boolean success;
     CFStringRef str;
     FPEndian    endian;
     bool        swap;
@@ -966,10 +956,10 @@ extern void FPSignature(const char *fieldName, size_t fieldSize,
     assert(FPStandardPreCondition());
     assert((fieldSize == 2) || (fieldSize == 4));
 
-    /* Generate a UTF-8 C string from the data.  This is way more complex that
+    /* Generate a UTF-8 C string from the data. This is way more complex that
      * you would think (ha). */
 
-    /* We want the input data for the string to be big endian.  So, we swap it
+    /* We want the input data for the string to be big endian. So, we swap it
      * around if it is little endian, or if it is host endian on a little endian
      * machine: */
     endian = (FPEndian)(uintptr_t)info;
@@ -1034,13 +1024,13 @@ static const char * FindDevString(dev_t dev)
      * path to the dev node.  The caller is responsible for disposing
      * of this string using "free".  On error, the result is NULL. */
 {
-    int            err;
-    int            junk;
-    const char *   result;
-    DIR *          dir;
+    int err;
+    int junk;
+    const char *result;
+    DIR *dir;
     struct dirent *thisDirEnt;
-    char           thisDirEntPath[MAXPATHLEN];
-    struct stat    sb;
+    char thisDirEntPath[MAXPATHLEN];
+    struct stat sb;
 
     result = NULL;
 
@@ -1052,7 +1042,8 @@ static const char * FindDevString(dev_t dev)
 
             if (thisDirEnt != NULL) {
                 /* We are only interested in character/block device drivers: */
-                if ((thisDirEnt->d_type == DT_CHR) || (thisDirEnt->d_type == DT_BLK)) {
+                if ((thisDirEnt->d_type == DT_CHR) ||
+					(thisDirEnt->d_type == DT_BLK)) {
                     /* Construct the full path to the dev node: */
                     snprintf(thisDirEntPath, sizeof(thisDirEntPath),
 							 _PATH_DEV "%.*s", thisDirEnt->d_namlen,
@@ -1067,9 +1058,9 @@ static const char * FindDevString(dev_t dev)
                         if (sb.st_rdev == dev) {
                             char *tmp;
 
-                            /* We have a match.  Allocate a C string, copy
+                            /* We have a match. Allocate a C string, copy
                              * the name into it, and set up to the return it
-                             * to our caller.  We cannot use strdup() because
+                             * to our caller. We cannot use strdup() because
                              * there is no guarantee that thisDirEnt->d_name is
                              * null terminated. */
 
@@ -1109,7 +1100,7 @@ extern void FPDevT(const char *fieldName, size_t fieldSize,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    dev_t       dev;
+    dev_t dev;
     const char *devStr;
 
     #pragma unused(fieldSize)
@@ -1141,9 +1132,9 @@ extern void FPUID(const char *fieldName, size_t fieldSize, const void *fieldPtr,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    uid_t          uid;
+    uid_t uid;
     struct passwd *pw;
-    const char *   uidStr;
+    const char *uidStr;
 
     #pragma unused(fieldSize)
     #pragma unused(verbose)
@@ -1171,9 +1162,9 @@ extern void FPGID(const char *fieldName, size_t fieldSize, const void *fieldPtr,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    gid_t         gid;
+    gid_t gid;
     struct group *gr;
-    const char *  gidStr;
+    const char *gidStr;
 
     #pragma unused(fieldSize)
     #pragma unused(verbose)
@@ -1205,13 +1196,13 @@ extern void FPGUID(const char *fieldName, size_t fieldSize,
     #pragma unused(fieldSize)
     #pragma unused(verbose)
     #pragma unused(info)
-    int            err;
-    const guid_t * guidPtr;
-    uuid_t         uuid;
-    int            idType;
-    uid_t          id;
-    const char *   idTypeStr;
-    const char *   idStr;
+    int err;
+    const guid_t *guidPtr;
+    uuid_t uuid;
+    int idType;
+    uid_t id;
+    const char *idTypeStr;
+    const char *idStr;
     struct passwd *pw;
     struct group * gr;
     static const guid_t kNullGUID = { { 0 } };
@@ -1230,7 +1221,7 @@ extern void FPGUID(const char *fieldName, size_t fieldSize,
 				"%*s%-*s = 00000000-0000-0000-0000-000000000000 (null)\n",
 				(int)indent, "", (int)nameWidth, fieldName);
     } else {
-        /* It is not null, so we will want to map it to a user or group */
+        /* It is not null, so we will want to map it to a user or group. */
 
         /* Prepare for failure: */
         idTypeStr = "???";
@@ -1291,20 +1282,20 @@ extern void FPModeT(const char *fieldName, size_t fieldSize,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    mode_t        fieldValue;
+    mode_t fieldValue;
     unsigned long tmp;
-    char          modeStr[12];
+    char modeStr[12];
 
     #pragma unused(verbose)
     #pragma unused(info)
-    assert( FPStandardPreCondition() );
+    assert(FPStandardPreCondition());
 
     switch (fieldSize) {
         case sizeof(mode_t):
-            fieldValue = *( (mode_t *) fieldPtr );
+            fieldValue = *((mode_t *)fieldPtr);
             break;
         case sizeof(uint32_t): /* getattrlist returns mode_t's as uint32_t */
-            tmp = *( (uint32_t *) fieldPtr );
+            tmp = *((uint32_t *)fieldPtr);
             fieldValue = (mode_t)tmp;
             break;
         default:
@@ -1335,9 +1326,9 @@ extern void FPEnum(const char *fieldName, size_t fieldSize,
      * See definition of FPPrinter for a parameter description. */
 {
     const FPEnumDesc *enumList;
-    int               fieldValue;
-    int               enumIndex;
-    const char *      enumStr;
+    int fieldValue;
+    int enumIndex;
+    const char *enumStr;
 
     #pragma unused(fieldSize)
     #pragma unused(verbose)
@@ -1467,12 +1458,12 @@ extern void FPUTCDateTime(const char *fieldName, size_t fieldSize,
      * See definition of FPPrinter for a parameter description. */
 {
     static CFDateFormatterRef sFormatter;
-    static CFLocaleRef        sLocale;
-    const UTCDateTime *       dateTime;
-    CFStringRef               dateTimeStr;
-    CFAbsoluteTime            absoluteTime;
-    Boolean                   success;
-    static char               dateTimeBuf[1024];
+    static CFLocaleRef sLocale;
+    const UTCDateTime *dateTime;
+    CFStringRef dateTimeStr;
+    CFAbsoluteTime absoluteTime;
+    Boolean success;
+    static char dateTimeBuf[1024];
 
     #pragma unused(fieldSize)
     #pragma unused(verbose)
@@ -1537,9 +1528,9 @@ extern void FPTimeSpec(const char *fieldName, size_t fieldSize,
      *
      * See definition of FPPrinter for a parameter description. */
 {
-    size_t                 junkSize;
+    size_t junkSize;
     const struct timespec *timeSpec;
-    char                   timeBuf[256];
+    char timeBuf[256];
 
     #pragma unused(fieldSize)
     #pragma unused(verbose)
@@ -1565,79 +1556,79 @@ extern void FPTimeSpec(const char *fieldName, size_t fieldSize,
 }
 
 static const FPFlagDesc kFinderFlags[] = {
-    {kIsOnDesk,      "kIsOnDesk"},
-    {kIsShared,      "kIsShared"},
-    {kHasNoINITs,    "kHasNoINITs"},
+    {kIsOnDesk, "kIsOnDesk"},
+    {kIsShared, "kIsShared"},
+    {kHasNoINITs, "kHasNoINITs"},
     {kHasBeenInited, "kHasBeenInited"},
     {kHasCustomIcon, "kHasCustomIcon"},
-    {kIsStationery,  "kIsStationery"},
-    {kNameLocked,    "kNameLocked"},
-    {kHasBundle,     "kHasBundle"},
-    {kIsInvisible,   "kIsInvisible"},
-    {kIsShared,      "kIsShared"},
-    {kIsAlias,       "kIsAlias"},
+    {kIsStationery, "kIsStationery"},
+    {kNameLocked, "kNameLocked"},
+    {kHasBundle, "kHasBundle"},
+    {kIsInvisible, "kIsInvisible"},
+    {kIsShared, "kIsShared"},
+    {kIsAlias, "kIsAlias"},
     { 0, NULL }
 };
 
 static const FPFlagDesc kExtendedFinderFlags[] = {
-    {kExtendedFlagsAreInvalid,    "kExtendedFlagsAreInvalid"},
+    {kExtendedFlagsAreInvalid, "kExtendedFlagsAreInvalid"},
     {kExtendedFlagHasCustomBadge, "kExtendedFlagHasCustomBadge"},
-    {kExtendedFlagObjectIsBusy,   "kExtendedFlagObjectIsBusy"},
+    {kExtendedFlagObjectIsBusy, "kExtendedFlagObjectIsBusy"},
     {kExtendedFlagHasRoutingInfo, "kExtendedFlagHasRoutingInfo"},
     { 0, NULL }
 };
 
 static const FPFieldDesc kFileInfoFieldDesc[] = {
-    {"fileType",      offsetof(FileInfo, fileType),      sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"fileCreator",   offsetof(FileInfo, fileCreator),   sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"finderFlags",   offsetof(FileInfo, finderFlags),   sizeof(UInt16), FPFlags, kFinderFlags},
-    {"location.v",    offsetof(FileInfo, location.v),    sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"location.h",    offsetof(FileInfo, location.h),    sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"fileType", offsetof(FileInfo, fileType), sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"fileCreator", offsetof(FileInfo, fileCreator), sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"finderFlags", offsetof(FileInfo, finderFlags), sizeof(UInt16), FPFlags, kFinderFlags},
+    {"location.v", offsetof(FileInfo, location.v), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"location.h", offsetof(FileInfo, location.h), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {"reservedField", offsetof(FileInfo, reservedField), sizeof(UInt16), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kExtendedFileInfoFieldDesc[] = {
-    {"reserved1[1]",        offsetof(ExtendedFileInfo, reserved1[0]),        sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"reserved1[2]",        offsetof(ExtendedFileInfo, reserved1[1]),        sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"reserved1[3]",        offsetof(ExtendedFileInfo, reserved1[2]),        sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"reserved1[4]",        offsetof(ExtendedFileInfo, reserved1[3]),        sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved1[1]", offsetof(ExtendedFileInfo, reserved1[0]), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved1[2]", offsetof(ExtendedFileInfo, reserved1[1]), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved1[3]", offsetof(ExtendedFileInfo, reserved1[2]), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved1[4]", offsetof(ExtendedFileInfo, reserved1[3]), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {"extendedFinderFlags", offsetof(ExtendedFileInfo, extendedFinderFlags), sizeof(UInt16), FPFlags, kExtendedFinderFlags},
-    {"reserved2",           offsetof(ExtendedFileInfo, reserved2),           sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"putAwayFolderID",     offsetof(ExtendedFileInfo, putAwayFolderID),     sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved2", offsetof(ExtendedFileInfo, reserved2), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"putAwayFolderID", offsetof(ExtendedFileInfo, putAwayFolderID), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kFolderInfoFieldDesc[] = {
-    {"windowBounds.top",    offsetof(FolderInfo, windowBounds.top),    sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"windowBounds.left",   offsetof(FolderInfo, windowBounds.left),   sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"windowBounds.top", offsetof(FolderInfo, windowBounds.top), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"windowBounds.left", offsetof(FolderInfo, windowBounds.left), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {"windowBounds.bottom", offsetof(FolderInfo, windowBounds.bottom), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"windowBounds.right",  offsetof(FolderInfo, windowBounds.right),  sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"finderFlags",         offsetof(FolderInfo, finderFlags),         sizeof(UInt16), FPFlags, kFinderFlags},
-    {"location.v",          offsetof(FolderInfo, location.v),          sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"location.h",          offsetof(FolderInfo, location.h),          sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"reservedField",       offsetof(FolderInfo, reservedField),       sizeof(UInt16), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"windowBounds.right", offsetof(FolderInfo, windowBounds.right), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"finderFlags", offsetof(FolderInfo, finderFlags), sizeof(UInt16), FPFlags, kFinderFlags},
+    {"location.v", offsetof(FolderInfo, location.v), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"location.h", offsetof(FolderInfo, location.h), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reservedField", offsetof(FolderInfo, reservedField), sizeof(UInt16), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kExtendedFolderInfoFieldDesc[] = {
-    {"scrollPosition.v",    offsetof(ExtendedFolderInfo, scrollPosition.v),    sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"scrollPosition.h",    offsetof(ExtendedFolderInfo, scrollPosition.h),    sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"reserved1",           offsetof(ExtendedFolderInfo, reserved1),           sizeof(SInt32), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"scrollPosition.v", offsetof(ExtendedFolderInfo, scrollPosition.v), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"scrollPosition.h", offsetof(ExtendedFolderInfo, scrollPosition.h), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved1", offsetof(ExtendedFolderInfo, reserved1), sizeof(SInt32), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {"extendedFinderFlags", offsetof(ExtendedFolderInfo, extendedFinderFlags), sizeof(UInt16), FPFlags, kExtendedFinderFlags},
-    {"reserved2",           offsetof(ExtendedFolderInfo, reserved2),           sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"putAwayFolderID",     offsetof(ExtendedFolderInfo, putAwayFolderID),     sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"reserved2", offsetof(ExtendedFolderInfo, reserved2), sizeof(SInt16), FPSDec, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"putAwayFolderID", offsetof(ExtendedFolderInfo, putAwayFolderID), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kVolumeFinderInfoFieldDesc[] = {
-    {"finderInfo[0]",   (0 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of active System Folder */
-    {"finderInfo[1]",   (1 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of startup application, obsolete */
-    {"finderInfo[2]",   (2 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of 1st open Finder window, mostly obsolete */
-    {"finderInfo[3]",   (3 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of traditional Mac OS System Folder */
-    {"finderInfo[4]",   (4 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* reserved */
-    {"finderInfo[5]",   (5 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of Mac OS X System Folder */
-    {"finderInfo[6:7]", (6 * sizeof(UInt32)), sizeof(UInt64), FPHex,  (const void *)(uintptr_t)kFPValueHostEndian}, /* GUID */
+    {"finderInfo[0]", (0 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of active System Folder */
+    {"finderInfo[1]", (1 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of startup application, obsolete */
+    {"finderInfo[2]", (2 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of 1st open Finder window, mostly obsolete */
+    {"finderInfo[3]", (3 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of traditional Mac OS System Folder */
+    {"finderInfo[4]", (4 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* reserved */
+    {"finderInfo[5]", (5 * sizeof(UInt32)), sizeof(UInt32), FPUDec, (const void *)(uintptr_t)kFPValueHostEndian}, /* dirID of Mac OS X System Folder */
+    {"finderInfo[6:7]", (6 * sizeof(UInt32)), sizeof(UInt64), FPHex, (const void *)(uintptr_t)kFPValueHostEndian}, /* GUID */
     {NULL, 0, 0, NULL, NULL}
 };
 

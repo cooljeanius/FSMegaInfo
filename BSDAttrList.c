@@ -89,8 +89,8 @@ static FPFlagDesc *gForkAttrFlags;
 struct AttrDesc {
     attrgroup_t attrMask;
     const char *attrName;
-    size_t      attrSize;
-    FPPrinter   attrPrinter;
+    size_t attrSize;
+    FPPrinter attrPrinter;
     const void *attrInfo;
 };
 typedef struct AttrDesc AttrDesc;
@@ -100,7 +100,8 @@ static void StringAttrPrinter(const char *fieldName, size_t fieldSize,
 							  size_t nameWidth, uint32_t verbose,
 							  const void *info)
     /* Prints a string attribute, as referenced by an attrreference_t structure
-     * in the buffer returned by getattrlist. The encoding is assumed to be UTF-8.
+     * in the buffer returned by getattrlist. The encoding is assumed to be
+     * UTF-8.
      *
      * See definition of FPPrinter for a parameter description. */
 {
@@ -111,7 +112,7 @@ static void StringAttrPrinter(const char *fieldName, size_t fieldSize,
     #pragma unused(info)
     assert(FPStandardPreCondition());
     assert(fieldSize == sizeof(attrreference_t));
-    attrRef = ((attrreference_t *) fieldPtr );
+    attrRef = ((attrreference_t *)fieldPtr);
 
     fprintf(stdout, "%*s%-*s = '%.*s'\n", (int)indent, "", (int)nameWidth,
 			fieldName, (int)attrRef->attr_length,
@@ -152,9 +153,9 @@ static void FPFSID(const char *fieldName, size_t fieldSize,
     #pragma unused(fieldSize)
     #pragma unused(verbose)
     #pragma unused(info)
-    assert( FPStandardPreCondition() );
+    assert(FPStandardPreCondition());
     assert(fieldSize == sizeof(fsid_t));
-    fsidPtr = (const fsid_t *) fieldPtr;
+    fsidPtr = (const fsid_t *)fieldPtr;
 
     fprintf(stdout, "%*s%-*s = [0x%08" PRIx32 ", 0x%08" PRIx32 "]\n",
 			(int)indent, "", (int)nameWidth, fieldName, fsidPtr->val[0],
@@ -167,45 +168,46 @@ static const char kVolCapFlagSpacer[] = "VOL_CAP_FMT_PERSISTENTOBJECTIDS";
 
 static const FPFlagDesc kVolCapFormatFlags[] = {
     { VOL_CAP_FMT_PERSISTENTOBJECTIDS, "VOL_CAP_FMT_PERSISTENTOBJECTIDS" },
-    { VOL_CAP_FMT_SYMBOLICLINKS,       "VOL_CAP_FMT_SYMBOLICLINKS" },
-    { VOL_CAP_FMT_HARDLINKS,           "VOL_CAP_FMT_HARDLINKS" },
-    { VOL_CAP_FMT_JOURNAL,             "VOL_CAP_FMT_JOURNAL" },
-    { VOL_CAP_FMT_JOURNAL_ACTIVE,      "VOL_CAP_FMT_JOURNAL_ACTIVE" },
-    { VOL_CAP_FMT_NO_ROOT_TIMES,       "VOL_CAP_FMT_NO_ROOT_TIMES" },
-    { VOL_CAP_FMT_SPARSE_FILES,        "VOL_CAP_FMT_SPARSE_FILES" },
-    { VOL_CAP_FMT_ZERO_RUNS,           "VOL_CAP_FMT_ZERO_RUNS" },
-    { VOL_CAP_FMT_CASE_SENSITIVE,      "VOL_CAP_FMT_CASE_SENSITIVE" },
-    { VOL_CAP_FMT_CASE_PRESERVING,     "VOL_CAP_FMT_CASE_PRESERVING" },
-    { VOL_CAP_FMT_FAST_STATFS,         "VOL_CAP_FMT_FAST_STATFS" },
-    { VOL_CAP_FMT_2TB_FILESIZE,        "VOL_CAP_FMT_2TB_FILESIZE" },
-    { VOL_CAP_FMT_OPENDENYMODES,       "VOL_CAP_FMT_OPENDENYMODES" },
-    { VOL_CAP_FMT_HIDDEN_FILES,        "VOL_CAP_FMT_HIDDEN_FILES" },
-    { VOL_CAP_FMT_PATH_FROM_ID,        "VOL_CAP_FMT_PATH_FROM_ID" },
+    { VOL_CAP_FMT_SYMBOLICLINKS, "VOL_CAP_FMT_SYMBOLICLINKS" },
+    { VOL_CAP_FMT_HARDLINKS, "VOL_CAP_FMT_HARDLINKS" },
+    { VOL_CAP_FMT_JOURNAL, "VOL_CAP_FMT_JOURNAL" },
+    { VOL_CAP_FMT_JOURNAL_ACTIVE, "VOL_CAP_FMT_JOURNAL_ACTIVE" },
+    { VOL_CAP_FMT_NO_ROOT_TIMES, "VOL_CAP_FMT_NO_ROOT_TIMES" },
+    { VOL_CAP_FMT_SPARSE_FILES, "VOL_CAP_FMT_SPARSE_FILES" },
+    { VOL_CAP_FMT_ZERO_RUNS, "VOL_CAP_FMT_ZERO_RUNS" },
+    { VOL_CAP_FMT_CASE_SENSITIVE, "VOL_CAP_FMT_CASE_SENSITIVE" },
+    { VOL_CAP_FMT_CASE_PRESERVING, "VOL_CAP_FMT_CASE_PRESERVING" },
+    { VOL_CAP_FMT_FAST_STATFS, "VOL_CAP_FMT_FAST_STATFS" },
+    { VOL_CAP_FMT_2TB_FILESIZE, "VOL_CAP_FMT_2TB_FILESIZE" },
+    { VOL_CAP_FMT_OPENDENYMODES, "VOL_CAP_FMT_OPENDENYMODES" },
+    { VOL_CAP_FMT_HIDDEN_FILES, "VOL_CAP_FMT_HIDDEN_FILES" },
+    { VOL_CAP_FMT_PATH_FROM_ID, "VOL_CAP_FMT_PATH_FROM_ID" },
     { 0, NULL }
 };
 
 /* Flags describing volume API capabilities. */
 
 static const FPFlagDesc kVolCapInterfacesFlags[] = {
-    { VOL_CAP_INT_SEARCHFS,          "VOL_CAP_INT_SEARCHFS" },
-    { VOL_CAP_INT_ATTRLIST,          "VOL_CAP_INT_ATTRLIST" },
-    { VOL_CAP_INT_NFSEXPORT,         "VOL_CAP_INT_NFSEXPORT" },
-    { VOL_CAP_INT_READDIRATTR,       "VOL_CAP_INT_READDIRATTR" },
-    { VOL_CAP_INT_EXCHANGEDATA,      "VOL_CAP_INT_EXCHANGEDATA" },
-    { VOL_CAP_INT_COPYFILE,          "VOL_CAP_INT_COPYFILE" },
-    { VOL_CAP_INT_ALLOCATE,          "VOL_CAP_INT_ALLOCATE" },
-    { VOL_CAP_INT_VOL_RENAME,        "VOL_CAP_INT_VOL_RENAME" },
-    { VOL_CAP_INT_ADVLOCK,           "VOL_CAP_INT_ADVLOCK" },
-    { VOL_CAP_INT_FLOCK,             "VOL_CAP_INT_FLOCK" },
+    { VOL_CAP_INT_SEARCHFS, "VOL_CAP_INT_SEARCHFS" },
+    { VOL_CAP_INT_ATTRLIST, "VOL_CAP_INT_ATTRLIST" },
+    { VOL_CAP_INT_NFSEXPORT, "VOL_CAP_INT_NFSEXPORT" },
+    { VOL_CAP_INT_READDIRATTR, "VOL_CAP_INT_READDIRATTR" },
+    { VOL_CAP_INT_EXCHANGEDATA, "VOL_CAP_INT_EXCHANGEDATA" },
+    { VOL_CAP_INT_COPYFILE, "VOL_CAP_INT_COPYFILE" },
+    { VOL_CAP_INT_ALLOCATE, "VOL_CAP_INT_ALLOCATE" },
+    { VOL_CAP_INT_VOL_RENAME, "VOL_CAP_INT_VOL_RENAME" },
+    { VOL_CAP_INT_ADVLOCK, "VOL_CAP_INT_ADVLOCK" },
+    { VOL_CAP_INT_FLOCK, "VOL_CAP_INT_FLOCK" },
     { VOL_CAP_INT_EXTENDED_SECURITY, "VOL_CAP_INT_EXTENDED_SECURITY" },
-    { VOL_CAP_INT_USERACCESS,        "VOL_CAP_INT_USERACCESS" },
-    { VOL_CAP_INT_MANLOCK,           "VOL_CAP_INT_MANLOCK" },
-    { VOL_CAP_INT_NAMEDSTREAMS,      "VOL_CAP_INT_NAMEDSTREAMS" },
-    { VOL_CAP_INT_EXTENDED_ATTR,     "VOL_CAP_INT_EXTENDED_ATTR" },
+    { VOL_CAP_INT_USERACCESS, "VOL_CAP_INT_USERACCESS" },
+    { VOL_CAP_INT_MANLOCK, "VOL_CAP_INT_MANLOCK" },
+    { VOL_CAP_INT_NAMEDSTREAMS, "VOL_CAP_INT_NAMEDSTREAMS" },
+    { VOL_CAP_INT_EXTENDED_ATTR, "VOL_CAP_INT_EXTENDED_ATTR" },
     { 0, NULL }
 };
 
-static void PrintVolCap(const u_int32_t *capList, uint32_t indent, uint32_t verbose)
+static void PrintVolCap(const u_int32_t *capList, uint32_t indent,
+						uint32_t verbose)
     /* Prints a vol_capabilities_set_t array which is made up of 5 u_int32_t
      * elements).  Only two of the elements are currently used
      * (with indexes VOL_CAPABILITIES_FORMAT and VOL_CAPABILITIES_INTERFACES)
@@ -329,59 +331,61 @@ static void FPVolAttr(const char *fieldName, size_t fieldSize,
 
     fprintf(stdout, "%*s%s\n", (int)indent, "", fieldName);
 
-    fprintf(stdout, "%*svalidattr\n", (int) (indent + kStdIndent), "");
-    PrintAttrSet(&volAttr->validattr,  indent + 2 * kStdIndent, ((verbose > 0) ? verbose - 1 : 0) );
-    fprintf(stdout, "%*snativeattr\n", (int) (indent + kStdIndent), "");
-    PrintAttrSet(&volAttr->nativeattr, indent + 2 * kStdIndent, ((verbose > 0) ? verbose - 1 : 0) );
+    fprintf(stdout, "%*svalidattr\n", (int)(indent + kStdIndent), "");
+    PrintAttrSet(&volAttr->validattr, (indent + (2 * kStdIndent)),
+				 ((verbose > 0) ? (verbose - 1) : 0));
+    fprintf(stdout, "%*snativeattr\n", (int)(indent + kStdIndent), "");
+    PrintAttrSet(&volAttr->nativeattr, (indent + (2 * kStdIndent)),
+				 ((verbose > 0) ? (verbose - 1) : 0));
 }
 
 static const FPFlagDesc kACLFlags[] = {
-    { KAUTH_ACL_DEFER_INHERIT,  "KAUTH_ACL_DEFER_INHERIT" },
-    { KAUTH_ACL_NO_INHERIT,     "KAUTH_ACL_NO_INHERIT" },
+    { KAUTH_ACL_DEFER_INHERIT, "KAUTH_ACL_DEFER_INHERIT" },
+    { KAUTH_ACL_NO_INHERIT, "KAUTH_ACL_NO_INHERIT" },
     { 0, NULL }
 };
 
 static const FPEnumDesc kACEKinds[] = {
-    { KAUTH_ACE_PERMIT,             "KAUTH_ACE_PERMIT" },
-    { KAUTH_ACE_DENY,               "KAUTH_ACE_DENY" },
-    { KAUTH_ACE_AUDIT,              "KAUTH_ACE_AUDIT" },
-    { KAUTH_ACE_ALARM,              "KAUTH_ACE_ALARM" },
-    { 0,                            NULL }
+    { KAUTH_ACE_PERMIT, "KAUTH_ACE_PERMIT" },
+    { KAUTH_ACE_DENY, "KAUTH_ACE_DENY" },
+    { KAUTH_ACE_AUDIT, "KAUTH_ACE_AUDIT" },
+    { KAUTH_ACE_ALARM, "KAUTH_ACE_ALARM" },
+    { 0, NULL }
 };
 
 static const char kACEFlagsRightsSpacer[] = "KAUTH_VNODE_WRITE_EXTATTRIBUTES";
 
 static const FPFlagDesc kACEFlags[] = {
-    { KAUTH_ACE_INHERITED,          "KAUTH_ACE_INHERITED" },
-    { KAUTH_ACE_FILE_INHERIT,       "KAUTH_ACE_FILE_INHERIT" },
-    { KAUTH_ACE_DIRECTORY_INHERIT,  "KAUTH_ACE_DIRECTORY_INHERIT" },
-    { KAUTH_ACE_LIMIT_INHERIT,      "KAUTH_ACE_LIMIT_INHERIT" },
-    { KAUTH_ACE_ONLY_INHERIT,       "KAUTH_ACE_ONLY_INHERIT" },
-    { KAUTH_ACE_SUCCESS,            "KAUTH_ACE_SUCCESS" },
-    { KAUTH_ACE_FAILURE,            "KAUTH_ACE_FAILURE" },
-    { 0,                            NULL }
+    { KAUTH_ACE_INHERITED, "KAUTH_ACE_INHERITED" },
+    { KAUTH_ACE_FILE_INHERIT, "KAUTH_ACE_FILE_INHERIT" },
+    { KAUTH_ACE_DIRECTORY_INHERIT, "KAUTH_ACE_DIRECTORY_INHERIT" },
+    { KAUTH_ACE_LIMIT_INHERIT, "KAUTH_ACE_LIMIT_INHERIT" },
+    { KAUTH_ACE_ONLY_INHERIT, "KAUTH_ACE_ONLY_INHERIT" },
+    { KAUTH_ACE_SUCCESS, "KAUTH_ACE_SUCCESS" },
+    { KAUTH_ACE_FAILURE, "KAUTH_ACE_FAILURE" },
+    { 0, NULL }
 };
 
 static const FPFlagDesc kACERights[] = {
-    { KAUTH_VNODE_LIST_DIRECTORY,       "KAUTH_VNODE_LIST_DIRECTORY" },
-    { KAUTH_VNODE_ADD_FILE,             "KAUTH_VNODE_ADD_FILE" },
-    { KAUTH_VNODE_SEARCH,               "KAUTH_VNODE_SEARCH" },
-    { KAUTH_VNODE_DELETE,               "KAUTH_VNODE_DELETE" },
-    { KAUTH_VNODE_ADD_SUBDIRECTORY,     "KAUTH_VNODE_ADD_SUBDIRECTORY" },
-    { KAUTH_VNODE_DELETE_CHILD,         "KAUTH_VNODE_DELETE_CHILD" },
-    { KAUTH_VNODE_READ_ATTRIBUTES,      "KAUTH_VNODE_READ_ATTRIBUTES" },
-    { KAUTH_VNODE_WRITE_ATTRIBUTES,     "KAUTH_VNODE_WRITE_ATTRIBUTES" },
-    { KAUTH_VNODE_READ_EXTATTRIBUTES,   "KAUTH_VNODE_READ_EXTATTRIBUTES" },
-    { KAUTH_VNODE_WRITE_EXTATTRIBUTES,  "KAUTH_VNODE_WRITE_EXTATTRIBUTES" },
-    { KAUTH_VNODE_READ_SECURITY,        "KAUTH_VNODE_READ_SECURITY" },
-    { KAUTH_VNODE_WRITE_SECURITY,       "KAUTH_VNODE_WRITE_SECURITY" },
-    { KAUTH_VNODE_TAKE_OWNERSHIP,       "KAUTH_VNODE_TAKE_OWNERSHIP" },
-    { KAUTH_VNODE_SYNCHRONIZE,          "KAUTH_VNODE_SYNCHRONIZE" },
+    { KAUTH_VNODE_LIST_DIRECTORY, "KAUTH_VNODE_LIST_DIRECTORY" },
+    { KAUTH_VNODE_ADD_FILE, "KAUTH_VNODE_ADD_FILE" },
+    { KAUTH_VNODE_SEARCH, "KAUTH_VNODE_SEARCH" },
+    { KAUTH_VNODE_DELETE, "KAUTH_VNODE_DELETE" },
+    { KAUTH_VNODE_ADD_SUBDIRECTORY, "KAUTH_VNODE_ADD_SUBDIRECTORY" },
+    { KAUTH_VNODE_DELETE_CHILD, "KAUTH_VNODE_DELETE_CHILD" },
+    { KAUTH_VNODE_READ_ATTRIBUTES, "KAUTH_VNODE_READ_ATTRIBUTES" },
+    { KAUTH_VNODE_WRITE_ATTRIBUTES, "KAUTH_VNODE_WRITE_ATTRIBUTES" },
+    { KAUTH_VNODE_READ_EXTATTRIBUTES, "KAUTH_VNODE_READ_EXTATTRIBUTES" },
+    { KAUTH_VNODE_WRITE_EXTATTRIBUTES, "KAUTH_VNODE_WRITE_EXTATTRIBUTES" },
+    { KAUTH_VNODE_READ_SECURITY, "KAUTH_VNODE_READ_SECURITY" },
+    { KAUTH_VNODE_WRITE_SECURITY, "KAUTH_VNODE_WRITE_SECURITY" },
+    { KAUTH_VNODE_TAKE_OWNERSHIP, "KAUTH_VNODE_TAKE_OWNERSHIP" },
+    { KAUTH_VNODE_SYNCHRONIZE, "KAUTH_VNODE_SYNCHRONIZE" },
 
-    { KAUTH_ACE_GENERIC_ALL,            "KAUTH_ACE_GENERIC_ALL" },
-    { KAUTH_ACE_GENERIC_EXECUTE,        "KAUTH_ACE_GENERIC_EXECUTE" },
-    { KAUTH_ACE_GENERIC_WRITE,          "KAUTH_ACE_GENERIC_WRITE" },
-    { KAUTH_ACE_GENERIC_READ,           "KAUTH_ACE_GENERIC_READ" },
+    { KAUTH_ACE_GENERIC_ALL, "KAUTH_ACE_GENERIC_ALL" },
+    { KAUTH_ACE_GENERIC_EXECUTE, "KAUTH_ACE_GENERIC_EXECUTE" },
+    { KAUTH_ACE_GENERIC_WRITE, "KAUTH_ACE_GENERIC_WRITE" },
+    { KAUTH_ACE_GENERIC_READ, "KAUTH_ACE_GENERIC_READ" },
     { 0, NULL }
 };
 
@@ -395,12 +399,12 @@ extern void FPKauthFileSec(const char *fieldName, size_t fieldSize,
 {
     #pragma unused(fieldSize)
     #pragma unused(info)
-    kauth_filesec_t     fileSec;
-    u_int32_t           aceIndex;
-    u_int32_t           aceKind;
+    kauth_filesec_t fileSec;
+    u_int32_t aceIndex;
+    u_int32_t aceKind;
     static const char kFSecFieldNameSpacer[] = "fsec_magic";
-    static const char kACLFieldNameSpacer[]  = "acl_entrycount";
-    static const char kACEFieldNameSpacer[]  = "ace_applicable";
+    static const char kACLFieldNameSpacer[] = "acl_entrycount";
+    static const char kACEFieldNameSpacer[] = "ace_applicable";
 
     #pragma unused(fieldSize)
     #pragma unused(info)
@@ -410,14 +414,13 @@ extern void FPKauthFileSec(const char *fieldName, size_t fieldSize,
 
     /* Grab the attribute data and cast it to a kauth_filesec_t. */
 
-    fileSec = (kauth_filesec_t) fieldPtr;
+    fileSec = (kauth_filesec_t)fieldPtr;
     assert(fileSec->fsec_magic == KAUTH_FILESEC_MAGIC);
 
     fprintf(stdout, "%*s%s:\n", (int) indent, "", fieldName);
 
-    /* Originally I printed the ACL contents by calling acl_to_text, but I did NOT like
-     * the output format, so now I do it manually. */
-
+    /* Originally I printed the ACL contents by calling acl_to_text, but I did
+     * NOT like the output format, so now I do it manually: */
     FPHex("fsec_magic", sizeof(fileSec->fsec_magic), &fileSec->fsec_magic,
 		  (indent + kStdIndent), strlen(kFSecFieldNameSpacer), verbose, NULL);
     FPGUID("fsec_owner", sizeof(fileSec->fsec_owner), &fileSec->fsec_owner,
@@ -502,7 +505,7 @@ static void ACLAttrPrinter(const char *fieldName, size_t fieldSize,
 }
 
 /* An array of AttrDesc is used to hold information about a set of attributes
- * as returned by getattrlist.  The array is terminated by an entry with a NULL
+ * as returned by getattrlist. The array is terminated by an entry with a NULL
  * name. */
 
 static void PrintAttributes(const AttrDesc attrs[], attrgroup_t attrMask,
@@ -511,18 +514,18 @@ static void PrintAttributes(const AttrDesc attrs[], attrgroup_t attrMask,
 							FinderInfoFlavour finderFlavour)
     /* Prints an attribute buffer as returned by getattrlist.
      * attrs is a pointer to an array of AttrDesc that describe
-     * all of the supported attributes.  attrMask is a bitmap
+     * all of the supported attributes. 'attrMask' is a bitmap
      * describing which of those attributes are present in the buffer.
-     * cursorPtr is a pointer a cursor pointer, which in turn points
-     * to a buffer containing the attribute data.  *cursorPtr points
-     * to the current place in the buffer.  When the routine is done
-     * it updates *cursorPtr to point to just after the last attribute
-     * that it has printed.  indent, nameWidth and verbose are as
-     * per the comments for FPPrinter.  finderFlavour controls how
+     * 'cursorPtr' is a pointer a cursor pointer, which in turn points
+     * to a buffer containing the attribute data. '*cursorPtr' points
+     * to the current place in the buffer. When the routine is done
+     * it updates '*cursorPtr' to point to just after the last attribute
+     * that it has printed. 'indent', 'nameWidth' and 'verbose' are as
+     * per the comments for FPPrinter. 'finderFlavour' controls how
      * Finder info should be printed; it is necessary because Finder
      * info is object type dependent. */
 {
-    size_t      attrIndex;
+    size_t attrIndex;
     const char *cursor;
 
     assert(attrs != NULL);
@@ -534,13 +537,17 @@ static void PrintAttributes(const AttrDesc attrs[], attrgroup_t attrMask,
     attrIndex = 0;
     while (attrs[attrIndex].attrName != NULL) {
         if (attrMask & attrs[attrIndex].attrMask) {
-            FPPrinter   printer;
+            FPPrinter printer;
 
             printer = attrs[attrIndex].attrPrinter;
             if (printer == FPFinderInfoBE) {
-                printer(attrs[attrIndex].attrName, attrs[attrIndex].attrSize, cursor, indent, nameWidth, verbose, (const void *) (uintptr_t) finderFlavour);
+                printer(attrs[attrIndex].attrName, attrs[attrIndex].attrSize,
+						cursor, indent, nameWidth, verbose,
+						(const void *)(uintptr_t)finderFlavour);
             } else {
-                printer(attrs[attrIndex].attrName, attrs[attrIndex].attrSize, cursor, indent, nameWidth, verbose, attrs[attrIndex].attrInfo);
+                printer(attrs[attrIndex].attrName, attrs[attrIndex].attrSize,
+						cursor, indent, nameWidth, verbose,
+						attrs[attrIndex].attrInfo);
             }
             cursor += attrs[attrIndex].attrSize;
         }
@@ -550,112 +557,108 @@ static void PrintAttributes(const AttrDesc attrs[], attrgroup_t attrMask,
     *cursorPtr = cursor;
 }
 
-/* The known constants for fsobj_type_t attributes. */
-
+/* The known constants for fsobj_type_t attributes: */
 static const FPEnumDesc kFSObjTypeEnums[] = {
-    { VNON,  "VNON"  },
-    { VREG,  "VREG"  },
-    { VDIR,  "VDIR"  },
-    { VBLK,  "VBLK"  },
-    { VCHR,  "VCHR"  },
-    { VLNK,  "VLNK"  },
+    { VNON, "VNON" },
+    { VREG, "VREG" },
+    { VDIR, "VDIR" },
+    { VBLK, "VBLK" },
+    { VCHR, "VCHR" },
+    { VLNK, "VLNK" },
     { VSOCK, "VSOCK" },
     { VFIFO, "VFIFO" },
-    { VBAD,  "VBAD"  },
-    { VSTR,  "VSTR"  },
+    { VBAD, "VBAD" },
+    { VSTR, "VSTR" },
     { VCPLX, "VCPLX" },
     { 0, NULL }
 };
 
-/* The known constants for fsobj_tag_t attributes. */
-
+/* The known constants for fsobj_tag_t attributes: */
 static const FPEnumDesc kFSObjTagEnums[] = {
-    { VT_NON,       "VT_NON"     },
-    { VT_UFS,       "VT_UFS"     },
-    { VT_NFS,       "VT_NFS"     },
-    { VT_MFS,       "VT_MFS"     },
-    { VT_MSDOSFS,   "VT_MSDOSFS" },
-    { VT_LFS,       "VT_LFS"     },
-    { VT_LOFS,      "VT_LOFS"    },
-    { VT_FDESC,     "VT_FDESC"   },
-    { VT_PORTAL,    "VT_PORTAL"  },
-    { VT_NULL,      "VT_NULL"    },
-    { VT_UMAP,      "VT_UMAP"    },
-    { VT_KERNFS,    "VT_KERNFS"  },
-    { VT_PROCFS,    "VT_PROCFS"  },
-    { VT_AFS,       "VT_AFS"     },
-    { VT_ISOFS,     "VT_ISOFS"   },
-    { VT_UNION,     "VT_UNION"   },
-    { VT_HFS,       "VT_HFS"     },
-    { VT_ZFS,       "VT_ZFS"     },     /* was VT_VOLFS prior to 10.5 */
-    { VT_DEVFS,     "VT_DEVFS"   },
-    { VT_WEBDAV,    "VT_WEBDAV"  },
-    { VT_UDF,       "VT_UDF"     },
-    { VT_AFP,       "VT_AFP"     },
-    { VT_CDDA,      "VT_CDDA"    },
-    { VT_CIFS,      "VT_CIFS"    },
-    { VT_OTHER,     "VT_OTHER"   },
+    { VT_NON, "VT_NON" },
+    { VT_UFS, "VT_UFS" },
+    { VT_NFS, "VT_NFS" },
+    { VT_MFS, "VT_MFS" },
+    { VT_MSDOSFS, "VT_MSDOSFS" },
+    { VT_LFS, "VT_LFS" },
+    { VT_LOFS, "VT_LOFS" },
+    { VT_FDESC, "VT_FDESC" },
+    { VT_PORTAL, "VT_PORTAL" },
+    { VT_NULL, "VT_NULL" },
+    { VT_UMAP, "VT_UMAP" },
+    { VT_KERNFS, "VT_KERNFS" },
+    { VT_PROCFS, "VT_PROCFS" },
+    { VT_AFS, "VT_AFS" },
+    { VT_ISOFS, "VT_ISOFS" },
+    { VT_UNION, "VT_UNION" },
+    { VT_HFS, "VT_HFS" },
+    { VT_ZFS, "VT_ZFS" }, /* was VT_VOLFS prior to 10.5 */
+    { VT_DEVFS, "VT_DEVFS"  },
+    { VT_WEBDAV, "VT_WEBDAV" },
+    { VT_UDF, "VT_UDF" },
+    { VT_AFP, "VT_AFP" },
+    { VT_CDDA, "VT_CDDA" },
+    { VT_CIFS, "VT_CIFS" },
+    { VT_OTHER, "VT_OTHER" },
     { 0, NULL }
 };
 
 /* Some well known values for the text_encoding_t type
- * (equivalent to the Carbon TextEncoding type).  Note that this
+ * (equivalent to the Carbon TextEncoding type). Note that this
  * does NOT cover all possible values, just those that you are
  * likely to encounter in a file system. */
-
 const FPEnumDesc kTextEncodingEnums[] = {
-    { kTextEncodingMacRoman,           "kTextEncodingMacRoman"           },
-    { kTextEncodingMacJapanese,        "kTextEncodingMacJapanese"        },
-    { kTextEncodingMacChineseTrad,     "kTextEncodingMacChineseTrad"     },
-    { kTextEncodingMacKorean,          "kTextEncodingMacKorean"          },
-    { kTextEncodingMacArabic,          "kTextEncodingMacArabic"          },
-    { kTextEncodingMacHebrew,          "kTextEncodingMacHebrew"          },
-    { kTextEncodingMacGreek,           "kTextEncodingMacGreek"           },
-    { kTextEncodingMacCyrillic,        "kTextEncodingMacCyrillic"        },
-    { kTextEncodingMacDevanagari,      "kTextEncodingMacDevanagari"      },
-    { kTextEncodingMacGurmukhi,        "kTextEncodingMacGurmukhi"        },
-    { kTextEncodingMacGujarati,        "kTextEncodingMacGujarati"        },
-    { kTextEncodingMacOriya,           "kTextEncodingMacOriya"           },
-    { kTextEncodingMacBengali,         "kTextEncodingMacBengali"         },
-    { kTextEncodingMacTamil,           "kTextEncodingMacTamil"           },
-    { kTextEncodingMacTelugu,          "kTextEncodingMacTelugu"          },
-    { kTextEncodingMacKannada,         "kTextEncodingMacKannada"         },
-    { kTextEncodingMacMalayalam,       "kTextEncodingMacMalayalam"       },
-    { kTextEncodingMacSinhalese,       "kTextEncodingMacSinhalese"       },
-    { kTextEncodingMacBurmese,         "kTextEncodingMacBurmese"         },
-    { kTextEncodingMacKhmer,           "kTextEncodingMacKhmer"           },
-    { kTextEncodingMacThai,            "kTextEncodingMacThai"            },
-    { kTextEncodingMacLaotian,         "kTextEncodingMacLaotian"         },
-    { kTextEncodingMacGeorgian,        "kTextEncodingMacGeorgian"        },
-    { kTextEncodingMacArmenian,        "kTextEncodingMacArmenian"        },
-    { kTextEncodingMacChineseSimp,     "kTextEncodingMacChineseSimp"     },
-    { kTextEncodingMacTibetan,         "kTextEncodingMacTibetan"         },
-    { kTextEncodingMacMongolian,       "kTextEncodingMacMongolian"       },
-    { kTextEncodingMacEthiopic,        "kTextEncodingMacEthiopic"        },
+    { kTextEncodingMacRoman, "kTextEncodingMacRoman" },
+    { kTextEncodingMacJapanese, "kTextEncodingMacJapanese" },
+    { kTextEncodingMacChineseTrad, "kTextEncodingMacChineseTrad" },
+    { kTextEncodingMacKorean, "kTextEncodingMacKorean" },
+    { kTextEncodingMacArabic, "kTextEncodingMacArabic" },
+    { kTextEncodingMacHebrew, "kTextEncodingMacHebrew" },
+    { kTextEncodingMacGreek, "kTextEncodingMacGreek" },
+    { kTextEncodingMacCyrillic, "kTextEncodingMacCyrillic" },
+    { kTextEncodingMacDevanagari, "kTextEncodingMacDevanagari" },
+    { kTextEncodingMacGurmukhi, "kTextEncodingMacGurmukhi" },
+    { kTextEncodingMacGujarati, "kTextEncodingMacGujarati" },
+    { kTextEncodingMacOriya, "kTextEncodingMacOriya" },
+    { kTextEncodingMacBengali, "kTextEncodingMacBengali" },
+    { kTextEncodingMacTamil, "kTextEncodingMacTamil" },
+    { kTextEncodingMacTelugu, "kTextEncodingMacTelugu" },
+    { kTextEncodingMacKannada, "kTextEncodingMacKannada" },
+    { kTextEncodingMacMalayalam, "kTextEncodingMacMalayalam" },
+    { kTextEncodingMacSinhalese, "kTextEncodingMacSinhalese" },
+    { kTextEncodingMacBurmese, "kTextEncodingMacBurmese" },
+    { kTextEncodingMacKhmer, "kTextEncodingMacKhmer" },
+    { kTextEncodingMacThai, "kTextEncodingMacThai" },
+    { kTextEncodingMacLaotian, "kTextEncodingMacLaotian" },
+    { kTextEncodingMacGeorgian, "kTextEncodingMacGeorgian" },
+    { kTextEncodingMacArmenian, "kTextEncodingMacArmenian" },
+    { kTextEncodingMacChineseSimp, "kTextEncodingMacChineseSimp" },
+    { kTextEncodingMacTibetan, "kTextEncodingMacTibetan" },
+    { kTextEncodingMacMongolian, "kTextEncodingMacMongolian" },
+    { kTextEncodingMacEthiopic, "kTextEncodingMacEthiopic" },
     { kTextEncodingMacCentralEurRoman, "kTextEncodingMacCentralEurRoman" },
-    { kTextEncodingMacVietnamese,      "kTextEncodingMacVietnamese"      },
-    { kTextEncodingMacExtArabic,       "kTextEncodingMacExtArabic"       },
-    { kTextEncodingMacSymbol,          "kTextEncodingMacSymbol"          },
-    { kTextEncodingMacDingbats,        "kTextEncodingMacDingbats"        },
-    { kTextEncodingMacTurkish,         "kTextEncodingMacTurkish"         },
-    { kTextEncodingMacCroatian,        "kTextEncodingMacCroatian"        },
-    { kTextEncodingMacIcelandic,       "kTextEncodingMacIcelandic"       },
-    { kTextEncodingMacRomanian,        "kTextEncodingMacRomanian"        },
-    { kTextEncodingMacCeltic,          "kTextEncodingMacCeltic"          },
-    { kTextEncodingMacGaelic,          "kTextEncodingMacGaelic"          },
-    { kTextEncodingMacKeyboardGlyphs,  "kTextEncodingMacKeyboardGlyphs"  },
-    { kTextEncodingMacRSymbol,         "kTextEncodingMacRSymbol"         },
-    { kTextEncodingMacUninterp,        "kTextEncodingMacUninterp"        },
-    { kTextEncodingMacUnicode,         "kTextEncodingMacUnicode"         },
-    { kTextEncodingMacFarsi,           "kTextEncodingMacFarsi"           },
-    { kTextEncodingMacUkrainian,       "kTextEncodingMacUkrainian"       },
-    { kTextEncodingMacInuit,           "kTextEncodingMacInuit"           },
-    { kTextEncodingMacVT100,           "kTextEncodingMacVT100"           },
+    { kTextEncodingMacVietnamese, "kTextEncodingMacVietnamese" },
+    { kTextEncodingMacExtArabic, "kTextEncodingMacExtArabic" },
+    { kTextEncodingMacSymbol, "kTextEncodingMacSymbol" },
+    { kTextEncodingMacDingbats,  "kTextEncodingMacDingbats" },
+    { kTextEncodingMacTurkish, "kTextEncodingMacTurkish" },
+    { kTextEncodingMacCroatian, "kTextEncodingMacCroatian" },
+    { kTextEncodingMacIcelandic, "kTextEncodingMacIcelandic" },
+    { kTextEncodingMacRomanian, "kTextEncodingMacRomanian" },
+    { kTextEncodingMacCeltic, "kTextEncodingMacCeltic" },
+    { kTextEncodingMacGaelic, "kTextEncodingMacGaelic" },
+    { kTextEncodingMacKeyboardGlyphs, "kTextEncodingMacKeyboardGlyphs" },
+    { kTextEncodingMacRSymbol, "kTextEncodingMacRSymbol" },
+    { kTextEncodingMacUninterp, "kTextEncodingMacUninterp" },
+    { kTextEncodingMacUnicode, "kTextEncodingMacUnicode" },
+    { kTextEncodingMacFarsi, "kTextEncodingMacFarsi" },
+    { kTextEncodingMacUkrainian, "kTextEncodingMacUkrainian" },
+    { kTextEncodingMacInuit, "kTextEncodingMacInuit" },
+    { kTextEncodingMacVT100, "kTextEncodingMacVT100" },
     { 0, NULL },
 };
 
-/* Flags for the ATTR_CMN_USERACCESS attribute. */
-
+/* Flags for the ATTR_CMN_USERACCESS attribute: */
 static const FPFlagDesc kUserAccessFlags[] = {
     { R_OK, "R_OK" },
     { W_OK, "W_OK" },
@@ -665,52 +668,51 @@ static const FPFlagDesc kUserAccessFlags[] = {
 
 /* Flags for the ATTR_VOL_ENCODINGSUSED attribute.
  * Note the weird values for the last two entries. */
-
 static const FPFlagDesc kEncodingsUsedFlags[] = {
-    { (1LL << kTextEncodingMacRoman),           "kTextEncodingMacRoman"           },
-    { (1LL << kTextEncodingMacRoman),           "kTextEncodingMacRoman"           },
-    { (1LL << kTextEncodingMacJapanese),        "kTextEncodingMacJapanese"        },
-    { (1LL << kTextEncodingMacChineseTrad),     "kTextEncodingMacChineseTrad"     },
-    { (1LL << kTextEncodingMacKorean),          "kTextEncodingMacKorean"          },
-    { (1LL << kTextEncodingMacArabic),          "kTextEncodingMacArabic"          },
-    { (1LL << kTextEncodingMacHebrew),          "kTextEncodingMacHebrew"          },
-    { (1LL << kTextEncodingMacGreek),           "kTextEncodingMacGreek"           },
-    { (1LL << kTextEncodingMacCyrillic),        "kTextEncodingMacCyrillic"        },
-    { (1LL << kTextEncodingMacRSymbol),         "kTextEncodingMacRSymbol"         },
-    { (1LL << kTextEncodingMacDevanagari),      "kTextEncodingMacDevanagari"      },
-    { (1LL << kTextEncodingMacGurmukhi),        "kTextEncodingMacGurmukhi"        },
-    { (1LL << kTextEncodingMacGujarati),        "kTextEncodingMacGujarati"        },
-    { (1LL << kTextEncodingMacOriya),           "kTextEncodingMacOriya"           },
-    { (1LL << kTextEncodingMacBengali),         "kTextEncodingMacBengali"         },
-    { (1LL << kTextEncodingMacTamil),           "kTextEncodingMacTamil"           },
-    { (1LL << kTextEncodingMacTelugu),          "kTextEncodingMacTelugu"          },
-    { (1LL << kTextEncodingMacKannada),         "kTextEncodingMacKannada"         },
-    { (1LL << kTextEncodingMacMalayalam),       "kTextEncodingMacMalayalam"       },
-    { (1LL << kTextEncodingMacSinhalese),       "kTextEncodingMacSinhalese"       },
-    { (1LL << kTextEncodingMacBurmese),         "kTextEncodingMacBurmese"         },
-    { (1LL << kTextEncodingMacKhmer),           "kTextEncodingMacKhmer"           },
-    { (1LL << kTextEncodingMacThai),            "kTextEncodingMacThai"            },
-    { (1LL << kTextEncodingMacLaotian),         "kTextEncodingMacLaotian"         },
-    { (1LL << kTextEncodingMacGeorgian),        "kTextEncodingMacGeorgian"        },
-    { (1LL << kTextEncodingMacArmenian),        "kTextEncodingMacArmenian"        },
-    { (1LL << kTextEncodingMacChineseSimp),     "kTextEncodingMacChineseSimp"     },
-    { (1LL << kTextEncodingMacTibetan),         "kTextEncodingMacTibetan"         },
-    { (1LL << kTextEncodingMacMongolian),       "kTextEncodingMacMongolian"       },
-    { (1LL << kTextEncodingMacEthiopic),        "kTextEncodingMacEthiopic"        },
+    { (1LL << kTextEncodingMacRoman), "kTextEncodingMacRoman" },
+    { (1LL << kTextEncodingMacRoman), "kTextEncodingMacRoman" },
+    { (1LL << kTextEncodingMacJapanese), "kTextEncodingMacJapanese" },
+    { (1LL << kTextEncodingMacChineseTrad), "kTextEncodingMacChineseTrad" },
+    { (1LL << kTextEncodingMacKorean), "kTextEncodingMacKorean" },
+    { (1LL << kTextEncodingMacArabic), "kTextEncodingMacArabic" },
+    { (1LL << kTextEncodingMacHebrew), "kTextEncodingMacHebrew" },
+    { (1LL << kTextEncodingMacGreek), "kTextEncodingMacGreek" },
+    { (1LL << kTextEncodingMacCyrillic), "kTextEncodingMacCyrillic" },
+    { (1LL << kTextEncodingMacRSymbol), "kTextEncodingMacRSymbol" },
+    { (1LL << kTextEncodingMacDevanagari), "kTextEncodingMacDevanagari" },
+    { (1LL << kTextEncodingMacGurmukhi), "kTextEncodingMacGurmukhi" },
+    { (1LL << kTextEncodingMacGujarati), "kTextEncodingMacGujarati" },
+    { (1LL << kTextEncodingMacOriya), "kTextEncodingMacOriya" },
+    { (1LL << kTextEncodingMacBengali), "kTextEncodingMacBengali" },
+    { (1LL << kTextEncodingMacTamil), "kTextEncodingMacTamil" },
+    { (1LL << kTextEncodingMacTelugu), "kTextEncodingMacTelugu" },
+    { (1LL << kTextEncodingMacKannada), "kTextEncodingMacKannada" },
+    { (1LL << kTextEncodingMacMalayalam), "kTextEncodingMacMalayalam" },
+    { (1LL << kTextEncodingMacSinhalese), "kTextEncodingMacSinhalese" },
+    { (1LL << kTextEncodingMacBurmese), "kTextEncodingMacBurmese" },
+    { (1LL << kTextEncodingMacKhmer), "kTextEncodingMacKhmer" },
+    { (1LL << kTextEncodingMacThai), "kTextEncodingMacThai" },
+    { (1LL << kTextEncodingMacLaotian), "kTextEncodingMacLaotian" },
+    { (1LL << kTextEncodingMacGeorgian), "kTextEncodingMacGeorgian" },
+    { (1LL << kTextEncodingMacArmenian), "kTextEncodingMacArmenian" },
+    { (1LL << kTextEncodingMacChineseSimp), "kTextEncodingMacChineseSimp" },
+    { (1LL << kTextEncodingMacTibetan), "kTextEncodingMacTibetan" },
+    { (1LL << kTextEncodingMacMongolian), "kTextEncodingMacMongolian" },
+    { (1LL << kTextEncodingMacEthiopic), "kTextEncodingMacEthiopic" },
     { (1LL << kTextEncodingMacCentralEurRoman), "kTextEncodingMacCentralEurRoman" },
-    { (1LL << kTextEncodingMacVietnamese),      "kTextEncodingMacVietnamese"      },
-    { (1LL << kTextEncodingMacExtArabic),       "kTextEncodingMacExtArabic"       },
-    { (1LL << kTextEncodingMacUninterp),        "kTextEncodingMacUninterp"        },
-    { (1LL << kTextEncodingMacSymbol),          "kTextEncodingMacSymbol"          },
-    { (1LL << kTextEncodingMacDingbats),        "kTextEncodingMacDingbats"        },
-    { (1LL << kTextEncodingMacTurkish),         "kTextEncodingMacTurkish"         },
-    { (1LL << kTextEncodingMacCroatian),        "kTextEncodingMacCroatian"        },
-    { (1LL << kTextEncodingMacIcelandic),       "kTextEncodingMacIcelandic"       },
-    { (1LL << kTextEncodingMacRomanian),        "kTextEncodingMacRomanian"        },
-    { (1LL << kTextEncodingMacCeltic),          "kTextEncodingMacCeltic"          },
-    { (1LL << kTextEncodingMacGaelic),          "kTextEncodingMacGaelic"          },
-    { (1LL << kTextEncodingMacKeyboardGlyphs),  "kTextEncodingMacKeyboardGlyphs"  },
-    { (1LL << 49), "kTextEncodingMacFarsi"     }, /* note the special case */
+    { (1LL << kTextEncodingMacVietnamese), "kTextEncodingMacVietnamese" },
+    { (1LL << kTextEncodingMacExtArabic), "kTextEncodingMacExtArabic" },
+    { (1LL << kTextEncodingMacUninterp), "kTextEncodingMacUninterp" },
+    { (1LL << kTextEncodingMacSymbol), "kTextEncodingMacSymbol" },
+    { (1LL << kTextEncodingMacDingbats), "kTextEncodingMacDingbats" },
+    { (1LL << kTextEncodingMacTurkish), "kTextEncodingMacTurkish" },
+    { (1LL << kTextEncodingMacCroatian), "kTextEncodingMacCroatian" },
+    { (1LL << kTextEncodingMacIcelandic), "kTextEncodingMacIcelandic" },
+    { (1LL << kTextEncodingMacRomanian), "kTextEncodingMacRomanian" },
+    { (1LL << kTextEncodingMacCeltic), "kTextEncodingMacCeltic" },
+    { (1LL << kTextEncodingMacGaelic), "kTextEncodingMacGaelic" },
+    { (1LL << kTextEncodingMacKeyboardGlyphs), "kTextEncodingMacKeyboardGlyphs" },
+    { (1LL << 49), "kTextEncodingMacFarsi" }, /* note the special case */
     { (1LL << 48), "kTextEncodingMacUkrainian" }, /* note the special case */
     { 0, NULL }
 };
@@ -718,96 +720,95 @@ static const FPFlagDesc kEncodingsUsedFlags[] = {
 /* Common attributes, that is, those that are valid for all file system
  * objects. */
 static const AttrDesc kCommonAttrDesc[] = {
-    {ATTR_CMN_NAME,             "ATTR_CMN_NAME",              kAttrRefSize,            StringAttrPrinter, NULL},
-    {ATTR_CMN_DEVID,            "ATTR_CMN_DEVID",             sizeof(dev_t),           FPDevT, NULL},
-    {ATTR_CMN_FSID,             "ATTR_CMN_FSID",              sizeof(fsid_t),          FPFSID, NULL},
-    {ATTR_CMN_OBJTYPE,          "ATTR_CMN_OBJTYPE",           sizeof(fsobj_type_t),    FPEnum, kFSObjTypeEnums},
-    {ATTR_CMN_OBJTAG,           "ATTR_CMN_OBJTAG",            sizeof(fsobj_tag_t),     FPEnum, kFSObjTagEnums},
-    {ATTR_CMN_OBJID,            "ATTR_CMN_OBJID",             sizeof(fsobj_id_t),      FPFSObjID, NULL},
-    {ATTR_CMN_OBJPERMANENTID,   "ATTR_CMN_OBJPERMANENTID",    sizeof(fsobj_id_t),      FPFSObjID, NULL},
-    {ATTR_CMN_PAROBJID,         "ATTR_CMN_PAROBJID",          sizeof(fsobj_id_t),      FPFSObjID, NULL},
-    {ATTR_CMN_SCRIPT,           "ATTR_CMN_SCRIPT",            sizeof(text_encoding_t), FPEnum, kTextEncodingEnums},
-    {ATTR_CMN_CRTIME,           "ATTR_CMN_CRTIME",            sizeof(struct timespec), FPTimeSpec, NULL},
-    {ATTR_CMN_MODTIME,          "ATTR_CMN_MODTIME",           sizeof(struct timespec), FPTimeSpec, NULL},
-    {ATTR_CMN_CHGTIME,          "ATTR_CMN_CHGTIME",           sizeof(struct timespec), FPTimeSpec, NULL},
-    {ATTR_CMN_ACCTIME,          "ATTR_CMN_ACCTIME",           sizeof(struct timespec), FPTimeSpec, NULL},
-    {ATTR_CMN_BKUPTIME,         "ATTR_CMN_BKUPTIME",          sizeof(struct timespec), FPTimeSpec, NULL},
-    {ATTR_CMN_FNDRINFO,         "ATTR_CMN_FNDRINFO",          32,                      FPFinderInfoBE, NULL},
-    {ATTR_CMN_OWNERID,          "ATTR_CMN_OWNERID",           sizeof(uid_t),           FPUID, NULL},
-    {ATTR_CMN_GRPID,            "ATTR_CMN_GRPID",             sizeof(gid_t),           FPGID, NULL},
-    {ATTR_CMN_ACCESSMASK,       "ATTR_CMN_ACCESSMASK",        sizeof(uint32_t),        FPModeT, NULL},
-    {ATTR_CMN_NAMEDATTRCOUNT,   "ATTR_CMN_NAMEDATTRCOUNT",    sizeof(uint32_t),        FPUDec, NULL},
-    {ATTR_CMN_NAMEDATTRLIST,    "ATTR_CMN_NAMEDATTRLIST",     kAttrRefSize,            FPNull, NULL},
-    {ATTR_CMN_FLAGS,            "ATTR_CMN_FLAGS",             sizeof(uint32_t),        FPFlags, kChFlagsFlags},
-    {ATTR_CMN_USERACCESS,       "ATTR_CMN_USERACCESS",        sizeof(uint32_t),        FPFlags, kUserAccessFlags},
-    {ATTR_CMN_EXTENDED_SECURITY,"ATTR_CMN_EXTENDED_SECURITY", kAttrRefSize,            ACLAttrPrinter, NULL},
-    {ATTR_CMN_UUID,             "ATTR_CMN_UUID",              sizeof(guid_t),          FPGUID, NULL},
-    {ATTR_CMN_GRPUUID,          "ATTR_CMN_GRPUUID",           sizeof(guid_t),          FPGUID, NULL},
-    {ATTR_CMN_FILEID,           "ATTR_CMN_FILEID",            sizeof(uint64_t),        FPUDec, NULL},
-    {ATTR_CMN_PARENTID,         "ATTR_CMN_PARENTID",          sizeof(uint64_t),        FPUDec, NULL},
+    {ATTR_CMN_NAME, "ATTR_CMN_NAME", kAttrRefSize, StringAttrPrinter, NULL},
+    {ATTR_CMN_DEVID, "ATTR_CMN_DEVID", sizeof(dev_t), FPDevT, NULL},
+    {ATTR_CMN_FSID, "ATTR_CMN_FSID", sizeof(fsid_t), FPFSID, NULL},
+    {ATTR_CMN_OBJTYPE, "ATTR_CMN_OBJTYPE", sizeof(fsobj_type_t), FPEnum, kFSObjTypeEnums},
+    {ATTR_CMN_OBJTAG, "ATTR_CMN_OBJTAG", sizeof(fsobj_tag_t), FPEnum, kFSObjTagEnums},
+    {ATTR_CMN_OBJID, "ATTR_CMN_OBJID", sizeof(fsobj_id_t), FPFSObjID, NULL},
+    {ATTR_CMN_OBJPERMANENTID, "ATTR_CMN_OBJPERMANENTID", sizeof(fsobj_id_t), FPFSObjID, NULL},
+    {ATTR_CMN_PAROBJID, "ATTR_CMN_PAROBJID", sizeof(fsobj_id_t), FPFSObjID, NULL},
+    {ATTR_CMN_SCRIPT, "ATTR_CMN_SCRIPT", sizeof(text_encoding_t), FPEnum, kTextEncodingEnums},
+    {ATTR_CMN_CRTIME, "ATTR_CMN_CRTIME", sizeof(struct timespec), FPTimeSpec, NULL},
+    {ATTR_CMN_MODTIME, "ATTR_CMN_MODTIME", sizeof(struct timespec), FPTimeSpec, NULL},
+    {ATTR_CMN_CHGTIME, "ATTR_CMN_CHGTIME", sizeof(struct timespec), FPTimeSpec, NULL},
+    {ATTR_CMN_ACCTIME, "ATTR_CMN_ACCTIME", sizeof(struct timespec), FPTimeSpec, NULL},
+    {ATTR_CMN_BKUPTIME, "ATTR_CMN_BKUPTIME", sizeof(struct timespec), FPTimeSpec, NULL},
+    {ATTR_CMN_FNDRINFO, "ATTR_CMN_FNDRINFO", 32, FPFinderInfoBE, NULL},
+    {ATTR_CMN_OWNERID, "ATTR_CMN_OWNERID", sizeof(uid_t), FPUID, NULL},
+    {ATTR_CMN_GRPID, "ATTR_CMN_GRPID", sizeof(gid_t), FPGID, NULL},
+    {ATTR_CMN_ACCESSMASK, "ATTR_CMN_ACCESSMASK", sizeof(uint32_t), FPModeT, NULL},
+    {ATTR_CMN_NAMEDATTRCOUNT, "ATTR_CMN_NAMEDATTRCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_CMN_NAMEDATTRLIST, "ATTR_CMN_NAMEDATTRLIST", kAttrRefSize, FPNull, NULL},
+    {ATTR_CMN_FLAGS, "ATTR_CMN_FLAGS", sizeof(uint32_t), FPFlags, kChFlagsFlags},
+    {ATTR_CMN_USERACCESS, "ATTR_CMN_USERACCESS", sizeof(uint32_t), FPFlags, kUserAccessFlags},
+    {ATTR_CMN_EXTENDED_SECURITY, "ATTR_CMN_EXTENDED_SECURITY", kAttrRefSize, ACLAttrPrinter, NULL},
+    {ATTR_CMN_UUID, "ATTR_CMN_UUID", sizeof(guid_t), FPGUID, NULL},
+    {ATTR_CMN_GRPUUID, "ATTR_CMN_GRPUUID", sizeof(guid_t), FPGUID, NULL},
+    {ATTR_CMN_FILEID, "ATTR_CMN_FILEID", sizeof(uint64_t), FPUDec, NULL},
+    {ATTR_CMN_PARENTID, "ATTR_CMN_PARENTID", sizeof(uint64_t), FPUDec, NULL},
     {0, NULL, 0, NULL, NULL}
 };
 
 /* Volume attributes, valid only for volumes: */
 static const AttrDesc kVolumeAttrDesc[] = {
-    {ATTR_VOL_INFO,            "ATTR_VOL_INFO",            0,                              FPNull, NULL},
-    {ATTR_VOL_FSTYPE,          "ATTR_VOL_FSTYPE",          sizeof(uint32_t),               FPEnum, kFSTypeEnums},
-    {ATTR_VOL_SIGNATURE,       "ATTR_VOL_SIGNATURE",       sizeof(uint32_t),               FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
-    {ATTR_VOL_SIZE,            "ATTR_VOL_SIZE",            sizeof(off_t),                  FPSize, NULL},
-    {ATTR_VOL_SPACEFREE,       "ATTR_VOL_SPACEFREE",       sizeof(off_t),                  FPSize, NULL},
-    {ATTR_VOL_SPACEAVAIL,      "ATTR_VOL_SPACEAVAIL",      sizeof(off_t),                  FPSize, NULL},
-    {ATTR_VOL_MINALLOCATION,   "ATTR_VOL_MINALLOCATION",   sizeof(off_t),                  FPSize, NULL},
-    {ATTR_VOL_ALLOCATIONCLUMP, "ATTR_VOL_ALLOCATIONCLUMP", sizeof(off_t),                  FPSize, NULL},
-    {ATTR_VOL_IOBLOCKSIZE,     "ATTR_VOL_IOBLOCKSIZE",     sizeof(uint32_t),               FPSize, NULL},
-    {ATTR_VOL_OBJCOUNT,        "ATTR_VOL_OBJCOUNT",        sizeof(uint32_t),               FPUDec, NULL},
-    {ATTR_VOL_FILECOUNT,       "ATTR_VOL_FILECOUNT",       sizeof(uint32_t),               FPUDec, NULL},
-    {ATTR_VOL_DIRCOUNT,        "ATTR_VOL_DIRCOUNT",        sizeof(uint32_t),               FPUDec, NULL},
-    {ATTR_VOL_MAXOBJCOUNT,     "ATTR_VOL_MAXOBJCOUNT",     sizeof(uint32_t),               FPUDec, NULL},
-    {ATTR_VOL_MOUNTPOINT,      "ATTR_VOL_MOUNTPOINT",      kAttrRefSize,                   StringAttrPrinter, NULL},
-    {ATTR_VOL_NAME,            "ATTR_VOL_NAME",            kAttrRefSize,                   StringAttrPrinter, NULL},
-    {ATTR_VOL_MOUNTFLAGS,      "ATTR_VOL_MOUNTFLAGS",      sizeof(uint32_t),               FPFlags, kMountFlags},
-    {ATTR_VOL_MOUNTEDDEVICE,   "ATTR_VOL_MOUNTEDDEVICE",   kAttrRefSize,                   StringAttrPrinter, NULL},
-    {ATTR_VOL_ENCODINGSUSED,   "ATTR_VOL_ENCODINGSUSED",   sizeof(uintmax_t),              FPVerboseFlags, kEncodingsUsedFlags},
-    {ATTR_VOL_CAPABILITIES,    "ATTR_VOL_CAPABILITIES",    sizeof(vol_capabilities_attr_t),FPVolCap, NULL},
-    {ATTR_VOL_ATTRIBUTES,      "ATTR_VOL_ATTRIBUTES",      sizeof(vol_attributes_attr_t),  FPVolAttr, NULL},
+    {ATTR_VOL_INFO, "ATTR_VOL_INFO", 0, FPNull, NULL},
+    {ATTR_VOL_FSTYPE, "ATTR_VOL_FSTYPE", sizeof(uint32_t), FPEnum, kFSTypeEnums},
+    {ATTR_VOL_SIGNATURE, "ATTR_VOL_SIGNATURE", sizeof(uint32_t), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
+    {ATTR_VOL_SIZE, "ATTR_VOL_SIZE", sizeof(off_t), FPSize, NULL},
+    {ATTR_VOL_SPACEFREE, "ATTR_VOL_SPACEFREE", sizeof(off_t), FPSize, NULL},
+    {ATTR_VOL_SPACEAVAIL, "ATTR_VOL_SPACEAVAIL", sizeof(off_t), FPSize, NULL},
+    {ATTR_VOL_MINALLOCATION, "ATTR_VOL_MINALLOCATION", sizeof(off_t), FPSize, NULL},
+    {ATTR_VOL_ALLOCATIONCLUMP, "ATTR_VOL_ALLOCATIONCLUMP", sizeof(off_t), FPSize, NULL},
+    {ATTR_VOL_IOBLOCKSIZE, "ATTR_VOL_IOBLOCKSIZE", sizeof(uint32_t), FPSize, NULL},
+    {ATTR_VOL_OBJCOUNT, "ATTR_VOL_OBJCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_VOL_FILECOUNT, "ATTR_VOL_FILECOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_VOL_DIRCOUNT, "ATTR_VOL_DIRCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_VOL_MAXOBJCOUNT, "ATTR_VOL_MAXOBJCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_VOL_MOUNTPOINT, "ATTR_VOL_MOUNTPOINT",  kAttrRefSize, StringAttrPrinter, NULL},
+    {ATTR_VOL_NAME, "ATTR_VOL_NAME", kAttrRefSize, StringAttrPrinter, NULL},
+    {ATTR_VOL_MOUNTFLAGS, "ATTR_VOL_MOUNTFLAGS", sizeof(uint32_t), FPFlags, kMountFlags},
+    {ATTR_VOL_MOUNTEDDEVICE, "ATTR_VOL_MOUNTEDDEVICE", kAttrRefSize, StringAttrPrinter, NULL},
+    {ATTR_VOL_ENCODINGSUSED, "ATTR_VOL_ENCODINGSUSED", sizeof(uintmax_t), FPVerboseFlags, kEncodingsUsedFlags},
+    {ATTR_VOL_CAPABILITIES, "ATTR_VOL_CAPABILITIES", sizeof(vol_capabilities_attr_t), FPVolCap, NULL},
+    {ATTR_VOL_ATTRIBUTES, "ATTR_VOL_ATTRIBUTES", sizeof(vol_attributes_attr_t),  FPVolAttr, NULL},
     {0, NULL, 0, NULL, NULL}
 };
 
-/* Directory attributes, valid only for directories. */
-
+/* Directory attributes, valid only for directories: */
 static const FPFlagDesc kMountStatusFlags[] = {
     {DIR_MNTSTATUS_MNTPOINT, "DIR_MNTSTATUS_MNTPOINT"},
     {0, NULL}
 };
 
 static const AttrDesc kDirAttrDesc[] = {
-    {ATTR_DIR_LINKCOUNT,   "ATTR_DIR_LINKCOUNT",   sizeof(uint32_t), FPUDec, NULL},
-    {ATTR_DIR_ENTRYCOUNT,  "ATTR_DIR_ENTRYCOUNT",  sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_DIR_LINKCOUNT, "ATTR_DIR_LINKCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_DIR_ENTRYCOUNT, "ATTR_DIR_ENTRYCOUNT", sizeof(uint32_t), FPUDec, NULL},
     {ATTR_DIR_MOUNTSTATUS, "ATTR_DIR_MOUNTSTATUS", sizeof(uint32_t), FPFlags, kMountStatusFlags},
     {0, NULL, 0, NULL, NULL}
 };
 
-/* File attributes, valid only for files. */
+/* File attributes, valid only for files: */
 static const AttrDesc kFileAttrDesc[] = {
-    {ATTR_FILE_LINKCOUNT,     "ATTR_FILE_LINKCOUNT",     sizeof(uint32_t),     FPUDec, NULL},
-    {ATTR_FILE_TOTALSIZE,     "ATTR_FILE_TOTALSIZE",     sizeof(off_t),        FPSize, NULL},
-    {ATTR_FILE_ALLOCSIZE,     "ATTR_FILE_ALLOCSIZE",     sizeof(off_t),        FPSize, NULL},
-    {ATTR_FILE_IOBLOCKSIZE,   "ATTR_FILE_IOBLOCKSIZE",   sizeof(uint32_t),     FPSize, NULL},
-    {ATTR_FILE_CLUMPSIZE,     "ATTR_FILE_CLUMPSIZE",     sizeof(uint32_t),     FPSize, NULL},
-    {ATTR_FILE_DEVTYPE,       "ATTR_FILE_DEVTYPE",       sizeof(uint32_t),     FPDevT, NULL}, /* *** why does ATTR_FILE_DEVTYPE come back 0 on Tiger? */
-    {ATTR_FILE_FILETYPE,      "ATTR_FILE_FILETYPE",      sizeof(uint32_t),     FPUDec, NULL},
-    {ATTR_FILE_FORKCOUNT,     "ATTR_FILE_FORKCOUNT",     sizeof(uint32_t),     FPUDec, NULL},
-    {ATTR_FILE_FORKLIST,      "ATTR_FILE_FORKLIST",      kAttrRefSize,         FPNull, NULL},
-    {ATTR_FILE_DATALENGTH,    "ATTR_FILE_DATALENGTH",    sizeof(off_t),        FPSize, NULL},
-    {ATTR_FILE_DATAALLOCSIZE, "ATTR_FILE_DATAALLOCSIZE", sizeof(off_t),        FPSize, NULL},
-    {ATTR_FILE_DATAEXTENTS,   "ATTR_FILE_DATAEXTENTS",   sizeof(extentrecord), FPHex, NULL},
-    {ATTR_FILE_RSRCLENGTH,    "ATTR_FILE_RSRCLENGTH",    sizeof(off_t),        FPSize, NULL},
-    {ATTR_FILE_RSRCALLOCSIZE, "ATTR_FILE_RSRCALLOCSIZE", sizeof(off_t),        FPSize, NULL},
-    {ATTR_FILE_RSRCEXTENTS,   "ATTR_FILE_RSRCEXTENTS",   sizeof(extentrecord), FPHex, NULL},
+    {ATTR_FILE_LINKCOUNT, "ATTR_FILE_LINKCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_FILE_TOTALSIZE, "ATTR_FILE_TOTALSIZE", sizeof(off_t), FPSize, NULL},
+    {ATTR_FILE_ALLOCSIZE, "ATTR_FILE_ALLOCSIZE", sizeof(off_t), FPSize, NULL},
+    {ATTR_FILE_IOBLOCKSIZE, "ATTR_FILE_IOBLOCKSIZE", sizeof(uint32_t), FPSize, NULL},
+    {ATTR_FILE_CLUMPSIZE, "ATTR_FILE_CLUMPSIZE", sizeof(uint32_t), FPSize, NULL},
+    {ATTR_FILE_DEVTYPE, "ATTR_FILE_DEVTYPE", sizeof(uint32_t), FPDevT, NULL}, /* *** why does ATTR_FILE_DEVTYPE come back 0 on Tiger? */
+    {ATTR_FILE_FILETYPE, "ATTR_FILE_FILETYPE", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_FILE_FORKCOUNT, "ATTR_FILE_FORKCOUNT", sizeof(uint32_t), FPUDec, NULL},
+    {ATTR_FILE_FORKLIST, "ATTR_FILE_FORKLIST", kAttrRefSize,  FPNull, NULL},
+    {ATTR_FILE_DATALENGTH, "ATTR_FILE_DATALENGTH", sizeof(off_t), FPSize, NULL},
+    {ATTR_FILE_DATAALLOCSIZE, "ATTR_FILE_DATAALLOCSIZE", sizeof(off_t), FPSize, NULL},
+    {ATTR_FILE_DATAEXTENTS, "ATTR_FILE_DATAEXTENTS", sizeof(extentrecord), FPHex, NULL},
+    {ATTR_FILE_RSRCLENGTH, "ATTR_FILE_RSRCLENGTH", sizeof(off_t), FPSize, NULL},
+    {ATTR_FILE_RSRCALLOCSIZE, "ATTR_FILE_RSRCALLOCSIZE", sizeof(off_t), FPSize, NULL},
+    {ATTR_FILE_RSRCEXTENTS, "ATTR_FILE_RSRCEXTENTS", sizeof(extentrecord), FPHex, NULL},
     {0, NULL, 0, NULL, NULL}
 };
 
-/* Fork attributes, valid only for forks.  The whole concept of
+/* Fork attributes, valid only for forks. The whole concept of
  * fork attributes is kinda bogus, but we report them anyway. */
 static const AttrDesc kForkAttrDesc[] = {
     {ATTR_FORK_TOTALSIZE, "ATTR_FORK_TOTALSIZE", sizeof(off_t), FPUDec, NULL},
@@ -819,11 +820,11 @@ static void InitAttrFlag(const AttrDesc attrs[], FPFlagDesc ** flagsPtr)
     /* Given an AttrDesc array, create the corresponding FPFlagDesc array.
      * See InitAllAttrFlags for a discussion of why this is necessary. */
 {
-    size_t      attrCount;
-    size_t      attrIndex;
+    size_t attrCount;
+    size_t attrIndex;
     FPFlagDesc *flags;
 
-    assert(attrs    != NULL);
+    assert(attrs != NULL);
     assert(flagsPtr != NULL);
 
     /* Count the attributes. Make sure to include the trailing null entry
@@ -834,11 +835,11 @@ static void InitAttrFlag(const AttrDesc attrs[], FPFlagDesc ** flagsPtr)
     }
     attrCount += 1;
 
-    /* Allocate space for the flags. */
+    /* Allocate space for the flags: */
     flags = (FPFlagDesc *)(malloc(attrCount * sizeof(FPFlagDesc)));
     assert(flags != NULL);
 
-    /* Create a flag for each attribute. */
+    /* Create a flag for each attribute: */
     for ((attrIndex = 0); (attrIndex < attrCount); attrIndex++) {
         flags[attrIndex].flagMask = attrs[attrIndex].attrMask;
         flags[attrIndex].flagName = attrs[attrIndex].attrName;
@@ -857,9 +858,9 @@ static void InitAllAttrFlags(void)
     if (gCommonAttrFlags == NULL) {
         InitAttrFlag(kCommonAttrDesc, &gCommonAttrFlags);
         InitAttrFlag(kVolumeAttrDesc, &gVolumeAttrFlags);
-        InitAttrFlag(kDirAttrDesc,    &gDirAttrFlags);
-        InitAttrFlag(kFileAttrDesc,   &gFileAttrFlags);
-        InitAttrFlag(kForkAttrDesc,   &gForkAttrFlags);
+        InitAttrFlag(kDirAttrDesc, &gDirAttrFlags);
+        InitAttrFlag(kFileAttrDesc, &gFileAttrFlags);
+        InitAttrFlag(kForkAttrDesc, &gForkAttrFlags);
     }
 }
 
@@ -896,7 +897,9 @@ static void CalculateAttrInfo(const AttrDesc attrs[], attrgroup_t attrMask,
     attrgroup_t attrRemaining;
 
     assert(attrs != NULL);
-    assert((attrSizePtr != NULL) || (nameWidthPtr != NULL) || (supportedAttrPtr != NULL));  /* must ask us to do something! */
+    assert((attrSizePtr != NULL) ||
+		   (nameWidthPtr != NULL) ||
+		   (supportedAttrPtr != NULL));  /* must ask us to do something! */
 
     /* For each possible attribute. */
     attrRemaining = attrMask;
@@ -937,11 +940,11 @@ static int DoGetAttrListCommand(const char *itemPath,
     /* The core of the "getattrlist" command.  Our caller has already got and
      * parsed all the necessary arguments; we just need to do the work. */
 {
-    int         err;
-    attrlist_t  attrListSupported;
-    size_t      attrBufSize;
-    size_t      attrNameWidth;
-    char *      attrBuf;
+    int err;
+    attrlist_t attrListSupported;
+    size_t attrBufSize;
+    size_t attrNameWidth;
+    char *attrBuf;
     const char *cursor;
 
     assert(itemPath != NULL);
@@ -997,7 +1000,10 @@ static int DoGetAttrListCommand(const char *itemPath,
 
     /* Add the ATTR_CMN_OBJTYPE attribute if we need it internally and the user
      * has NOT already requested it: */
-    if (((attrListSupported.commonattr & ATTR_CMN_FNDRINFO) || (attrListSupported.dirattr != 0) || (attrListSupported.fileattr != 0)) && ((attrListSupported.commonattr & ATTR_CMN_OBJTYPE) == 0)) {
+    if (((attrListSupported.commonattr & ATTR_CMN_FNDRINFO) ||
+		 (attrListSupported.dirattr != 0) ||
+		 (attrListSupported.fileattr != 0)) &&
+		((attrListSupported.commonattr & ATTR_CMN_OBJTYPE) == 0)) {
         attrListSupported.commonattr |= ATTR_CMN_OBJTYPE;
         attrBufSize += sizeof(fsobj_type_t);
         fprintf(stderr,
@@ -1022,8 +1028,8 @@ static int DoGetAttrListCommand(const char *itemPath,
 
     /* Print all of the attributes in the buffer: */
     if (err == 0) {
-        fsobj_type_t      objType;
-        size_t            attrIndex;
+        fsobj_type_t objType;
+        size_t attrIndex;
         FinderInfoFlavour finderFlavour;
 
         /* If we asked for the object type, then work out what that type is.
@@ -1047,7 +1053,8 @@ static int DoGetAttrListCommand(const char *itemPath,
 
         /* Work out the Finder info flavour: */
         finderFlavour = kVolumeInfo;
-        if ((attrListSupported.commonattr & ATTR_CMN_FNDRINFO) && !(attrListSupported.volattr & ATTR_VOL_INFO)) {
+        if ((attrListSupported.commonattr & ATTR_CMN_FNDRINFO) &&
+			!(attrListSupported.volattr & ATTR_VOL_INFO)) {
             if (objType == VDIR) {
                 finderFlavour = kFolderInfoCombined;
             } else {
@@ -1083,9 +1090,9 @@ static int AttrParseItemTester(const char *item, void *refCon)
      * is one that we support, and b) adds the bit for that attribute to the
      * attrlist_t pointed to be refCon. */
 {
-    int         err;
+    int err;
     attrlist_t *attrListPtr;
-    size_t      flagIndex;
+    size_t flagIndex;
 
     assert(item != NULL);
 
@@ -1130,11 +1137,11 @@ static CommandError PrintGetAttrListInfo(CommandArgsRef args, uint32_t indent,
      *
      * indent and verbose are as per the comments for FPPrinter. */
 {
-    int          err;
+    int err;
     unsigned int opts;
-    const char * attrListStr;
-    const char * itemPath;
-    attrlist_t   attrList;
+    const char *attrListStr;
+    const char *itemPath;
+    attrlist_t attrList;
 
     assert(CommandArgsValid(args));
 
@@ -1185,7 +1192,7 @@ static void AttrDescHelpPrinter(uint32_t indent, uint32_t verbose,
 {
     #pragma unused(verbose)
     const AttrDesc *attrs;
-    size_t          attrIndex;
+    size_t attrIndex;
 
     attrs = (const AttrDesc *)param;
     assert(attrs != NULL);

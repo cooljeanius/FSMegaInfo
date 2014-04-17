@@ -2,7 +2,10 @@ Read Me About FSMegaInfo
 ========================
 1.0
 
-This tool is designed to help folks who are implementing a plug-in file system (VFS plug-ins) on Mac OS X.  You can use it to print information about various file system objects (volumes, directories, and files).  This allows you to compare the information on your volume with the information returned by canonical Apple file systems, such as HFS Plus, AppleShare, and MS-DOS/FAT.  The sample exercises the following areas of functionality:
+This tool is designed to help folks who are implementing a plug-in file system (VFS plug-ins) on Mac OS X.
+You can use it to print information about various file system objects (volumes, directories, and files).
+This allows you to compare the information on your volume with the information returned by canonical Apple file systems, such as HFS Plus, AppleShare, and MS-DOS/FAT.
+The sample exercises the following areas of functionality:
 
 o BSD -- access, stat, lstat, statfs, lstatfs, getfsstat, getdirentries, readdir, fts, listxattr, getxattr, pathconf, getattrlist
 
@@ -17,7 +20,10 @@ o Disk Arbitration -- DADiskCopyDescription
 Notes:
 [1] These commands are unavailable when run as a 64-bit program because the underlying routines are not available to 64-bit code.
 
-The sample is designed to run on Mac OS X 10.4 and later (I tested in on 10.4.11 and 10.5 on both Intel- and PowerPC-based computers).  You could port it to older versions of Mac OS X, although that would require disabling a number of the printing options because they print information that's not available on older systems.
+The sample is designed to run on Mac OS X 10.4 and later (I tested in on 10.4.11 and 10.5 on both Intel- and PowerPC-based computers).
+(This fork has also been tested on 10.6)
+You could port it to older versions of Mac OS X, although that would require disabling a number of the printing options.
+This is because they print information that is not available on older systems.
 
 Packing List
 ------------
@@ -42,7 +48,10 @@ o Tests -- A directory containing test code.
 
 Using the Sample
 ----------------
-To use the sample, just run it from the command line.  This prints out a list of available commands.  You can use the "help" command to get help on a specific command.  For example:
+To use the sample, just run it from the command line.
+This prints out a list of available commands.
+You can use the "help" command to get help on a specific command.
+For example:
 
 $ build/Debug/FSMegaInfo help stat
 usage: FSMegaInfo [globalOptions] stat itemPath
@@ -68,7 +77,8 @@ stat '/'
     st_flags   = 0x00000000
     st_gen     = 0
 
-If you specify the "-v" flag, you get a more verbose output.  For example, in the "stat" command, "-v" prints each of the flags symbolically:
+If you specify the "-v" flag, you get a more verbose output.
+For example, in the "stat" command, "-v" prints each of the flags symbolically:
 
 $ build/Debug/FSMegaInfo -v stat /
 stat '/'
@@ -84,7 +94,9 @@ stat '/'
         SF_APPEND    = NO
     st_gen     = 0
 
-On Mac OS X 10.5 and later, you can access the 32-bit version of the program using <x-man-page://1/arch>.  For example, on an 64-bit capable Intel-based computer, the "GetAliasInfo" command will not work by default because the program runs as 64-bit and the underlying function, GetAliasInfo, is not available in 64-bit.
+On Mac OS X 10.5 and later, you can access the 32-bit version of the program using <x-man-page://1/arch>.
+For example, on an 64-bit capable Intel-based computer, the "GetAliasInfo" command will not work by default.
+This is because the program runs as 64-bit and the underlying function, GetAliasInfo, is not available in 64-bit.
 
 $ build/Debug/FSMegaInfo GetAliasInfo /
 usage: FSMegaInfo [globalOptions] command...
@@ -101,17 +113,22 @@ $ arch -i386 build/Debug/FSMegaInfo GetAliasInfo /
 
 Building the Sample
 -------------------
-The sample was built using Xcode 3.0 on Mac OS X 10.5.1.  To build the code, open the project and choose Build from the Build menu.  This will build the "FSMegaInfo" tool in the "build" directory.
+The sample was originally built using Xcode 3.0 on Mac OS X 10.5.1.
+(This fork built using Xcode 3.2.6 on Mac OS X 10.6.8)
+To build the code, open the project and choose Build from the Build menu.
+This will build the "FSMegaInfo" tool in the "build" directory.
 
 How it Works
 ------------
-While the tool's code is long and complex, it's basic operation isn't.  It simple calls a specific API routine (for example, "stat") and prints the results.  There's lots of infrastructure to make it easy to supply arguments to the API routine, and to pretty print the results.
+While the code for the tool is long and complex, its basic operation is NOT.
+It simply calls a specific API routine (for example, "stat") and prints the results.
+There is a lot of infrastructure to make it easy to supply arguments to the API routine, and to pretty print the results.
 
 Credits and Version History
 ---------------------------
-If you find any problems with this sample, or any suggestions for extra commands, please mail <dts@apple.com> and I'll see what I can do.
+If you find any problems with this sample, or any suggestions for extra commands, please mail <dts@apple.com> and I will see what I can do.
 
-1.0 (Feb 2008) was the first shipping version. 
+1.0 (Feb 2008) was the first shipping version.
 
 Share and Enjoy.
 

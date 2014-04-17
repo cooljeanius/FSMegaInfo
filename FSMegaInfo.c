@@ -74,9 +74,9 @@ static CommandInfo kHelpCommand = {
     NULL
 };
 
-/* The master command dispatch table.  First, declare each of the commands as
- * extern.  I used to have these in separate header files, but that just made
- * things  harder to maintain. */
+/* The master command dispatch table. First, declare each of the commands as
+ * extern. I used to have these in separate header files, but that just made
+ * things harder to maintain. */
 
 extern CommandInfo kStatCommand;
 extern CommandInfo kAccessCommand;
@@ -158,8 +158,8 @@ static const CommandInfo *kCommandInfo[] = {
 static void PrintUsage(uint32_t verbose)
     /* Print basic help for the program. */
 {
-    size_t      i;
-    size_t      maxNameLen;
+    size_t i;
+    size_t maxNameLen;
     const char *arch;
 
     arch = "";
@@ -239,13 +239,13 @@ static CommandError HelpCommand(CommandArgsRef args, uint32_t indent,
     /* Implements the "help" command. */
 {
     #pragma unused(indent)
-    int         err;
+    int err;
     const char *commandStr;
-    size_t      commandIndex;
+    size_t commandIndex;
 
     assert(args != NULL);
     assert(*args != NULL);
-    commandIndex = 0; /* quieten warning */
+    commandIndex = 0; /* initialize in order to quieten warning */
 
     err = CommandArgsGetString(args, &commandStr);
     if (err == 0) {
@@ -277,14 +277,13 @@ static CommandError HelpCommand(CommandArgsRef args, uint32_t indent,
 
 int main(int argc, char ** argv)
 {
-    int          retVal;
-    int          ch;
-    int          verbose;
-    size_t       commandIndex;
+    int retVal;
+    int ch;
+    int verbose;
+    size_t commandIndex;
     const char **argCursor;
 
-    /* Parse the options. */
-
+    /* Parse the options: */
     retVal  = EXIT_SUCCESS;
     verbose = 0;
     do {
@@ -306,8 +305,7 @@ int main(int argc, char ** argv)
         }
     } while ((retVal == EXIT_SUCCESS) && (ch != -1));
 
-    /* If there are no commands, that is an error. */
-
+    /* If there are no commands, that is an error: */
     if (retVal == EXIT_SUCCESS) {
         if (argv[optind] == NULL) {
             PrintUsage((uint32_t)verbose);
@@ -315,15 +313,13 @@ int main(int argc, char ** argv)
         }
     }
 
-    /* Process each command in order. */
-
+    /* Process each command in order: */
     if (retVal == EXIT_SUCCESS) {
         argCursor = (((const char **)argv) + optind);
         do {
             bool found;
 
-            /* Find the command in the kCommandInfo table. */
-
+            /* Find the command in the kCommandInfo table: */
             found = false;
             commandIndex = 0;
             while (! found &&
@@ -336,8 +332,7 @@ int main(int argc, char ** argv)
                 }
             }
 
-            /* Dispatch the command. */
-
+            /* Dispatch the command: */
             if (! found) {
                 PrintUsage((uint32_t)verbose);
                 exit(EXIT_FAILURE);

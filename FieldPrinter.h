@@ -133,10 +133,10 @@ extern void FPPrintFlags(uintmax_t flags, const FPFlagDesc *flagList,
 
 struct FPFieldDesc {
     const char *fieldName;
-    size_t      fieldOffset;
-    size_t      fieldSize;
-    FPPrinter   fieldPrinter; /* routine to print this field */
-    const void *fieldInfo;    /* parameter for the fieldPrinter */
+    size_t fieldOffset;
+    size_t fieldSize;
+    FPPrinter fieldPrinter; /* routine to print this field */
+    const void *fieldInfo; /* parameter for the fieldPrinter */
 };
 typedef struct FPFieldDesc FPFieldDesc;
 
@@ -144,20 +144,21 @@ extern void FPPrintFields(const FPFieldDesc fields[], const void *fieldBuf,
 						  size_t fieldBufSize, uint32_t indent,
 						  uint32_t verbose);
     /* Prints the fields of a particular structure, as defined by the
-     * fields array.  fieldBuf is a pointer to a the structure.
-     * fieldBufSize is the size of that structure (which is used
-     * solely for debugging).  indent is the number of spaces to
-     * print before each line.  See FPPrinter for a description
-     * of the verbose parameter. */
+     * fields array. 'fieldBuf' is a pointer to a the structure.
+     * 'fieldBufSize' is the size of that structure (which is used
+     * solely for debugging). 'indent' is the number of spaces to
+     * print before each line. See FPPrinter for a description
+     * of the 'verbose' parameter. */
 
 /* FPSizeMultiplier allows you to specify a size multiplier field when using the
- * SizeFieldPrinter routine.  You pass a pointer to a FPSizeMultiplier structure
- * as the info parameter to SizeFieldPrinter.  This tells SizeFieldPrinter
- * about another field that holds the size multiplier for this field.  For
+ * SizeFieldPrinter routine. You pass a pointer to a FPSizeMultiplier structure
+ * as the info parameter to SizeFieldPrinter. This tells SizeFieldPrinter
+ * about another field that holds the size multiplier for this field. For
  * example, in structure S, if field A represents the disk free space in blocks
  * and field B is an int holding the block size in bytes, when printing A you
  * would pass a FPSizeMultiplier whose multiplierOffset is
- * offsetof(S, B) - offsetof(S, A) and whose multiplierSize field is sizeof(int)
+ * (offsetof(S, B) - offsetof(S, A)) and whose multiplierSize field is
+ * sizeof(int)
  */
 
 struct FPSizeMultiplier {
@@ -168,7 +169,7 @@ typedef struct FPSizeMultiplier FPSizeMultiplier;
 
 /* FPEnumDesc allows you to specify the known values when using the
  * EnumFieldPrinter routine.  You pass a pointer to an array of FPEnumDesc as
- * the info parameter to EnumFieldPrinter.  The array is terminated by an entry
+ * the info parameter to EnumFieldPrinter. The array is terminated by an entry
  * with a NULL name. Note that the array does not have to be sorted by
  * enumValue.
  *
@@ -178,13 +179,13 @@ typedef struct FPSizeMultiplier FPSizeMultiplier;
  */
 
 struct FPEnumDesc {
-    int         enumValue;
+    int enumValue;
     const char *enumName;
 };
 
 /* FPFlagDesc allows you to specify the known flags when using the
  * FlagsFieldPrinter routine.  You pass a pointer to an array of FPFlagDesc as
- * the info parameter to FlagsFieldPrinter.  The array is terminated by an
+ * the info parameter to FlagsFieldPrinter. The array is terminated by an
  * entry with a NULL name. */
 
 struct FPFlagDesc {
@@ -194,7 +195,9 @@ struct FPFlagDesc {
 
 enum {
 #if defined(__STRICT_ANSI__) || defined(__STDC__)
-	kFPNotFound = ((int)-1)
+	kFPNotFound = ((int)-1) /* I have casted all uses of kFPNotFound to 'size_t'
+							 * anyways, it just has to be an 'int' here for
+							 * purposes of pedantry */
 #else
     kFPNotFound = ((size_t)-1)
 #endif /* __STRICT_ANSI__ */
@@ -210,8 +213,8 @@ extern size_t FPFindEnumByName(const FPEnumDesc enumList[],
 /* Flags for the info parameters of FPHex, FPSDec, FPUDec, FPSignature. */
 
 enum FPEndian {
-    kFPValueHostEndian   = 0,
-    kFPValueBigEndian    = 1,
+    kFPValueHostEndian = 0,
+    kFPValueBigEndian = 1,
     kFPValueLittleEndian = 2
 };
 typedef enum FPEndian FPEndian;

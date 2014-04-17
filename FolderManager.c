@@ -55,16 +55,17 @@
 #include "FieldPrinter.h"
 #include "Command.h"
 
+/***************************************************************/
 #pragma mark *     FSFindFolder
 
 const FPEnumDesc kDomainEnums[] = {
-    { kOnSystemDisk,        "kOnSystemDisk" },
-    { kOnAppropriateDisk,   "kOnAppropriateDisk" },
-    { kSystemDomain,        "kSystemDomain" },
-    { kLocalDomain,         "kLocalDomain" },
-    { kNetworkDomain,       "kNetworkDomain" },
-    { kUserDomain,          "kUserDomain" },
-    { kClassicDomain,       "kClassicDomain" },
+    { kOnSystemDisk, "kOnSystemDisk" },
+    { kOnAppropriateDisk, "kOnAppropriateDisk" },
+    { kSystemDomain, "kSystemDomain" },
+    { kLocalDomain, "kLocalDomain" },
+    { kNetworkDomain, "kNetworkDomain" },
+    { kUserDomain, "kUserDomain" },
+    { kClassicDomain, "kClassicDomain" },
     { 0, NULL }
 };
 
@@ -74,14 +75,14 @@ static CommandError PrintFSFindFolder(CommandArgsRef args, uint32_t indent,
      *
      * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus    err;
+    OSStatus err;
     const char *domainStr;
-    size_t      enumIndex;
-    SInt16      domain;
+    size_t enumIndex;
+    SInt16 domain;
     const char *typeStr;
-    OSType      type;
-    FSRef       ref;
-    char        path[MAXPATHLEN];
+    OSType type;
+    FSRef ref;
+    char path[MAXPATHLEN];
 
     assert(CommandArgsValid(args));
 
@@ -98,7 +99,7 @@ static CommandError PrintFSFindFolder(CommandArgsRef args, uint32_t indent,
             domain = (SInt16)kDomainEnums[enumIndex].enumValue;
         } else {
             FSCatalogInfo catInfo;
-            FSRef         volRef;
+            FSRef volRef;
 
             err = FSPathMakeRef((const UInt8 *)domainStr, &volRef, NULL);
             if (err == noErr) {
@@ -118,7 +119,7 @@ static CommandError PrintFSFindFolder(CommandArgsRef args, uint32_t indent,
     if (err == noErr) {
         if (strncmp(typeStr, "0x", (size_t)2) == 0) {
             unsigned int tmp;
-            int          convertedCount;
+            int convertedCount;
 
             if ((sscanf(typeStr, "%x%n", &tmp, &convertedCount) == 1) &&
 				((size_t)convertedCount == strlen(typeStr))) {
@@ -127,13 +128,12 @@ static CommandError PrintFSFindFolder(CommandArgsRef args, uint32_t indent,
                 err = kCommandUsageErr;
             }
         } else {
-            CFStringRef     cfStr;
-            int             i;
+            CFStringRef cfStr;
+            int i;
             UInt8 pstr[5] = { 0 };
 
             /* The following code is carefully crafted to do UTF-8 -> MacRoman
-             * and handle 0-fill at the right, and get the byte order right. */
-
+             * and handle 0-fill at the right, and get the byte order right: */
             cfStr = CFStringCreateWithCString(NULL, typeStr,
 											  kCFStringEncodingUTF8);
             assert(cfStr != NULL);
@@ -172,7 +172,7 @@ static CommandError PrintFSFindFolder(CommandArgsRef args, uint32_t indent,
 
 static const CommandHelpEntry kFSFindFolderCommandHelp[] = {
     {CommandHelpString, "domain  Path to volume or one of the following:"},
-    {CommandHelpEnum,   kDomainEnums},
+    {CommandHelpEnum, kDomainEnums},
     {CommandHelpString, "type    Folder type in hex (with 0x prefix) or as four character code"},
     {NULL, NULL}
 };

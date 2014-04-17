@@ -206,9 +206,9 @@ extern OSStatus CommandArgsGetVRefNum(CommandArgsRef args,
 									  FSVolumeRefNum *vRefNumPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    OSStatus      err;
-    const char *  itemPath;
-    FSRef         volRef;
+    OSStatus err;
+    const char *itemPath;
+    FSRef volRef;
     FSCatalogInfo volCatInfo;
 
     assert(CommandArgsValid(args));
@@ -240,11 +240,11 @@ extern void SetDontFollowLeafSymLinksForFSRefs(void)
 extern OSStatus CommandArgsGetFSRef(CommandArgsRef args, FSRef *fsRefPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    OSStatus    err;
+    OSStatus err;
     const char *itemPath;
 
     assert(CommandArgsValid(args));
-    assert(fsRefPtr != NULL );
+    assert(fsRefPtr != NULL);
 
     err = CommandArgsGetStringOSStatus(args, &itemPath);
     if (err == noErr) {
@@ -288,17 +288,18 @@ extern bool CommandArgsIsOption(CommandArgsRef args)
     return result;
 }
 
-extern bool CommandArgsGetOptionalConstantString(CommandArgsRef args, const char *optionalArg)
+extern bool CommandArgsGetOptionalConstantString(CommandArgsRef args,
+												 const char *optionalArg)
     /* See comment for corresponding prototype in corresponding header. */
 {
     bool result;
 
-    assert( CommandArgsValid(args) );
-    assert( optionalArg != NULL );
+    assert(CommandArgsValid(args));
+    assert(optionalArg != NULL);
 
     result = false;
     if (**args != NULL) {
-        if ( strcasecmp(**args, optionalArg) == 0 ) {
+        if (strcasecmp(**args, optionalArg) == 0) {
             *args += 1;
             result = true;
         }
@@ -306,13 +307,14 @@ extern bool CommandArgsGetOptionalConstantString(CommandArgsRef args, const char
     return result;
 }
 
-extern bool CommandArgsGetOptionString(CommandArgsRef args, const char **optionArgPtr)
+extern bool CommandArgsGetOptionString(CommandArgsRef args,
+									   const char **optionArgPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
     bool result;
 
-    assert( CommandArgsValid(args) );
-    assert( optionArgPtr != NULL );
+    assert(CommandArgsValid(args));
+    assert(optionArgPtr != NULL);
 
     result = false;
     if (**args != NULL) {
@@ -328,14 +330,14 @@ extern bool CommandArgsGetOptionString(CommandArgsRef args, const char **optionA
 static int ParseItemStringForFlags(const char *str, char delimiter,
 								   const FPFlagDesc flagList[],
 								   uint64_t *resultPtr);
-    /* forward */
+    /* forward (...left out the word "declaration"?) */
 
 extern errno_t CommandArgsGetFlagList(CommandArgsRef args,
 									  const FPFlagDesc flagList[],
 									  uint64_t *resultPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    int         err;
+    int err;
     const char *argStr;
 
     assert(CommandArgsValid(args));
@@ -360,7 +362,7 @@ extern errno_t CommandArgsGetFlagListInt(CommandArgsRef args,
 										 int *resultPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    int      err;
+    int err;
     uint64_t tmp;
 
     assert(CommandArgsValid(args));
@@ -402,7 +404,7 @@ static int CommandArgsGetIntmaxT(CommandArgsRef args, intmax_t *argPtr)
 extern errno_t CommandArgsGetSizeT(CommandArgsRef args, size_t *argPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    int      err;
+    int err;
     intmax_t tmp;
 
     assert(CommandArgsValid(args));
@@ -421,7 +423,7 @@ extern errno_t CommandArgsGetSizeT(CommandArgsRef args, size_t *argPtr)
 extern errno_t CommandArgsGetInt(CommandArgsRef args, int *argPtr)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    int      err;
+    int err;
     intmax_t tmp;
 
     assert(CommandArgsValid(args));
@@ -438,7 +440,7 @@ extern errno_t CommandArgsGetInt(CommandArgsRef args, int *argPtr)
 }
 
 static void SkipSpace(const char **cursorPtr)
-    /* A helper routine for CommandParseItemString.  Advances *cursorPtr while
+    /* A helper routine for CommandParseItemString. Advances *cursorPtr while
      * **cursorPtr is whitespace. */
 {
     assert(cursorPtr != NULL);
@@ -476,7 +478,7 @@ static int ParseItem(const char **cursorPtr,
     }
     if (err == 0) {
         size_t itemNameLen;
-        char * itemName;
+        char *itemName;
 
         itemNameLen = (size_t)(*cursorPtr - itemStart);
         itemName = malloc(itemNameLen + 1);
@@ -503,7 +505,7 @@ extern errno_t CommandParseItemString(const char *str, char delimiter,
 									  void *refCon)
     /* See comment for corresponding prototype in corresponding header. */
 {
-    int         err;
+    int err;
     const char *cursor;
 
     assert(str != NULL);
@@ -519,10 +521,10 @@ extern errno_t CommandParseItemString(const char *str, char delimiter,
     if (*cursor != 0) {
         err = ParseItem(&cursor, itemTester, refCon);
         while ((err == 0) && (*cursor == delimiter)) {
-            cursor += 1;                    /* skip delimiter */
+            cursor += 1; /* skip delimiter */
             err = ParseItem(&cursor, itemTester, refCon);
         }
-        if ( (err == 0) && (*cursor != 0) ) {
+        if ((err == 0) && (*cursor != 0)) {
             fprintf(stderr, "Unexpected characters at end of string.\n");
             err = EINVAL;
         }
@@ -533,7 +535,7 @@ extern errno_t CommandParseItemString(const char *str, char delimiter,
 
 struct FlagItemTesterParam {
     const FPFlagDesc *flagList;
-    uint64_t *        resultPtr;
+    uint64_t *resultPtr;
 };
 typedef struct FlagItemTesterParam FlagItemTesterParam;
 
@@ -542,13 +544,13 @@ static int FlagItemTester(const char *item, void *refCon)
      * ParseItemStringForFlags(). It both verifies that the item is one of the
      * flags and sets the value of the flag in the result. */
 {
-    int                  err;
-    size_t               flagIndex;
+    int err;
+    size_t flagIndex;
     FlagItemTesterParam *fp;
 
     /* Extract our params from the refCon. */
 
-    fp = (FlagItemTesterParam *) refCon;
+    fp = (FlagItemTesterParam *)refCon;
     assert(fp != NULL);
     assert(fp->flagList != NULL);
     assert(fp->flagList[0].flagName != NULL);
@@ -589,25 +591,26 @@ static int ParseItemStringForFlags(const char *str, char delimiter,
 /***************************************************************/
 #pragma mark ***** Command Implementation and Help
 
-extern void CommandHelpString(uint32_t indent, uint32_t verbose, const void *param)
+extern void CommandHelpString(uint32_t indent, uint32_t verbose,
+							  const void *param)
     /* See comment for corresponding prototype in corresponding header. */
 {
     #pragma unused(verbose)
 
-    assert( CommandHelpStandardPreCondition() );
+    assert(CommandHelpStandardPreCondition());
 
-    fprintf(stderr, "%*s%s\n", (int) indent, "", (const char *) param);
+    fprintf(stderr, "%*s%s\n", (int) indent, "", (const char *)param);
 }
 
 extern void CommandHelpFlags(uint32_t indent, uint32_t verbose, const void *param)
     /* See comment for corresponding prototype in corresponding header. */
 {
     #pragma unused(verbose)
-    const FPFlagDesc *  flags;
-    int                 flagIndex;
+    const FPFlagDesc *flags;
+    int flagIndex;
 
     assert(CommandHelpStandardPreCondition());
-    assert(param != NULL );
+    assert(param != NULL);
 
     flags = (const FPFlagDesc *)param;
 
@@ -625,10 +628,10 @@ extern void CommandHelpEnum(uint32_t indent, uint32_t verbose,
 {
     #pragma unused(verbose)
     const FPEnumDesc *enums;
-    int               enumIndex;
+    int enumIndex;
 
     assert(CommandHelpStandardPreCondition());
-    assert(param != NULL );
+    assert(param != NULL);
 
     enums = (const FPEnumDesc *)param;
 

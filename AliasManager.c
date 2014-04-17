@@ -83,7 +83,7 @@ static OSStatus PrintAliasField(AliasHandle aliasH, SInt16 infoIndex,
 	 * an alias. */
 {
     OSStatus err;
-    Str63    fieldStr;
+    Str63 fieldStr;
 
     assert(aliasH != NULL);
 
@@ -129,11 +129,11 @@ static OSStatus PrintAliasWholePath(AliasHandle aliasH, uint32_t indent,
 }
 
 static const FPFlagDesc kAliasFields[] = {
-    { (1 << kZoneName),     "asiZoneName" },
-    { (1 << kServerName),   "asiServerName" },
-    { (1 << kVolumeName),   "asiVolumeName" },
-    { (1 << kAliasName),    "asiAliasname" },
-    { (1 << kParentName),   "asiParentName" },
+    { (1 << kZoneName), "asiZoneName" },
+    { (1 << kServerName), "asiServerName" },
+    { (1 << kVolumeName), "asiVolumeName" },
+    { (1 << kAliasName), "asiAliasname" },
+    { (1 << kParentName), "asiParentName" },
     { (1 << kPathElements), "asiPathElements" },
     { 0, NULL }
 };
@@ -192,12 +192,14 @@ static CommandError PrintGetAliasinfo(CommandArgsRef args, uint32_t indent,
         err = PrintAliasWholePath(itemAlias, (indent + kStdIndent), verbose);
     } else {
         if ((err == 0) && (optionsMask & (1 << kAliasName))) {
-            err = PrintAliasField(itemAlias, (SInt16)asiAliasName, "asiAliasName",
-								  (indent + kStdIndent), verbose);
+            err = PrintAliasField(itemAlias, (SInt16)asiAliasName,
+								  "asiAliasName", (indent + kStdIndent),
+								  verbose);
         }
         if ((err == 0) && (optionsMask & (1 << kParentName))) {
-            err = PrintAliasField(itemAlias, (SInt16)asiParentName, "asiParentName",
-								  (indent + kStdIndent), verbose);
+            err = PrintAliasField(itemAlias, (SInt16)asiParentName,
+								  "asiParentName", (indent + kStdIndent),
+								  verbose);
         }
     }
 
@@ -224,15 +226,14 @@ const CommandInfo kGetAliasInfoCommand = {
     "Print information from GetAliasinfo.",
     kGetAliasInfoCommandHelp
 };
-
 #endif /* !TARGET_RT_64_BIT */
 
+/***************************************************************/
 #pragma mark *     FSCopyAliasInfo
 
-/* The fields of the FSAliasInfo structure.  These are broken up into three
+/* The fields of the FSAliasInfo structure. These are broken up into three
  * groups because FSCopyAliasInfo does not always return all information for
  * a given alias. */
-
 static const char kFSAliasInfoFieldSpacer[32] = "volumeHasPersistentFileIDs";
 
 static const FPFieldDesc kFSAliasInfoFieldDescVolumeCreateDate[] = {
@@ -249,7 +250,7 @@ static const FPFieldDesc kFSAliasInfoFieldDescTargetCreateDate[] = {
 
 static const FPFieldDesc kFSAliasInfoFieldDescFinderInfo[] = {
     {kFSAliasInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
-    {"fileType",    offsetof(FSAliasInfo, fileType),    sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"fileType", offsetof(FSAliasInfo, fileType), sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
     {"fileCreator", offsetof(FSAliasInfo, fileCreator), sizeof(OSType), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
     {NULL, 0, 0, NULL, NULL}
 };
@@ -257,29 +258,29 @@ static const FPFieldDesc kFSAliasInfoFieldDescFinderInfo[] = {
 static const FPFieldDesc kFSAliasInfoFieldDescFSInfo[] = {
     {kFSAliasInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
     {"filesystemID", offsetof(FSAliasInfo, filesystemID), sizeof(UInt16), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
-    {"signature",    offsetof(FSAliasInfo, signature),    sizeof(UInt16), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
+    {"signature", offsetof(FSAliasInfo, signature), sizeof(UInt16), FPSignature, (const void *)(uintptr_t)kFPValueHostEndian},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kFSAliasInfoFieldDescIDs[] = {
     {kFSAliasInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
     {"parentDirID", offsetof(FSAliasInfo, parentDirID), sizeof(UInt32), FPUDec, NULL},
-    {"nodeID",      offsetof(FSAliasInfo, nodeID),      sizeof(UInt32), FPUDec, NULL},
+    {"nodeID", offsetof(FSAliasInfo, nodeID), sizeof(UInt32), FPUDec, NULL},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kFSAliasInfoFieldDescVolumeFlags[] = {
     {kFSAliasInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
-    {"volumeIsBootVolume",         offsetof(FSAliasInfo, volumeIsBootVolume),         sizeof(Boolean), FPBoolean, NULL},
-    {"volumeIsAutomounted",        offsetof(FSAliasInfo, volumeIsAutomounted),        sizeof(Boolean), FPBoolean, NULL},
-    {"volumeIsEjectable",          offsetof(FSAliasInfo, volumeIsEjectable),          sizeof(Boolean), FPBoolean, NULL},
+    {"volumeIsBootVolume", offsetof(FSAliasInfo, volumeIsBootVolume), sizeof(Boolean), FPBoolean, NULL},
+    {"volumeIsAutomounted", offsetof(FSAliasInfo, volumeIsAutomounted), sizeof(Boolean), FPBoolean, NULL},
+    {"volumeIsEjectable", offsetof(FSAliasInfo, volumeIsEjectable), sizeof(Boolean), FPBoolean, NULL},
     {"volumeHasPersistentFileIDs", offsetof(FSAliasInfo, volumeHasPersistentFileIDs), sizeof(Boolean), FPBoolean, NULL},
     {NULL, 0, 0, NULL, NULL}
 };
 
 static const FPFieldDesc kFSAliasInfoFieldDescIsDirectory[] = {
     {kFSAliasInfoFieldSpacer, 0,  0, FPNull, NULL}, /* present to pad out field widths */
-    {"isDirectory",                 offsetof(FSAliasInfo, isDirectory),                 sizeof(Boolean),        FPBoolean, NULL},
+    {"isDirectory", offsetof(FSAliasInfo, isDirectory), sizeof(Boolean), FPBoolean, NULL},
     {NULL, 0, 0, NULL, NULL}
 };
 
@@ -287,7 +288,7 @@ enum {
     kRequestTargetName = (1 << 0),
     kRequestVolumeName = (1 << 1),
     kRequestPathString = (1 << 2),
-    kRequestInfo       = (1 << 4),
+    kRequestInfo = (1 << 4),
 
     kRequestEverything = (kRequestTargetName | kRequestVolumeName | kRequestPathString | kRequestInfo)
 };
@@ -304,9 +305,9 @@ static int AliasInfoBitMapTester(const char *item, void *refCon)
     /* A CommandParseItemString that tests whether the item is in kRequestFlags
      * and, if so, set this corresponding bit in *refCon. */
 {
-    int       err;
+    int err;
     uint32_t *requestedInfoPtr;
-    size_t    flagIndex;
+    size_t flagIndex;
 
     assert(item != NULL);
     requestedInfoPtr = (uint32_t *)refCon;
@@ -330,16 +331,16 @@ static CommandError PrintFSCopyAliasInfo(CommandArgsRef args, uint32_t indent,
      *
      * indent and verbose are as per the comments for FPPrinter. */
 {
-    OSStatus          err;
-    const char *      optionsStr;
-    FSRef             itemRef;
-    AliasHandle       itemAlias;
-    uint32_t          requestedInfo;
+    OSStatus err;
+    const char *optionsStr;
+    FSRef itemRef;
+    AliasHandle itemAlias;
+    uint32_t requestedInfo;
     FSAliasInfoBitmap returnedInInfo; /* i.e. UInt32 */
-    HFSUniStr255      targetName;
-    HFSUniStr255      volumeName;
-    CFStringRef       pathString;
-    FSAliasInfo       info;
+    HFSUniStr255 targetName;
+    HFSUniStr255 volumeName;
+    CFStringRef pathString;
+    FSAliasInfo info;
 
 	returnedInInfo = kFSAliasInfoNone; /* i.e. 0, or '0x00000000' to be even
 										* more precise */
@@ -360,8 +361,7 @@ static CommandError PrintFSCopyAliasInfo(CommandArgsRef args, uint32_t indent,
         requestedInfo = kRequestEverything;
     }
 
-    /* Make an alias to the item. */
-
+    /* Make an alias to the item: */
     if (err == noErr) {
         err = CommandArgsGetFSRef(args, &itemRef);
     }
@@ -369,50 +369,63 @@ static CommandError PrintFSCopyAliasInfo(CommandArgsRef args, uint32_t indent,
         err = FSNewAlias(NULL, &itemRef, &itemAlias);
     }
 
-    /* Get info about it. */
-
+    /* Get info about it: */
     if (err == noErr) {
         err = FSCopyAliasInfo(itemAlias,
-            ((requestedInfo & kRequestTargetName) ? &targetName     : NULL),
-            ((requestedInfo & kRequestVolumeName) ? &volumeName     : NULL),
-            ((requestedInfo & kRequestPathString) ? &pathString     : NULL),
-            ((requestedInfo & kRequestInfo)       ? &returnedInInfo : NULL),
-            ((requestedInfo & kRequestInfo)       ? &info           : NULL));
+							  ((requestedInfo & kRequestTargetName) ? &targetName : NULL),
+							  ((requestedInfo & kRequestVolumeName) ? &volumeName : NULL),
+							  ((requestedInfo & kRequestPathString) ? &pathString : NULL),
+							  ((requestedInfo & kRequestInfo) ? &returnedInInfo : NULL),
+							  ((requestedInfo & kRequestInfo) ? &info : NULL));
     }
 
     /* Print that info. */
 
     if (err == noErr) {
         if (requestedInfo & kRequestTargetName) {
-            HFSUniStr255FieldPrinter("targetName", sizeof(targetName), &targetName, indent, strlen(kFSAliasInfoFieldSpacer), verbose, NULL);
+            HFSUniStr255FieldPrinter("targetName", sizeof(targetName),
+									 &targetName, indent,
+									 strlen(kFSAliasInfoFieldSpacer),
+									 verbose, NULL);
         }
         if (requestedInfo & kRequestVolumeName) {
-            HFSUniStr255FieldPrinter("volumeName", sizeof(volumeName), &volumeName, indent, strlen(kFSAliasInfoFieldSpacer), verbose, NULL);
+            HFSUniStr255FieldPrinter("volumeName", sizeof(volumeName),
+									 &volumeName, indent,
+									 strlen(kFSAliasInfoFieldSpacer),
+									 verbose, NULL);
         }
         if (requestedInfo & kRequestPathString) {
-            FPCFString("pathString", sizeof(pathString), &pathString, indent, strlen(kFSAliasInfoFieldSpacer), verbose, NULL);
+            FPCFString("pathString", sizeof(pathString), &pathString, indent,
+					   strlen(kFSAliasInfoFieldSpacer), verbose, NULL);
         }
         if (requestedInfo & kRequestInfo) {
             if (returnedInInfo & kFSAliasInfoVolumeCreateDate) {
-                FPPrintFields(kFSAliasInfoFieldDescVolumeCreateDate, &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescVolumeCreateDate, &info,
+							  sizeof(info), indent, verbose);
             }
             if (returnedInInfo & kFSAliasInfoTargetCreateDate) {
-                FPPrintFields(kFSAliasInfoFieldDescTargetCreateDate, &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescTargetCreateDate, &info,
+							  sizeof(info), indent, verbose);
             }
             if (returnedInInfo & kFSAliasInfoFinderInfo) {
-                FPPrintFields(kFSAliasInfoFieldDescFinderInfo,       &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescFinderInfo, &info,
+							  sizeof(info), indent, verbose);
             }
             if (returnedInInfo & kFSAliasInfoIsDirectory) {
-                FPPrintFields(kFSAliasInfoFieldDescIsDirectory,      &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescIsDirectory, &info,
+							  sizeof(info), indent, verbose);
             }
             if (returnedInInfo & kFSAliasInfoIDs) {
-                FPPrintFields(kFSAliasInfoFieldDescIDs,              &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescIDs, &info, sizeof(info),
+							  indent, verbose);
             }
             if (returnedInInfo & kFSAliasInfoFSInfo) {
-                FPPrintFields(kFSAliasInfoFieldDescFSInfo,           &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescFSInfo, &info, sizeof(info),
+							  indent, verbose);
             }
             if (returnedInInfo & kFSAliasInfoVolumeFlags) {
-                FPPrintFields(kFSAliasInfoFieldDescVolumeFlags,      &info, sizeof(info), indent, verbose);
+                FPPrintFields(kFSAliasInfoFieldDescVolumeFlags, &info,
+							  sizeof(info), indent, verbose);
             }
         }
     }
@@ -430,7 +443,7 @@ static CommandError PrintFSCopyAliasInfo(CommandArgsRef args, uint32_t indent,
 
 static const CommandHelpEntry kFSCopyAliasInfoCommandHelp[] = {
     {CommandHelpString, "-paramList Alias information to get; defaults to everything"},
-    {CommandHelpFlags,  kRequestFlags},
+    {CommandHelpFlags, kRequestFlags},
     {NULL, NULL}
 };
 

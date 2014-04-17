@@ -89,9 +89,9 @@ typedef enum CustomError CustomError;
 struct CommandError {
     CommandErrorDomain  domain;
     union {
-        CustomError     errCustom;
-        errno_t         errErrno;
-        OSStatus        errOSStatus;
+        CustomError errCustom;
+        errno_t errErrno;
+        OSStatus errOSStatus;
     } u;
 };
 typedef struct CommandError CommandError;
@@ -209,12 +209,12 @@ typedef void (*CommandHelpProc)(uint32_t indent, uint32_t verbose,
  * routines to check their incoming parameters.  It is a macro so that it can
  * access the parameters by name. */
 
-#define CommandHelpStandardPreCondition()   \
-    (true)                                 /* nothing to check at the moment */
+#define CommandHelpStandardPreCondition() \
+    (true)  /* nothing to check at the moment */
 
 struct CommandHelpEntry {
     CommandHelpProc proc;
-    const void *    param;
+    const void *param;
 };
 typedef struct CommandHelpEntry CommandHelpEntry;
 
@@ -237,10 +237,10 @@ extern void CommandHelpEnum(uint32_t indent, uint32_t verbose,
  * proc to call, the name of the proc, and the usage. */
 
 struct CommandInfo {
-    CommandProc             proc;
-    const char *            name;
-    const char *            argSummary;
-    const char *            description;
+    CommandProc proc;
+    const char *name;
+    const char *argSummary;
+    const char *description;
     const CommandHelpEntry *help;
 };
 typedef struct CommandInfo CommandInfo;
