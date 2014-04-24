@@ -1,3 +1,5 @@
+## automake Makefile for FSMegaInfo
+
 ACLOCAL_AMFLAGS = -I m4 --install
 
 bin_PROGRAMS = FSMegaInfo

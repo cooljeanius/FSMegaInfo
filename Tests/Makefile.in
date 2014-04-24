@@ -13,7 +13,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -81,6 +80,7 @@ host_triplet = @host@
 target_triplet = @target@
 subdir = Tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
+	$(noinst_PYTHON) $(top_srcdir)/build-aux/py-compile \
 	$(top_srcdir)/build-aux/test-driver
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -90,7 +90,6 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-SCRIPTS = $(noinst_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -110,6 +109,8 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__py_compile = PYTHON=$(PYTHON) $(SHELL) $(py_compile)
+py_compile = $(top_srcdir)/build-aux/py-compile
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 am__tty_colors_dummy = \
   mgn= red= grn= lgn= blu= brg= std=; \
@@ -426,7 +427,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 TESTS = Test.py
 EXTRA_DIST = Test.py
-noinst_SCRIPTS = Test.py
+check_SCRIPTS = Test.py
+noinst_PYTHON = Test.py
 all: all-am
 
 .SUFFIXES:
@@ -598,7 +600,7 @@ check-TESTS:
 	log_list=`echo $$log_list`; trs_list=`echo $$trs_list`; \
 	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) TEST_LOGS="$$log_list"; \
 	exit $$?;
-recheck: all 
+recheck: all $(check_SCRIPTS)
 	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 	@set +e; $(am__set_TESTS_bases); \
 	bases=`for i in $$bases; do echo $$i; done \
@@ -662,9 +664,10 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_SCRIPTS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile $(SCRIPTS)
+all-am: Makefile
 installdirs:
 install: install-am
 install-exec: install-exec-am
