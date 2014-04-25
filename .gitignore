@@ -10,6 +10,9 @@ build/*
 stamp-h*
 *~
 config.h
+confdefs.h
+conftest*
+conf*/*.awk
 *deps/*.*o
 *.status
 *.o

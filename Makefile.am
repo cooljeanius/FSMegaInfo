@@ -16,3 +16,14 @@ FSMegaInfo_LDFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk -framework CoreSer
 noinst_HEADERS = BSD.h Command.h FieldPrinter.h
 
 SUBDIRS = Tests
+
+DISTCLEANFILES = *~ autoscan.log .DS_Store
+
+MAINTAINERCLEANFILES = configure.scan
+
+configure.scan:
+	autoscan || touch configure.scan
+
+distclean-local:
+	rm -f @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
+	rm -rf autom4te.cache || rmdir autom4te.cache
