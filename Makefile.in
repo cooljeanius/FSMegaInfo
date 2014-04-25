@@ -81,6 +81,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = FSMegaInfo$(EXEEXT)
+@HAVE_CORRECT_SYSROOT_TRUE@am__append_1 = -isysroot /Developer/SDKs/MacOSX10.5.sdk
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
@@ -349,10 +350,11 @@ FSMegaInfo_SOURCES = AliasManager.c BSD.c BSD.h BSDAttrList.c Command.c Command.
 
 #TODO: check that these flags are supported:
 FSMegaInfo_CFLAGS = -fpascal-strings -mfix-and-continue -mmacosx-version-min=10.4
-FSMegaInfo_CPPFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk
 # No need to repeat the version-min flag in here; it already gets brought
 # in by the CFLAGS:
-FSMegaInfo_LDFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk -framework CoreServices -framework DiskArbitration
+FSMegaInfo_LDFLAGS = -framework CoreServices -framework \
+	DiskArbitration $(am__append_1)
+@HAVE_CORRECT_SYSROOT_TRUE@FSMegaInfo_CPPFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk
 noinst_HEADERS = BSD.h Command.h FieldPrinter.h
 SUBDIRS = Tests
 DISTCLEANFILES = *~ autoscan.log .DS_Store

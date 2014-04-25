@@ -10,6 +10,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 AC_USE_SYSTEM_EXTENSIONS
 AM_INIT_AUTOMAKE([foreign])
+AM_CONDITIONAL([HAVE_CORRECT_SYSROOT],
+               [test -d /Developer/SDKs/MacOSX10.5.sdk])
 
 # Checks for programs.
 AC_PROG_CPP
@@ -68,7 +70,7 @@ AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([fprintf memset pathconf sscanf strcasecmp strerror \
                 strtoimax strlen strncmp strtoll])
 
-# Output
+# Output:
 AC_CONFIG_FILES([Makefile
                  Tests/Makefile])
 AC_OUTPUT

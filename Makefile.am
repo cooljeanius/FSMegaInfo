@@ -8,10 +8,14 @@ FSMegaInfo_SOURCES = AliasManager.c BSD.c BSD.h BSDAttrList.c Command.c Command.
 
 #TODO: check that these flags are supported:
 FSMegaInfo_CFLAGS = -fpascal-strings -mfix-and-continue -mmacosx-version-min=10.4
-FSMegaInfo_CPPFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk
 # No need to repeat the version-min flag in here; it already gets brought
 # in by the CFLAGS:
-FSMegaInfo_LDFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk -framework CoreServices -framework DiskArbitration
+FSMegaInfo_LDFLAGS = -framework CoreServices -framework DiskArbitration
+if HAVE_CORRECT_SYSROOT
+FSMegaInfo_CPPFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk
+FSMegaInfo_LDFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk
+endif
+## (end HAVE_CORRECT_SYSROOT)
 
 noinst_HEADERS = BSD.h Command.h FieldPrinter.h
 
