@@ -5,7 +5,8 @@ install: echo "Not everyone uses CocoaPods"
 
 xcode_project: FSMegaInfo.xcodeproj
 
-script: xcodebuild
+script:
+  - xcodebuild || (./configure && make && make check)
 
 compiler:
   - clang
