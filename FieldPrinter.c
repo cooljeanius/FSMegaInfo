@@ -448,7 +448,11 @@ extern void FPCFType(const char *fieldName, size_t fieldSize,
             quoteStr = "'";
         }
 
-        str = CFStringCreateWithFormat(NULL, NULL, CFSTR("%@"), value);
+        /* check behavior with strict aliasing here */
+        str = (CFStringRef)CFStringCreateWithFormat((CFAllocatorRef)NULL,
+													(CFDictionaryRef)NULL,
+													(CFStringRef)CFSTR("%@"),
+													value);
         assert(str != NULL);
         if (str != NULL) {
             strBufLen = (CFStringGetMaximumSizeForEncoding(CFStringGetLength(str),
