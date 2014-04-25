@@ -637,6 +637,9 @@ PYTHON_VERSION
 PYTHON
 HAVE_CORRECT_SYSROOT_FALSE
 HAVE_CORRECT_SYSROOT_TRUE
+xcsdkdir
+MAKE_PROG
+XCRUN
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -4634,6 +4637,98 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
+xcsdkdir=""
+for ac_prog in xcrun
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_XCRUN+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$XCRUN"; then
+  ac_cv_prog_XCRUN="$XCRUN" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_XCRUN="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+XCRUN=$ac_cv_prog_XCRUN
+if test -n "$XCRUN"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XCRUN" >&5
+$as_echo "$XCRUN" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$XCRUN" && break
+done
+
+if test -n "${XCRUN}"; then
+  if test -z "${MAKE}"; then
+            # Extract the first word of "make", so it can be a program name with args.
+set dummy make; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_MAKE_PROG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$MAKE_PROG"; then
+  ac_cv_prog_MAKE_PROG="$MAKE_PROG" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_MAKE_PROG="yes"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+MAKE_PROG=$ac_cv_prog_MAKE_PROG
+if test -n "$MAKE_PROG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MAKE_PROG" >&5
+$as_echo "$MAKE_PROG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+    if test -z "${MAKE_PROG}"; then
+      MAKE="${XCRUN} MAKE"
+      export MAKE
+      xcsdkdir=`${XCRUN} --show-sdk-path 2>/dev/null`
+      { $as_echo "$as_me:${as_lineno-$LINENO}: xcsdkdir is \"${xcsdkdir}\"" >&5
+$as_echo "$as_me: xcsdkdir is \"${xcsdkdir}\"" >&6;}
+
+    fi
+  fi
+fi
  if test -d /Developer/SDKs/MacOSX10.5.sdk; then
   HAVE_CORRECT_SYSROOT_TRUE=
   HAVE_CORRECT_SYSROOT_FALSE='#'
@@ -4988,6 +5083,35 @@ $as_echo "$am_cv_python_pyexecdir" >&6; }
   fi
 
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler is actually clang" >&5
+$as_echo_n "checking whether the compiler is actually clang... " >&6; }
+if ${ac_cv_clang+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+	  #ifndef __clang__
+	    #error "not clang"
+	  #endif /* !__clang__ */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_clang=yes
+else
+  ac_cv_clang=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_clang" >&5
+$as_echo "$ac_cv_clang" >&6; }
 
 # Checks for header files.
 

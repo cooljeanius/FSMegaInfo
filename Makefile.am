@@ -7,7 +7,11 @@ bin_PROGRAMS = FSMegaInfo
 FSMegaInfo_SOURCES = AliasManager.c BSD.c BSD.h BSDAttrList.c Command.c Command.h DiskArb.c FieldPrinter.c FieldPrinter.h FileManager.c FolderManager.c FSMegaInfo.c
 
 #TODO: check that these flags are supported:
-FSMegaInfo_CFLAGS = -fpascal-strings -mfix-and-continue -mmacosx-version-min=10.4
+AM_WARNFLAGS = -Wmissing-prototypes -Wreturn-type -Wmissing-braces \
+	       -Wparentheses -Wswitch -Wunused-parameter \
+	       -Wunused-variable -Wunused-value -Wunknown-pragmas \
+	       -Wshadow -Wall -Wimplicit -Wextra
+FSMegaInfo_CFLAGS = -fpascal-strings -mfix-and-continue -mmacosx-version-min=10.4 $(AM_WARNFLAGS)
 # No need to repeat the version-min flag in here; it already gets brought
 # in by the CFLAGS:
 FSMegaInfo_LDFLAGS = -framework CoreServices -framework DiskArbitration
@@ -19,7 +23,7 @@ endif
 
 noinst_HEADERS = BSD.h Command.h FieldPrinter.h
 
-SUBDIRS = Tests
+SUBDIRS = . Tests
 
 DISTCLEANFILES = *~ autoscan.log .DS_Store
 

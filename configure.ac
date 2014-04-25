@@ -10,12 +10,37 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 AC_USE_SYSTEM_EXTENSIONS
 AM_INIT_AUTOMAKE([foreign])
+xcsdkdir=""
+AC_CHECK_PROGS([XCRUN],[xcrun])
+if test -n "${XCRUN}"; then
+  if test -z "${MAKE}"; then
+    dnl# Call the variable MAKE_PROG, not MAKE, to avoid confusion with
+    dnl# SET_MAKE and with the usual MAKE variable that 'make' itself uses.
+    AC_CHECK_PROG([MAKE_PROG],[make],[yes])
+    if test -z "${MAKE_PROG}"; then
+      MAKE="${XCRUN} MAKE"
+      export MAKE
+      xcsdkdir=`${XCRUN} --show-sdk-path 2>/dev/null`
+      AC_MSG_NOTICE([xcsdkdir is "${xcsdkdir}"])
+      AC_SUBST([xcsdkdir])
+    fi
+  fi
+fi
 AM_CONDITIONAL([HAVE_CORRECT_SYSROOT],
                [test -d /Developer/SDKs/MacOSX10.5.sdk])
 
 # Checks for programs.
 AC_PROG_CPP
 AM_PATH_PYTHON
+AC_CACHE_CHECK([whether the compiler is actually clang],[ac_cv_clang],
+  [AC_COMPILE_IFELSE(
+     [AC_LANG_PROGRAM([[
+	  #ifndef __clang__
+	    #error "not clang"
+	  #endif /* !__clang__ */
+        ]])],
+     [ac_cv_clang=yes],
+     [ac_cv_clang=no])])
 
 # Checks for header files.
 AC_HEADER_ASSERT
