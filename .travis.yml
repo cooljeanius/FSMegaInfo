@@ -1,0 +1,12 @@
+language: objective-c
+
+# we do not use CocoaPods, so override install:
+install: echo "Not everyone uses CocoaPods"
+
+xcode_project: FSMegaInfo.xcodeproj
+
+script: xcodebuild
+
+compiler:
+  - clang
+  - gcc
