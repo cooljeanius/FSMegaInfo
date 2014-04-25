@@ -25,7 +25,7 @@
 		A52314D318FE0B7500A22E25 /* Command.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F3531F0A6506B0003476CC /* Command.h */; };
 		A52314D418FE0B7500A22E25 /* FieldPrinter.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F352C10A650427003476CC /* FieldPrinter.h */; };
 		A52314D518FE0B7500A22E25 /* BSD.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F353180A6506AA003476CC /* BSD.h */; };
-		A52315ED18FEAC1100A22E25 /* Read Me About FSMegaInfo.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = A52315EB18FEAC0800A22E25 /* Read Me About FSMegaInfo.txt */; };
+		A52315ED18FEAC1100A22E25 /* README in CopyFiles */ = {isa = PBXBuildFile; fileRef = A52315EB18FEAC0800A22E25 /* README */; };
 		E420E24D0B3957FB0053963E /* DiskArb.c in Sources */ = {isa = PBXBuildFile; fileRef = E420E24C0B3957FB0053963E /* DiskArb.c */; };
 		E420E2510B3958280053963E /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E420E2500B3958280053963E /* DiskArbitration.framework */; };
 		E434215B0AFBA28E007C4AD3 /* FolderManager.c in Sources */ = {isa = PBXBuildFile; fileRef = E43421590AFBA28E007C4AD3 /* FolderManager.c */; };
@@ -44,7 +44,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DD76FA90486AB0100D96B5E /* FSMegaInfo */;
+			remoteGlobalIDString = 8DD76FA90486AB0100D96B5E;
 			remoteInfo = FSMegaInfo;
 		};
 /* End PBXContainerItemProxy section */
@@ -56,7 +56,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				A52315ED18FEAC1100A22E25 /* Read Me About FSMegaInfo.txt in CopyFiles */,
+				A52315ED18FEAC1100A22E25 /* README in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -64,7 +64,7 @@
 
 /* Begin PBXFileReference section */
 		8DD76FB20486AB0100D96B5E /* FSMegaInfo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FSMegaInfo; sourceTree = BUILT_PRODUCTS_DIR; };
-		A52315EB18FEAC0800A22E25 /* Read Me About FSMegaInfo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Read Me About FSMegaInfo.txt"; sourceTree = "<group>"; };
+		A52315EB18FEAC0800A22E25 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		A523160C18FEAC4700A22E25 /* FSMegaInfoTestRO.dmg */ = {isa = PBXFileReference; lastKnownFileType = file; path = FSMegaInfoTestRO.dmg; sourceTree = "<group>"; };
 		A523160D18FEAC4700A22E25 /* ten-five-intel.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-five-intel.txt"; sourceTree = "<group>"; };
 		A523160E18FEAC4700A22E25 /* ten-five-one-ppc64.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-five-one-ppc64.txt"; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 				E4F352C10A650427003476CC /* FieldPrinter.h */,
 				E4F352C30A650427003476CC /* FieldPrinter.c */,
 				E4F352C20A650427003476CC /* FSMegaInfo.c */,
-				A52315EB18FEAC0800A22E25 /* Read Me About FSMegaInfo.txt */,
+				A52315EB18FEAC0800A22E25 /* README */,
 				E4B5EC410D60F75700395F9E /* Commands */,
 				A523160B18FEAC4700A22E25 /* Tests */,
 				A523161318FEAC5700A22E25 /* Linked Frameworks */,
