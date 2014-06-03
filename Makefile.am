@@ -10,7 +10,8 @@ FSMegaInfo_SOURCES = AliasManager.c BSD.c BSD.h BSDAttrList.c Command.c Command.
 AM_WARNFLAGS = -Wmissing-prototypes -Wreturn-type -Wmissing-braces \
 	       -Wparentheses -Wswitch -Wunused-parameter \
 	       -Wunused-variable -Wunused-value -Wunknown-pragmas \
-	       -Wshadow -Wall -Wimplicit -Wextra
+	       -Wshadow -Wall -Wimplicit -Wextra -Wfloat-equal \
+	       -Wpointer-arith -Wstrict-prototypes -Wold-style-definition
 FSMegaInfo_CFLAGS = -fpascal-strings -mfix-and-continue -mmacosx-version-min=10.4 $(AM_WARNFLAGS)
 # No need to repeat the version-min flag in here; it already gets brought
 # in by the CFLAGS:
