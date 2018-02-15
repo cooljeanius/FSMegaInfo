@@ -12,7 +12,8 @@ AM_WARNFLAGS = -Wmissing-prototypes -Wreturn-type -Wmissing-braces \
 	       -Wunused-variable -Wunused-value -Wunknown-pragmas \
 	       -Wshadow -Wall -Wimplicit -Wextra -Wfloat-equal \
 	       -Wpointer-arith -Wstrict-prototypes -Wold-style-definition
-FSMegaInfo_CFLAGS = -fpascal-strings -mfix-and-continue -mmacosx-version-min=10.4 $(AM_WARNFLAGS)
+PASCAL_STRINGS_FLAG = -fpascal-strings
+FSMegaInfo_CFLAGS = -mfix-and-continue -mmacosx-version-min=10.4 $(AM_WARNFLAGS) # $(PASCAL_STRINGS_FLAG)
 # No need to repeat the version-min flag in here; it already gets brought
 # in by the CFLAGS:
 FSMegaInfo_LDFLAGS = -framework CoreServices -framework DiskArbitration

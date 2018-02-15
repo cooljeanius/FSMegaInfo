@@ -1,5 +1,5 @@
-#                                               -*- Autoconf -*-
-# Process this file with autoconf to produce a configure script.
+dnl#                                               -*- Autoconf -*-
+dnl# Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
 AC_INIT([FSMegaInfo],[1.0],[dts@apple.com])
@@ -27,7 +27,7 @@ if test -n "${XCRUN}"; then
   fi
 fi
 AM_CONDITIONAL([HAVE_CORRECT_SYSROOT],
-               [test -d /Developer/SDKs/MacOSX10.5.sdk])
+               [test -d /Developer/SDKs/MacOSX10.5.sdk])dnl
 
 # Checks for programs.
 AC_PROG_CPP
@@ -40,7 +40,7 @@ AC_CACHE_CHECK([whether the compiler is actually clang],[ac_cv_clang],
 	  #endif /* !__clang__ */
         ]])],
      [ac_cv_clang=yes],
-     [ac_cv_clang=no])])
+     [ac_cv_clang=no])])dnl
 
 # Checks for header files.
 AC_HEADER_ASSERT
@@ -53,7 +53,7 @@ AC_CHECK_HEADERS([assert.h fts.h grp.h limits.h membership.h \
                   sys/mount.h sys/param.h sys/vnode.h sys/xattr.h])
 # These headers are OSX specific, and in frameworks:
 AC_CHECK_HEADERS([CoreServices/CoreServices.h \
-                  DiskArbitration/DiskArbitration.h])
+                  DiskArbitration/DiskArbitration.h])dnl
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_SYS_LARGEFILE
@@ -93,7 +93,7 @@ AC_FUNC_MEMCMP
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([fprintf memset pathconf sscanf strcasecmp strerror \
-                strtoimax strlen strncmp strtoll])
+                strtoimax strlen strncmp strtoll])dnl
 
 # Output:
 AC_CONFIG_FILES([Makefile
