@@ -11,3 +11,5 @@ script:
 compiler:
   - clang
   - gcc
+
+after_failure: test -r /usr/include/sys/vnode.h && cat /usr/include/sys/vnode.h

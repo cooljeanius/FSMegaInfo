@@ -95,6 +95,17 @@ AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([fprintf memset pathconf sscanf strcasecmp strerror \
                 strtoimax strlen strncmp strtoll])dnl
 
+# Checks for declarations.
+AC_CHECK_DECLS([VT_UNION],[],[],[
+#ifdef HAVE_SYS_VNODE_H
+# include <sys/vnode.h>
+#else
+# if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+#  warning "conftest for VT_UNION expects <sys/vnode.h> to be included."
+# endif /* __GNUC__ && !__STRICT_ANSI__ */
+#endif /* HAVE_SYS_VNODE_H */
+])dnl
+
 # Output:
 AC_CONFIG_FILES([Makefile
                  Tests/Makefile])

@@ -590,7 +590,9 @@ static const FPEnumDesc kFSObjTagEnums[] = {
     { VT_PROCFS, "VT_PROCFS" },
     { VT_AFS, "VT_AFS" },
     { VT_ISOFS, "VT_ISOFS" },
+#ifdef HAVE_DECL_VT_UNION
     { VT_UNION, "VT_UNION" },
+#endif /* HAVE_DECL_VT_UNION */
     { VT_HFS, "VT_HFS" },
     { VT_ZFS, "VT_ZFS" }, /* was VT_VOLFS prior to 10.5 */
     { VT_DEVFS, "VT_DEVFS"  },
