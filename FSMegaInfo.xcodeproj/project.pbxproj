@@ -72,20 +72,20 @@
 		A523161018FEAC4700A22E25 /* ten-four-eleven-intel.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-four-eleven-intel.txt"; sourceTree = "<group>"; };
 		A523161118FEAC4700A22E25 /* ten-four-eleven-ppc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ten-four-eleven-ppc.txt"; sourceTree = "<group>"; };
 		A523161218FEAC4700A22E25 /* Test.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Test.py; sourceTree = "<group>"; };
-		E420E24C0B3957FB0053963E /* DiskArb.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = DiskArb.c; sourceTree = "<group>"; };
+		E420E24C0B3957FB0053963E /* DiskArb.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = DiskArb.c; sourceTree = "<group>"; tabWidth = 4; };
 		E420E2500B3958280053963E /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
-		E43421590AFBA28E007C4AD3 /* FolderManager.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = FolderManager.c; sourceTree = "<group>"; };
-		E4F352C10A650427003476CC /* FieldPrinter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FieldPrinter.h; sourceTree = "<group>"; };
-		E4F352C20A650427003476CC /* FSMegaInfo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = FSMegaInfo.c; sourceTree = "<group>"; };
-		E4F352C30A650427003476CC /* FieldPrinter.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = FieldPrinter.c; sourceTree = "<group>"; };
+		E43421590AFBA28E007C4AD3 /* FolderManager.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = FolderManager.c; sourceTree = "<group>"; tabWidth = 4; };
+		E4F352C10A650427003476CC /* FieldPrinter.h */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = FieldPrinter.h; sourceTree = "<group>"; tabWidth = 4; };
+		E4F352C20A650427003476CC /* FSMegaInfo.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = FSMegaInfo.c; sourceTree = "<group>"; tabWidth = 4; };
+		E4F352C30A650427003476CC /* FieldPrinter.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = FieldPrinter.c; sourceTree = "<group>"; tabWidth = 4; };
 		E4F352F20A650507003476CC /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
-		E4F353130A6506A5003476CC /* AliasManager.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = AliasManager.c; sourceTree = "<group>"; };
+		E4F353130A6506A5003476CC /* AliasManager.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = AliasManager.c; sourceTree = "<group>"; tabWidth = 4; };
 		E4F353180A6506AA003476CC /* BSD.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BSD.h; sourceTree = "<group>"; };
-		E4F353190A6506AA003476CC /* BSD.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = BSD.c; sourceTree = "<group>"; };
-		E4F3531E0A6506B0003476CC /* Command.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = Command.c; sourceTree = "<group>"; };
-		E4F3531F0A6506B0003476CC /* Command.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Command.h; sourceTree = "<group>"; };
-		E4F353250A6506B5003476CC /* FileManager.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = FileManager.c; sourceTree = "<group>"; };
-		E4F353BD0A651CD2003476CC /* BSDAttrList.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = BSDAttrList.c; sourceTree = "<group>"; };
+		E4F353190A6506AA003476CC /* BSD.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = BSD.c; sourceTree = "<group>"; tabWidth = 4; };
+		E4F3531E0A6506B0003476CC /* Command.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = Command.c; sourceTree = "<group>"; tabWidth = 4; };
+		E4F3531F0A6506B0003476CC /* Command.h */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = Command.h; sourceTree = "<group>"; tabWidth = 4; };
+		E4F353250A6506B5003476CC /* FileManager.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = FileManager.c; sourceTree = "<group>"; tabWidth = 4; };
+		E4F353BD0A651CD2003476CC /* BSDAttrList.c */ = {isa = PBXFileReference; fileEncoding = 30; indentWidth = 4; lastKnownFileType = sourcecode.c.c; path = BSDAttrList.c; sourceTree = "<group>"; tabWidth = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

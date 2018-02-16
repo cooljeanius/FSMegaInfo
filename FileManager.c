@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:et:sw=4:ts=4:sts=4
  *  File:       FileManager.c
  *
  *  Contains:   File Manager command processing.

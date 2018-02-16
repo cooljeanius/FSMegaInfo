@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:et:sw=4:ts=4:sts=4
  *  File:       Command.c
  *
  *  Contains:   Utilities for command processing.
@@ -249,7 +249,8 @@ extern OSStatus CommandArgsGetFSRef(CommandArgsRef args, FSRef *fsRefPtr)
     err = CommandArgsGetStringOSStatus(args, &itemPath);
     if (err == noErr) {
         if (gDontFollowLeafSymLinksForFSRefs) {
-            if (FSPathMakeRefWithOptions == NULL) {
+			/* FIXME: '&' only silences the warning for clang, not gcc: */
+            if (&FSPathMakeRefWithOptions == NULL) {
                 static bool sHasPrinted;
 
                 /* If FSPathMakeRefWithOptions is unavailable, just do what
