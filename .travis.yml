@@ -1,3 +1,5 @@
+os: osx
+
 language: objective-c
 
 # we do not use CocoaPods, so override install:
