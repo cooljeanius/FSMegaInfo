@@ -25,3 +25,4 @@ fsmegainfo-*.*/*
 *.xcuserstate
 */xcuserdata/*
 *.xcuserdatad
+.env.local
