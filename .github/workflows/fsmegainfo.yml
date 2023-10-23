@@ -13,7 +13,7 @@ jobs:
 #     # 'Transformers::TravisCI::Scripts::Dependencies' dependencies are currently unsupported
 #     # 'compiler' was not transformed because there is no suitable equivalent in GitHub Actions
     - run: echo "Not everyone uses CocoaPods"
-    - run: xcodebuild || (./configure && make && (make check || xcodebuild -target Test || Tests/Test.py || (test -x "`which flake8`" && flake8 Tests/Test.py) || stat Tests/Test.py))
+    - run: xcodebuild || (./configure && make && (make check || xcodebuild -target Test || Tests/Test.py || (test -x "$(which flake8)" && flake8 Tests/Test.py) || stat Tests/Test.py))
     - run: (test -r /usr/include/sys/vnode.h && cat /usr/include/sys/vnode.h) || (test -r Tests/test-suite.log && cat Tests/test-suite.log) || (test -r config.log && cat config.log)
       if: "${{ failure() }}"
     strategy:
