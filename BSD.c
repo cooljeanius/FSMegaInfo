@@ -728,11 +728,19 @@ static CommandError PrintGetDirEntriesInfo(CommandArgsRef args, uint32_t indent,
         err = CommandArgsGetString(args, &dirPath);
     }
 
-    /* If we are using the default buffer size, then get it from stat: */
+    /* Open the directory: */
+    if (err == 0) {
+        dirFD = open(dirPath, O_RDONLY);
+        if (dirFD < 0) {
+            err = errno;
+        }
+    }
+
+    /* If we are using the default buffer size, then get it from fstat: */
     if ((err == 0) && (bufSize == 0)) {
         struct stat sb;
 
-        err = stat(dirPath, &sb);
+        err = fstat(dirFD, &sb);
         if (err < 0) {
             err = errno;
         }
@@ -747,14 +755,6 @@ static CommandError PrintGetDirEntriesInfo(CommandArgsRef args, uint32_t indent,
         buf = (char *)malloc((size_t)bufSize);
         if (buf == NULL) {
             err = ENOMEM;
-        }
-    }
-
-    /* Open the directory: */
-    if (err == 0) {
-        dirFD = open(dirPath, O_RDONLY);
-        if (dirFD < 0) {
-            err = errno;
         }
     }
 
