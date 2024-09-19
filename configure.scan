@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.70])
+AC_PREREQ([2.72])
 AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
 AC_CONFIG_SRCDIR([BSD.h])
 AC_CONFIG_HEADERS([config.h])
@@ -41,4 +41,5 @@ AC_CHECK_FUNCS([memset pathconf strcasecmp strerror])
 
 AC_CONFIG_FILES([Makefile
                  Tests/Makefile])
+AC_CONFIG_SUBDIRS([fsmegainfo-1.0])
 AC_OUTPUT
