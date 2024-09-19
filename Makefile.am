@@ -37,3 +37,4 @@ configure.scan:
 distclean-local:
 	rm -f @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
 	rm -rf autom4te.cache || rmdir autom4te.cache
+	-rm -rf *.dSYM || rmdir *.dSYM

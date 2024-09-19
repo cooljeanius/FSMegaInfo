@@ -10,6 +10,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 AC_USE_SYSTEM_EXTENSIONS
 AM_INIT_AUTOMAKE([foreign])
+AM_MAINTAINER_MODE
 xcsdkdir=""
 AC_CHECK_PROGS([XCRUN],[xcrun])
 if test -n "${XCRUN}"; then
@@ -48,12 +49,27 @@ AC_HEADER_DIRENT
 AC_HEADER_MAJOR
 AC_HEADER_STAT
 AC_HEADER_STDBOOL dnl# also "_CHECK"s it
-AC_CHECK_HEADERS([assert.h fts.h grp.h limits.h membership.h \
-                  netdb.h netinet/in.h paths.h pwd.h stdio.h \
-                  sys/mount.h sys/param.h sys/vnode.h sys/xattr.h])
+AC_CHECK_HEADERS([assert.h dirent.h fts.h grp.h limits.h \
+                  membership.h netdb.h netinet/in.h paths.h \
+                  pwd.h sys/mount.h sys/param.h sys/vnode.h \
+                  sys/xattr.h])
 # These headers are OSX specific, and in frameworks:
 AC_CHECK_HEADERS([CoreServices/CoreServices.h \
                   DiskArbitration/DiskArbitration.h])dnl
+
+# Keep autoscan happy:
+if test "x${ac_cv_header_inttypes_h}" = "x"; then
+  test -z "${ac_cv_header_inttypes_h}" || unset ac_cv_header_inttypes_h
+  AC_CHECK_HEADERS([inttypes.h])
+fi
+if test "x${ac_cv_header_stdint_h}" = "x"; then
+  test -z "${ac_cv_header_stdint_h}" || unset ac_cv_header_stdint_h
+  AC_CHECK_HEADERS([stdint.h])
+fi
+if test "x${ac_cv_header_unistd_h}" = "x"; then
+  test -z "${ac_cv_header_unistd_h}" || unset ac_cv_header_unistd_h
+  AC_CHECK_HEADERS([unistd.h])
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_SYS_LARGEFILE
