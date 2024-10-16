@@ -18,7 +18,10 @@ jobs:
       - run: sync && echo "Not everyone uses CocoaPods" && sleep 1
       - run: |
           xcodebuild || \
-            (./configure && make && (make check || xcodebuild -target Test || Tests/Test.py || (test -x "$(which flake8)" && flake8 Tests/Test.py) || stat Tests/Test.py))
+            (./configure && make && \
+              (make check || xcodebuild -target Test || Tests/Test.py || \
+                (test -x "$(which flake8)" && flake8 Tests/Test.py) || \
+              stat Tests/Test.py))
       - name: Debug failure
         if: "${{ failure() }}"
         run: |
