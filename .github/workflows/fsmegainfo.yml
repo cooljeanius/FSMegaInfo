@@ -10,6 +10,9 @@ on:
 jobs:
   test:
     runs-on: macos-latest
+    env:
+      CC: ${{ matrix.compiler }}
+      OBJC: ${{ matrix.compiler }}
     steps:
       - name: checkout
         uses: actions/checkout@v6
