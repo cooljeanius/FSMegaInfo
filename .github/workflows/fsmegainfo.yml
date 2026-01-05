@@ -1,5 +1,7 @@
 ---
 name: cooljeanius/FSMegaInfo
+permissions:
+  contents: read
 on:
   push:
     branches:
