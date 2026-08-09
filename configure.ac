@@ -134,8 +134,8 @@ AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_STAT
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS([fprintf memset pathconf sscanf strcasecmp strerror \
-                strtoimax strlen strncmp strtoll])dnl
+AC_CHECK_FUNCS([fprintf getdirentries memset pathconf sscanf strcasecmp \
+                strerror strtoimax strlen strncmp strtoll])dnl
 
 # Checks for declarations.
 AC_CHECK_DECLS([VT_UNION],[],[],[

@@ -33,6 +33,9 @@
 /* Define to 1 if you have the <fts.h> header file. */
 #undef HAVE_FTS_H
 
+/* Define to 1 if you have the 'getdirentries' function. */
+#undef HAVE_GETDIRENTRIES
+
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H
 

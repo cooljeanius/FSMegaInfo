@@ -770,7 +770,12 @@ static CommandError PrintGetDirEntriesInfo(CommandArgsRef args, uint32_t indent,
         first = true;
         fileOffset = 0;
         do {
+#ifdef HAVE_GETDIRENTRIES
             bytesRead = getdirentries(dirFD, buf, bufSize, &base);
+#else
+            bytesRead = 0;
+            base = 0L;
+#endif /* HAVE_GETDIRENTRIES */
             if (bytesRead < 0) {
                 err = errno;
             } else if (bytesRead > 0) {

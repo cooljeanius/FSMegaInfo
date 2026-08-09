@@ -8374,6 +8374,12 @@ then :
   printf '%s\n' "#define HAVE_FPRINTF 1" >>confdefs.h
 
 fi
+ac_fn_c_check_func "$LINENO" "getdirentries" "ac_cv_func_getdirentries"
+if test "x$ac_cv_func_getdirentries" = xyes
+then :
+  printf '%s\n' "#define HAVE_GETDIRENTRIES 1" >>confdefs.h
+
+fi
 ac_fn_c_check_func "$LINENO" "memset" "ac_cv_func_memset"
 if test "x$ac_cv_func_memset" = xyes
 then :
