@@ -27,3 +27,4 @@ fsmegainfo-*.*/*
 */xcuserdata/*
 *.xcuserdatad
 .env.local
+*.py.bak

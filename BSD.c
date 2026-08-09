@@ -471,7 +471,9 @@ static const FPFieldDesc kStatFSFieldDesc[] = {
     {"f_fsid.val[0]", offsetof(struct statfs, f_fsid.val[0]), sizeof(int32_t),FPHex, NULL},
     {"f_fsid.val[1]", offsetof(struct statfs, f_fsid.val[1]), sizeof(int32_t),FPHex, NULL},
     {"f_owner", offsetof(struct statfs, f_owner), sizeof(uid_t),  FPUID, NULL},
+#ifdef HAVE_STRUCT_STATFS_F_RESERVED1
     {"f_reserved1", offsetof(struct statfs, f_reserved1), sizeof(short), FPSDec, NULL}, /* file system subtype on 10.4 and later */
+#endif /* HAVE_STRUCT_STATFS_F_RESERVED1 */
     {"f_type", offsetof(struct statfs, f_type), sizeof(short), FPEnum, kFSTypeEnums},
     {"f_flags", offsetof(struct statfs, f_flags), sizeof(long), FPFlags, kMountFlags},
     {"f_fstypename", offsetof(struct statfs, f_fstypename), MFSNAMELEN, FPCString, NULL},

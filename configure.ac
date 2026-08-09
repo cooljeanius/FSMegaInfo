@@ -66,6 +66,10 @@ if test "x${ac_cv_header_stdint_h}" = "x"; then
   test -z "${ac_cv_header_stdint_h}" || unset ac_cv_header_stdint_h
   AC_CHECK_HEADERS([stdint.h])
 fi
+if test "x${ac_cv_header_sys_stat_h}" = "x"; then
+  test -z "${ac_cv_header_sys_stat_h}" || unset ac_cv_header_sys_stat_h
+  AC_CHECK_HEADERS([sys/stat.h])
+fi
 if test "x${ac_cv_header_unistd_h}" = "x"; then
   test -z "${ac_cv_header_unistd_h}" || unset ac_cv_header_unistd_h
   AC_CHECK_HEADERS([unistd.h])
@@ -93,7 +97,29 @@ AC_TYPE_SSIZE_T
 AC_CHECK_MEMBERS([struct stat.st_blksize])
 AC_STRUCT_ST_BLOCKS
 AC_CHECK_MEMBERS([struct stat.st_rdev])
-AC_CHECK_MEMBERS([struct statfs.f_reserved1])
+AC_CHECK_MEMBERS([struct statfs.f_reserved1],[],[],[
+#ifdef HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#else
+# if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+#  warning "conftest wants to include <sys/param.h> for struct statfs"
+# endif /* __GNUC__ && !__STRICT_ANSI__ */
+#endif /* HAVE_SYS_PARAM_H */
+#ifdef HAVE_SYS_MOUNT_H
+# include <sys/mount.h>
+#else
+# if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+#  warning "conftest wants to include <sys/mount.h> for struct statfs"
+# endif /* __GNUC__ && !__STRICT_ANSI__ */
+#endif /* HAVE_SYS_MOUNT_H */
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#else
+# if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+#  warning "conftest wants to include <sys/stat.h> for struct statfs"
+# endif /* __GNUC__ && !__STRICT_ANSI__ */
+#endif /* HAVE_SYS_STAT_H */
+])
 AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
