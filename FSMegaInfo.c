@@ -172,6 +172,10 @@ static void PrintUsage(uint32_t verbose)
             arch = " (i386)";
         #elif TARGET_CPU_X86_64
             arch = " (x86-64)";
+        #elif TARGET_CPU_ARM
+            arch = " (arm)";
+    	#elif TARGET_CPU_AARCH64
+     		arch = " (aarch64)";
         #else
             #error What architecture?
         #endif  /* TARGET_CPU_(foo) */
