@@ -73,12 +73,12 @@ try:
 
     def runTool(args):
         if gDebug >= 1:
-            print(args, file=sys.stderr)
+            print >> sys.stderr, args
         s = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         resultOut, resultErr = s.communicate()
         result = (s.wait(), resultOut, resultErr)
         if gDebug >= 2:
-            print(result)
+            print result
         return result
 
 except:
@@ -86,7 +86,7 @@ except:
 
     def runTool(args):
         if gDebug >= 1:
-            print(args, file=sys.stderr)
+            print >> sys.stderr, args
         child = popen2.Popen3(args, capturestderr=True)
 
         # This is /so/ bodgy.  We really need to read both stdout and stderr
@@ -98,7 +98,7 @@ except:
         resultErr = child.childerr.read()
         result = (child.wait(), resultOut, resultErr)
         if gDebug >= 2:
-            print(result)
+            print result
         return result
 
 def runFSMegaInfo(args, arch=""):
@@ -154,13 +154,13 @@ def fixAliasVolumeCreateDate(results, arch):
 
 def byteSwapValue(text, fieldName, fmt):
     def swapper(m):
-        swappedValue = struct.unpack(">" + fmt, struct.pack("<" + fmt, int(m.group('value'))))[0]
+        swappedValue = struct.unpack(">" + fmt, struct.pack("<" + fmt, long(m.group('value'))))[0]
         return m.group('prefix') + str(swappedValue)
     return re.sub("(?P<prefix>" + fieldName + " += )(?P<value>[0-9]+)", swapper, text)
 
 def byteSwapValueHex(text, fieldName, fmt):
     def swapper(m):
-        swappedValue = struct.unpack(">" + fmt, struct.pack("<" + fmt, int(m.group('value'), 16)))[0]
+        swappedValue = struct.unpack(">" + fmt, struct.pack("<" + fmt, long(m.group('value'), 16)))[0]
         if fmt == "q":
             outFmt = "%016x"
         else:
@@ -188,7 +188,7 @@ def printResultsSideBySide(columnWidth, left, right):
     if left != '' and right != '':
         left  = left.splitlines()
         right = right.splitlines()
-        for lineIndex in range(0, max(len(left), len(right))):
+        for lineIndex in xrange(0, max(len(left), len(right))):
             if lineIndex < len(left):
                 l1 = left[lineIndex]
             else:
@@ -201,7 +201,7 @@ def printResultsSideBySide(columnWidth, left, right):
                 mark = " "
             else:
                 mark = "!"
-            print("%-*s %s %s" % (columnWidth, l1[:columnWidth], mark, l2[:columnWidth]), file=sys.stderr)
+            print >> sys.stderr, "%-*s %s %s" % (columnWidth, l1[:columnWidth], mark, l2[:columnWidth])
 
 def compareResultsForArchitectures(archList):
     # stty will fail when running on 10.4 because my subprocess compatibility
@@ -210,7 +210,7 @@ def compareResultsForArchitectures(archList):
     try:
         numberOfColumns = int(runTool(['stty', 'size'])[1].split()[1])
     except:
-        print("*** stty failed; using a default value for the number of columns", file=sys.stderr)
+        print >> sys.stderr, "*** stty failed; using a default value for the number of columns"
         numberOfColumns = 80
     columnWidth = (numberOfColumns - 5) / 2
 
@@ -388,7 +388,7 @@ def compareResultsForArchitectures(archList):
                 (('FSCopyURLForVolume', '/Volumes/Fluffy'), ()),
             ]
         else:
-            print('*** Skipped network volume tests', file=sys.stderr)
+            print >> sys.stderr, '*** Skipped network volume tests'
 
     if regressionTest:
         commands += [
@@ -535,25 +535,25 @@ def compareResultsForArchitectures(archList):
                 results = fix(results, arch)
             if gDebug >= 2 or results != canonicalResults:
                 if results != canonicalResults:
-                    print("*** Test failure", file=sys.stderr)
+                    print >> sys.stderr, "*** Test failure"
                 else:
-                    print("*** Debug output", file=sys.stderr)
+                    print >> sys.stderr, "*** Debug output"
 
-                print("compareResultsForArchitectures", file=sys.stderr)
-                print("args: %s" % str(command[0]), file=sys.stderr)
-                print("%-*s   %s" % (columnWidth, "canonical", "returned"), file=sys.stderr)
-                print("%-*s   %s" % (columnWidth, archList[0], arch), file=sys.stderr)
+                print >> sys.stderr, "compareResultsForArchitectures"
+                print >> sys.stderr, "args: %s" % str(command[0])
+                print >> sys.stderr, "%-*s   %s" % (columnWidth, "canonical", "returned")
+                print >> sys.stderr, "%-*s   %s" % (columnWidth, archList[0], arch)
                 if canonicalResults[0] == results[0]:
                     mark = " "
                 else:
                     mark = "!"
-                print("%-*d %s %d" % (columnWidth, canonicalResults[0], mark, results[0]), file=sys.stderr)
+                print >> sys.stderr, "%-*d %s %d" % (columnWidth, canonicalResults[0], mark, results[0])
 
-                print("---", file=sys.stderr)
+                print >> sys.stderr, "---"
                 printResultsSideBySide(columnWidth, canonicalResults[1], results[1])        # stdout
-                print("---", file=sys.stderr)
+                print >> sys.stderr, "---"
                 printResultsSideBySide(columnWidth, canonicalResults[2], results[2])        # stderr
-                print("---", file=sys.stderr)
+                print >> sys.stderr, "---"
 
                 if results != canonicalResults:
                     sys.exit(1)
@@ -565,7 +565,7 @@ def runCrossArchitectureTest():
     elif gNativeArch in ["ppc64", "ppc"]:
         compareResultsForArchitectures(["ppc64", "ppc"])
     else:
-        print("What architecture?", file=sys.stderr)
+        print >> sys.stderr, "What architecture?"
         assert False
 
 def generateFingerPrint(pathToTestVolume, arch):
@@ -905,9 +905,9 @@ def generateFingerPrint(pathToTestVolume, arch):
             (('pathconf', '_PC_SYNC_IO', '/'), ()),
         ]
 
-    print("arch: %s" % arch, file=sys.stdout)
-    print("version: %s" % runTool(["sw_vers", "-productVersion"])[1].strip(), file=sys.stdout)
-    print(file=sys.stdout)
+    print >> sys.stdout, "arch: %s" % arch
+    print >> sys.stdout, "version: %s" % runTool(["sw_vers", "-productVersion"])[1].strip()
+    print >> sys.stdout
 
     for command in commands:
         args = []
@@ -931,23 +931,23 @@ def generateFingerPrint(pathToTestVolume, arch):
             testError = []
         else:
             testError = testError.splitlines()
-        print("args: %s" % str(command[0]), file=sys.stdout)
-        print("results: %d %d %d" % (testStatus, len(testOutput), len(testError)), file=sys.stdout)
-        print("---", file=sys.stdout)
+        print >> sys.stdout, "args: %s" % str(command[0])
+        print >> sys.stdout, "results: %d %d %d" % (testStatus, len(testOutput), len(testError))
+        print >> sys.stdout, "---"
         for l in testOutput:
-            print(l, file=sys.stdout)
-        print("---", file=sys.stdout)
+            print >> sys.stdout, l
+        print >> sys.stdout, "---"
         for l in testError:
-            print(l, file=sys.stdout)
-        print("---", file=sys.stdout)
+            print >> sys.stdout, l
+        print >> sys.stdout, "---"
         sys.stdout.flush()
 
 def printUsage():
-    print("usage: %s [ pathToTestVolume [ arch ] ]" % os.path.basename(sys.argv[0]), file=sys.stderr)
+    print >> sys.stderr, "usage: %s [ pathToTestVolume [ arch ] ]" % os.path.basename(sys.argv[0])
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], "d")
-except getopt.GetoptError:
+except getopt.GetoptError, e:
     printUsage()
     sys.exit(1)
 
@@ -958,13 +958,13 @@ for opt in opts:
 gNativeArch = runTool(["arch"])[1].strip()
 
 if len(args) == 0:
-    print("Test.py: len(args) is 0, so we are running the CrossArchitectureTest", file=sys.stdout)
+    print >> sys.stdout, "Test.py: len(args) is 0, so we are running the CrossArchitectureTest"
     runCrossArchitectureTest()
 elif len(args) == 1:
-    print("Test.py: len(args) is 1, so we are generating a FingerPrint", file=sys.stdout)
+    print >> sys.stdout, "Test.py: len(args) is 1, so we are generating a FingerPrint"
     generateFingerPrint(args[0], "")
 elif len(args) == 2:
-    print("Test.py: len(args) is 2, so we are generating an arch-specific FingerPrint", file=sys.stdout)
+    print >> sys.stdout, "Test.py: len(args) is 2, so we are generating an arch-specific FingerPrint"
     generateFingerPrint(args[0], arch)
 else:
     printUsage()

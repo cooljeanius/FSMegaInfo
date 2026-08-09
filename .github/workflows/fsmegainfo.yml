@@ -1,5 +1,7 @@
 ---
 name: cooljeanius/FSMegaInfo
+permissions:
+  contents: read
 on:
   push:
     branches:
@@ -7,7 +9,10 @@ on:
   pull_request:
 jobs:
   test:
-    runs-on: macos-13
+    runs-on: macos-latest
+    env:
+      CC: ${{ matrix.compiler }}
+      OBJC: ${{ matrix.compiler }}
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -29,6 +34,7 @@ jobs:
             || (test -r Tests/test-suite.log && cat Tests/test-suite.log) \
             || (test -r config.log && cat config.log)
     strategy:
+      fail-fast: false
       matrix:
         compiler:
           - clang

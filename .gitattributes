@@ -3,3 +3,5 @@ config.h.in linguist-generated
 configure linguist-generated
 configure.scan linguist-generated
 Makefile.in linguist-generated
+
+# build-aux subdir is handled in a separate .gitattributes file within it
