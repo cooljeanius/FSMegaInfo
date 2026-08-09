@@ -174,6 +174,8 @@ static void PrintUsage(uint32_t verbose)
             arch = " (x86-64)";
         #elif TARGET_CPU_ARM
             arch = " (arm)";
+        #elif TARGET_CPU_ARM64
+        	arch = " (arm64)";
     	#elif TARGET_CPU_AARCH64
      		arch = " (aarch64)";
         #else
