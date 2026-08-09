@@ -947,7 +947,7 @@ def printUsage():
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], "d")
-except getopt.GetoptError as e:
+except getopt.GetoptError:
     printUsage()
     sys.exit(1)
 
